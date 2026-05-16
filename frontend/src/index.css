@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Finger+Paint&family=Londrina+Shadow&display=swap');
+
+.roboto-normal {
+    font-family: "Rubik Spray Paint", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.finger-paint-regular {
+    font-family: "Finger Paint", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+:root {
+
+    --gark-bg: #0c0c0c;
+    --dark-gray: #131313;
+    --gark-1-gray: #171717;
+    --gray: #232323;
+    --light-gray: #474747;
+    --lightest-gray: #c4c4c4;
+
+    --green-lightest: #c2ffd5;
+    --green-light: #b0ffc9;
+    --green: #558f66;
+
+
+    --error-color: #c85757;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: "Roboto", sans-serif;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100%;
+    width: 100%;
+    background: var(--dark-gray);
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--gark-bg);
+    display: flex;
+    flex-direction: column;
+}
