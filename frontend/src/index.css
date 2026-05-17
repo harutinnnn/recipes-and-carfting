@@ -26,9 +26,19 @@
     --green-lightest: #c2ffd5;
     --green-light: #b0ffc9;
     --green: #558f66;
+    --green-dark: #235e35;
+    --green-darkest: #163e22;
 
 
+    --error-lightest-color: #f3dddd;
+    --error-light-color: #efbdbd;
     --error-color: #c85757;
+
+
+
+    --warn-lightest-color: #fff3cd;
+    --warn-light-color: #ffecb5;
+    --warn-color: #664d03;
 }
 
 * {

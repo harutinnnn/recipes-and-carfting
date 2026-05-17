@@ -5,7 +5,8 @@
     margin-bottom: 25px;
 }
 
-.input-row input {
+.input-row input,
+.input-row select {
     height: 50px;
     background-color: var(--gark-1-gray);
     color: var(--lightest-gray);
@@ -13,6 +14,16 @@
     outline: none;
     padding: 0 10px;
     font-size: 16px;
+}
+
+.input-row select,
+select {
+    appearance: none;
+    background-image: url("./assets/icons/chevron-down.svg");
+    background-repeat: no-repeat;
+    padding-right: 25px;
+    background-position: right 10px center;
+    background-size: 16px;
 }
 
 .input-row .error-msg{
@@ -110,6 +121,11 @@ input:-webkit-autofill:active {
         border-bottom: solid 1px var(--green-lightest);
     }
 }
+.link.forgot {
+    display: inline-flex;
+    width: auto;
+    margin-top: 5px;
+}
 
 .text-rl-lines {
     display: flex;
@@ -126,4 +142,42 @@ input:-webkit-autofill:active {
     height: 2px;
     background: #252a2c;
     border-bottom: solid 1px var(--light-gray);
+}
+
+
+
+.alert {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: var(--dark-gray);
+    border: solid 1px var(--light-gray);
+    margin-bottom: 10px;
+}
+
+.alert svg {
+    display: flex;
+    align-items: center;
+    color: var(--dark-gray);
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.alert.success {
+    background-color: var(--green-lightest);
+    color: var(--green-darkest);
+    border: solid 1px var(--green-light);
+}
+
+.alert.danger {
+    background-color: var(--error-lightest-color);
+    color: var(--error-color);
+    border: solid 1px var(--error-light-color);
+}
+
+.alert.warning {
+    background-color: var(--warn-lightest-color);
+    color: var(--warn-color);
+    border: solid 1px var(--warn-light-color);
 }

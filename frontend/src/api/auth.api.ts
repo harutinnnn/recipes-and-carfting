@@ -10,13 +10,11 @@ export type ForgotPayload = {
 };
 
 export type RegisterPayload = {
+    email: string;
     name: string;
     nickname: string;
-    email: string;
     gender: string;
     password: string;
-    countryId:number;
-    timezoneId:number;
 };
 
 export type LoginResponse = {

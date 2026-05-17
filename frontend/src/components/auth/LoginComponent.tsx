@@ -1,7 +1,20 @@
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup"
+import type {AuthViewCallback} from "@/types/auth";
+import {getMeRequest, loginRequest} from "@/api/auth.api";
+import {AxiosError} from "axios";
+import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {useAuth} from "@/hooks/useAuth";
+import {setAuthTokens} from "@/helpers/authStorage";
 
-export const LoginComponent = () => {
+export const LoginComponent = ({cb}: { cb: AuthViewCallback }) => {
+
+    const {login} = useAuth();
+
+    const [error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
 
     const loginSchema = Yup.object({
         email: Yup.string().email("Invalid email").required("Required"),
@@ -15,14 +28,58 @@ export const LoginComponent = () => {
 
     const handleLoginSubmit = async (values: LoginFormValues) => {
 
-        console.log(values);
+        const {email, password} = values;
 
+        try {
+            const data = await loginRequest({
+                email, password
+            })
+
+
+            if ("error" in data) {
+                setError(data.error as string)
+            } else {
+                setAuthTokens({
+                    accessToken: data.token,
+                    refreshToken: data.refreshToken,
+                });
+
+                let userToSet = data.user;
+
+                try {
+                    const userFromApi = await getMeRequest();
+                    if (userFromApi) {
+                        userToSet = userFromApi;
+                    }
+                } catch (apiErr) {
+                    console.error("Failed to fetch full user profile", apiErr);
+                }
+
+                login(data.token, userToSet);
+
+                navigate("/");
+
+            }
+
+        } catch (err) {
+
+            console.error(err);
+
+            if (err instanceof AxiosError) {
+
+                setError(err.response?.data?.message || "Login failed");
+            }
+
+        }
     }
 
     return (
         <div>
 
-            <div className={"auth-header"}></div>
+
+            <div className={"auth-header"}>
+                <h1>Sign In</h1>
+            </div>
 
             <div className={"login-form"}>
                 <Formik initialValues={{
@@ -43,9 +100,13 @@ export const LoginComponent = () => {
                             <label htmlFor="password">Password</label>
                             <Field type="password" id={"password"} name={"password"}/>
                             <ErrorMessage name="password" component="div" className="error-msg"/>
+                            <div className={"link forgot"} onClick={() => cb('forgot')}>Forgot
+                            </div>
                         </div>
+
+
                         <div className="input-row">
-                            <button className={"btn green"}>Login</button>
+                            <button className={"btn green"} type={'submit'}>Login</button>
                         </div>
 
                     </Form>
@@ -64,7 +125,8 @@ export const LoginComponent = () => {
                     </button>
                 </div>
 
-                <div className={"link"}>Register</div>
+                <div className={"link"} onClick={() => cb('register')}>Register
+                </div>
 
             </div>
         </div>

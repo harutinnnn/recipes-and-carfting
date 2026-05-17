@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import {number} from "zod";
 import {relations} from "drizzle-orm/relations";
+import {Statuses} from "../enums/Statuses";
 
 export const itemCategory = pgEnum("item_category", [
     "seed",
@@ -32,17 +33,24 @@ export const buildingType = pgEnum("building_type", [
     "field"
 ]);
 
+
+export const userStatus = pgEnum("status", [Statuses.PENDING, Statuses.PUBLISHED, Statuses.BLOCKED, Statuses.NOT_ACTIVATED]);
+
+
 export const users = pgTable("users", {
-    id: integer("id").primaryKey(),
-    username: text("username").notNull().unique(),
+    id: serial("id").primaryKey(),
     email: text("email").notNull().unique(),
     gameMoney: integer("gameMoney").default(0),
     realMoney: integer("realMoney").default(0),
     xp: integer("xp").default(0),
     level: integer("level").default(1),
-    googleId: text("google_id").notNull().unique(),
+    googleId: text("google_id").unique(),
     avatarUrl: text("avatar_url"),
+    status: userStatus('status',).notNull().default(Statuses.NOT_ACTIVATED),
     isAdmin: boolean("is_admin").default(false).notNull(),
+    activationToken: text("activationToken"),
+    refreshToken: text("refreshToken"),
+    password: text("password"),
     createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
@@ -58,12 +66,12 @@ export const seeds = pgTable("seeds", {
 
 export const userSeeds = pgTable("userSeeds", {
     id: serial("id").primaryKey(),
-    userId: integer("userId").notNull()
+    userId: serial("userId").notNull()
         .references(() => users.id, {
             onDelete: "cascade",
             onUpdate: "cascade",
         }),
-    seedId: integer("seedId").notNull()
+    seedId: serial("seedId").notNull()
         .references(() => seeds.id, {
             onDelete: "cascade",
             onUpdate: "cascade",

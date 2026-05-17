@@ -1,7 +1,16 @@
-.auth-page{
+.auth-page {
     margin: 30px;
     padding: 30px;
     border-radius: 20px;
     background-color: var(--dark-gray);
-    border:solid 1px var(--gray);
+    border: solid 1px var(--gray);
+}
+
+.auth-header {
+    margin-bottom: 20px;
+}
+
+.auth-header h1 {
+    color: var(--green-light);
+    font-size: 28px;
 }
