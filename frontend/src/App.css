@@ -26,7 +26,7 @@ select {
     background-size: 16px;
 }
 
-.input-row .error-msg{
+.input-row .error-msg {
     color: var(--error-color);
     font-size: 13px;
     margin-top: 5px;
@@ -121,6 +121,7 @@ input:-webkit-autofill:active {
         border-bottom: solid 1px var(--green-lightest);
     }
 }
+
 .link.forgot {
     display: inline-flex;
     width: auto;
@@ -143,7 +144,6 @@ input:-webkit-autofill:active {
     background: #252a2c;
     border-bottom: solid 1px var(--light-gray);
 }
-
 
 
 .alert {
@@ -180,4 +180,46 @@ input:-webkit-autofill:active {
     background-color: var(--warn-lightest-color);
     color: var(--warn-color);
     border: solid 1px var(--warn-light-color);
+}
+
+.fields-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 0 20px;
+    margin-top: 20px;
+}
+
+.fields-list .field-item {
+    border: solid 1px var(--gray);
+    height: calc(1120px / 3);
+    border-radius: 10px;
+    background-color: var(--dark-gray);
+    position: relative;
+}
+
+.fields-list .field-item .field-item-icon {
+    position: absolute;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.fields-list .field-item .field-item-info {
+    z-index: 1;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 25px;
+    font-weight: bold;
+    background-color: var(--dark-gray);
+    color: var(--green-light);
+    padding: 10px 20px;
+    width: calc(100% - 60px);
+    border: solid 1px var(--light-gray);
 }

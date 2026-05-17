@@ -23,6 +23,10 @@ export type LoginResponse = {
     user: User;
 };
 
+export type GetMeResponse = {
+    user: User;
+};
+
 export type ForgotResponse = {
     email: string;
     message: string;
@@ -64,6 +68,6 @@ export async function logoutRequest() {
 }
 
 export async function getMeRequest(): Promise<User | null> {
-    const response = await api.get<User>("/auth/me");
-    return response.data;
+    const response = await api.get<User | GetMeResponse>("/auth/me");
+    return "user" in response.data ? response.data.user : response.data;
 }
