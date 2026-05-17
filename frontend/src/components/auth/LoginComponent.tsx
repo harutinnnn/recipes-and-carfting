@@ -7,6 +7,8 @@ import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useAuth} from "@/hooks/useAuth";
 import {setAuthTokens} from "@/helpers/authStorage";
+import {Alerts} from "@/components/Alerts";
+import {AlertEnums} from "@/enums/AlertEnums";
 
 export const LoginComponent = ({cb}: { cb: AuthViewCallback }) => {
 
@@ -80,6 +82,10 @@ export const LoginComponent = ({cb}: { cb: AuthViewCallback }) => {
             <div className={"auth-header"}>
                 <h1>Sign In</h1>
             </div>
+
+            {error && <Alerts text={error} type={AlertEnums.danger} cb={() => {
+                setError(null)
+            }}/>}
 
             <div className={"login-form"}>
                 <Formik initialValues={{
