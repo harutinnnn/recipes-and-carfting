@@ -12,25 +12,26 @@ export default function ProtectedLayout() {
     const {user} = useAuth();
 
 
-    useEffect(() => {
-        if (!user) {
-            socket.disconnect();
-            return;
-        }
-
-        reconnectSocketWithFreshToken();
-
-        return () => {
-            socket.disconnect();
-        };
-    }, [user]);
+    // useEffect(() => {
+    //     if (!user) {
+    //         socket.disconnect();
+    //         return;
+    //     }
+    //
+    //     reconnectSocketWithFreshToken();
+    //
+    //     return () => {
+    //         socket.disconnect();
+    //     };
+    // }, [user]);
 
 
     return (
         <>
             <Header/>
 
-            <Outlet context={{socket}}/>
+            {/*<Outlet context={{socket}}/>*/}
+            <Outlet/>
         </>
     );
 }

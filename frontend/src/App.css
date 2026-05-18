@@ -77,6 +77,11 @@ input:-webkit-autofill:active {
     }
 }
 
+.btn.sm {
+    height: 30px;
+    font-size: 16px;
+}
+
 .btn.rounded {
     border-radius: 25px;
 }
@@ -94,6 +99,18 @@ input:-webkit-autofill:active {
     &:hover {
         background-color: var(--green-lightest);
         border-color: var(--green-light);
+        color: var(--dark-gray);
+    }
+}
+
+.btn.info {
+    background-color: var(--blue-light);
+    border-color: var(--blue);
+    color: var(--gark-1-gray);
+
+    &:hover {
+        background-color: var(--blue);
+        border-color: var(--blue-dark);
         color: var(--dark-gray);
     }
 }
@@ -312,6 +329,12 @@ input:-webkit-autofill:active {
     top: 0;
     height: 100%;
     opacity: 0.3;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 

@@ -6,6 +6,7 @@ import path from "node:path";
 import * as http from "node:http";
 import {mainRouter} from "./main.route";
 import {authRouter} from "./auth.route";
+import {seedsRouter} from "./admin/seeds.route";
 
 export const createApp = (context: AppContext) => {
 
@@ -23,6 +24,11 @@ export const createApp = (context: AppContext) => {
 
     app.use('/api', mainRouter(context));
     app.use('/api/auth', authRouter(context));
+
+
+    // Admin
+    app.use('/api/admin/seeds', seedsRouter(context));
+
 
     return http.createServer(app);
 

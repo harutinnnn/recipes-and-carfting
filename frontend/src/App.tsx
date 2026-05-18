@@ -10,6 +10,7 @@ import {AuthPage} from "@/pages/AuthPage";
 import ProtectedAdminLayout from "@/layouts/ProtectedAdminLayout";
 import {useAuth} from "@/hooks/useAuth";
 import {AdminMain} from "@/pages/admin/admin.main";
+import {AdminSeeds} from "@/pages/admin/AdminSeeds";
 
 function App() {
 
@@ -50,8 +51,8 @@ function App() {
                 >
                     <Route path="/admin" element={isAdminUser ? <AdminMain/> : <Navigate to="/" replace/>}/>
 
-                    {/*<Route path="/admin/product-categories"
-                       element={isAdminUser ? <AdminProductCategories/> : <Navigate to="/" replace/>}/>*/}
+                    <Route path="/admin/seeds"
+                       element={isAdminUser ? <AdminSeeds/> : <Navigate to="/" replace/>}/>
 
 
                 </Route>

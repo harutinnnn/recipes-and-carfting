@@ -3,6 +3,11 @@
     position: relative;
 }
 
+.admin-main-content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
 .admin-header {
     height: 50px;
     border-bottom: solid 1px var(--gray);
@@ -12,7 +17,92 @@
     position: absolute;
     left: 0;
     top: 50px;
-    width: 200px;
+    width: 250px;
     height: calc(100vh - 50px);
     background-color: var(--gark-1-gray);
+}
+
+ul.admin-sidebar-nav {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.admin-sidebar-nav a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--green-lightest);
+    padding: 10px;
+    border-bottom: solid 1px var(--light-gray);
+    font-size: 18px;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: var(--gray);
+    }
+
+    &.active {
+        background-color: var(--gray);
+    }
+}
+
+.admin-sidebar-nav a svg {
+    color: var(--green);
+}
+
+.admin-content-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-content-title .right-side {
+    margin-left: auto;
+}
+
+
+.items-list table {
+    width: 100%;
+    border: 1px solid var(--gray);
+    border-collapse: collapse;
+}
+
+.items-list table tr:nth-child(odd) {
+    background-color: var(--light-gray-op);
+}
+
+.items-list table thead tr {
+    background-color: var(--dark-gray) !important;
+}
+
+.items-list table thead tr th {
+    align-items: flex-end;
+    border: 1px solid var(--gray);
+    text-align: left;
+    color: var(--lightest-gray);
+}
+
+.items-list table tr th,
+.items-list table tr td {
+    align-items: flex-end;
+    border: 1px solid var(--gray);
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.items-list table tr th .quick-actions,
+.items-list table tr td .quick-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.items-list table tr td div.quick-actions .delete {
+    stroke: var(--error-color);
 }

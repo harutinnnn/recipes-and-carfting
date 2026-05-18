@@ -17,18 +17,18 @@ export default function ProtectedAdminLayout() {
 
     const pageUrl: string = getUrlPart(location.pathname, 0)
 
-    useEffect(() => {
-        if (!user) {
-            socket.disconnect();
-            return;
-        }
-
-        reconnectSocketWithFreshToken();
-
-        return () => {
-            socket.disconnect();
-        };
-    }, [user]);
+    // useEffect(() => {
+    //     if (!user) {
+    //         socket.disconnect();
+    //         return;
+    //     }
+    //
+    //     reconnectSocketWithFreshToken();
+    //
+    //     return () => {
+    //         socket.disconnect();
+    //     };
+    // }, [user]);
 
 
     return (
@@ -36,8 +36,10 @@ export default function ProtectedAdminLayout() {
             <AdminHeader/>
             <AdminSidebar/>
 
-
-            <Outlet context={{socket}}/>
+            <div className={"admin-main-content"}>
+                {/*<Outlet context={{socket}}/>*/}
+                <Outlet/>
+            </div>
         </div>
     );
 }

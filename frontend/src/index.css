@@ -30,6 +30,13 @@
     --green-darkest: #163e22;
 
 
+    --blue-lightest: #c2faff;
+    --blue-light: #a0f9ff;
+    --blue: #3dccd8;
+    --blue-dark: #2398a1;
+    --blue-darkest: #0f666c;
+
+
     --error-lightest-color: #f3dddd;
     --error-light-color: #efbdbd;
     --error-color: #c85757;
@@ -41,6 +48,7 @@
 
 
     --green-dark-op: rgba(35, 94, 53, 0.47);
+    --green-lightest-op: rgb(194 255 213 / 0.55);
     --light-gray-op: rgba(71, 71, 71, 0.3);
     --warn-light-color-op: rgba(255, 236, 181, 0.3);
 }
@@ -49,7 +57,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
+    color: var(--green-lightest);
     font-family: "Roboto", sans-serif;
 }
 
