@@ -3,7 +3,7 @@ import {FieldStatusEnum} from "@/enums/FieldStatusEnum";
 import {useEffect, useState} from "react";
 import {getDateProgressPercentage} from "@/helpers/date.helper";
 
-export const FieldItem = ({field}: { field: FieldItemType | null }) => {
+export const FieldItem = ({field, height}: { field: FieldItemType | null, height: number }) => {
 
     const [currentDate, setCurrentDate] = useState(() => new Date());
 
@@ -27,7 +27,7 @@ export const FieldItem = ({field}: { field: FieldItemType | null }) => {
     const isReady = field.status === FieldStatusEnum.ready || progress >= 100;
 
     return (
-        <div className={"field-item"}>
+        <div className={"field-item"} style={{height: `${height-30}px`}}>
             <img src={field.img} alt="" className={"field-item-icon"}/>
             <div className={"field-item-info"}>
                 <span className={"field-seed-title"}>{field.title}</span>

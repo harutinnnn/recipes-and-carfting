@@ -207,7 +207,7 @@ input:-webkit-autofill:active {
 
 .fields-list .field-item {
     border: solid 1px var(--gray);
-    height: calc(1080px / 3);
+    /*height: calc(1080px / 3);*/
     border-radius: 10px;
     background-color: var(--dark-gray);
     position: relative;
@@ -220,6 +220,7 @@ input:-webkit-autofill:active {
 
     }
 }
+
 .fields-list .field-item.empty {
     background-image: url("/public/images/field-ground.png");
     background-size: calc(100% - 40px);
@@ -290,4 +291,15 @@ input:-webkit-autofill:active {
     top: 0;
     height: 100%;
     opacity: 0.3;
+}
+
+
+@media (max-width: 768px) {
+    .fields-list {
+        grid-template-columns: 1fr !important;
+    }
+
+    .fields-list .field-item {
+        height: calc(100vw - 50px) !important;
+    }
 }
