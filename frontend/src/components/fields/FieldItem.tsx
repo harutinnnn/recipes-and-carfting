@@ -15,9 +15,9 @@ export const FieldItem = ({field, height}: { field: FieldItemType | null, height
 
     if (field === null) {
         return (
-            <div className={"field-item empty"}>
+            <div className={"field-item empty"} style={{height: `${height - 30}px`}}>
                 <div className={"field-seed-new"}>
-                    <button className={"btn green"}>Seed</button>
+                    <button className={"btn green rounded"}>Seed</button>
                 </div>
             </div>
         );
@@ -27,7 +27,7 @@ export const FieldItem = ({field, height}: { field: FieldItemType | null, height
     const isReady = field.status === FieldStatusEnum.ready || progress >= 100;
 
     return (
-        <div className={"field-item"} style={{height: `${height-30}px`}}>
+        <div className={"field-item"} style={{height: `${height - 30}px`}}>
             <img src={field.img} alt="" className={"field-item-icon"}/>
             <div className={"field-item-info"}>
                 <span className={"field-seed-title"}>{field.title}</span>
@@ -37,6 +37,11 @@ export const FieldItem = ({field, height}: { field: FieldItemType | null, height
                 <span className={'field-seed-progress'}
                       style={{width: `${progress}%`}}></span>
             </div>
+            {isReady &&
+                <div className={"field-collect"}>
+                    <button className={"btn green rounded"}> Click to collect</button>
+                </div>
+            }
         </div>
     )
 }

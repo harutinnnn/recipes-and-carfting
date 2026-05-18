@@ -12,11 +12,15 @@ import {ForgotSchema, LoginSchema, TokenParamSchema, UpdateUserSchema, UserSchem
 import {ZodError} from "zod";
 import {forgotPassword} from "../modules/mail/templates/forgotPassword.template";
 import {generatePassword} from "../helpers/password.helper";
+import {AuthService} from "../services/auth.service";
 
 export class AuthController {
 
 
+    private authService: AuthService;
+
     constructor(private context: AppContext) {
+        this.authService = new AuthService(context.db);
     }
 
 
@@ -64,68 +68,8 @@ export class AuthController {
     register = async (req: Request, res: Response) => {
 
         try {
-            const validatedData = UserSchema.parse(req.body);
 
-            // Check if user already exists
-            const [existingUser] = await this.context.db.select().from(users).where(eq(users.email, validatedData.email));
-            if (existingUser) {
-                return res.status(201).json({error: "User with this email already exists"});
-            }
-
-            this.context.db.transaction(async (trx: any) => {
-
-
-                const hashedPassword = await bcrypt.hash(validatedData.password, 10);
-                const activationHash = randomUUID();
-
-                await trx.insert(users).values({
-                    name: validatedData.name,
-                    nickname: validatedData.nickname,
-                    email: validatedData.email,
-                    gender: validatedData.gender,
-                    password: hashedPassword,
-                    status: Statuses.NOT_ACTIVATED,
-                    activationToken: activationHash,
-                    gameMoney: 0,
-                    realMoney: 0,
-                    level: 1,
-                    xp: 0,
-                });
-
-                const [newUser] = await trx.select().from(users).where(eq(users.email, validatedData.email));
-
-
-                const payload = {id: newUser.id, email: newUser.email};
-                const token = jwt.sign(payload, process.env.JWT_SECRET || "default_super_secret_key", {expiresIn: "15m"});
-                const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET || "default_refresh_secret", {expiresIn: "7d"});
-
-                // Save refresh token to db
-                await trx.update(users).set({refreshToken}).where(eq(users.id, newUser.id));
-
-
-                const activationLink = process.env.API_URL + '/api/auth/activation/' + activationHash;
-                //Send email activation
-                await mailService.sendMail({
-                    to: validatedData.email,
-                    subject: "Activation mail",
-                    html: newMemberTemplate(validatedData.name, activationLink),
-                });
-
-
-                res.status(200).json({
-                    token,
-                    refreshToken,
-                    user: {id: newUser.id, name: newUser.name, email: newUser.email}
-                });
-
-            }).catch((err: any) => {
-                console.log(err);
-                res.status(500).json({error: "Failed to register user"});
-
-            })
-
-            // Fetch newly created user
-
+            return await this.authService.register(req, res);
 
         } catch (error) {
             console.log(error);

@@ -13,6 +13,7 @@ import {
 import {number} from "zod";
 import {relations} from "drizzle-orm/relations";
 import {Statuses} from "../enums/Statuses";
+import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 
 export const itemCategory = pgEnum("item_category", [
     "seed",
@@ -59,10 +60,10 @@ export const seeds = pgTable("seeds", {
     id: serial("id").primaryKey(),
     title: text("title").notNull().unique(),
     price: integer("price").default(0),
+    img: text("img").notNull(),
     givesExperience: integer("givesExperience").default(0),
     availableLevel: integer("availableLevel").default(1),
 });
-
 
 export const userSeeds = pgTable("userSeeds", {
     id: serial("id").primaryKey(),
@@ -79,8 +80,6 @@ export const userSeeds = pgTable("userSeeds", {
     count: integer("count").default(0),
 });
 
-
-/* Relations */
 export const userSeedsRelation = relations(users,
     ({many}) => (
         {
@@ -89,6 +88,22 @@ export const userSeedsRelation = relations(users,
     ))
 
 
+export const fieldStatus = pgEnum("status", FieldStatusEnum);
+
+export const userFields = pgTable("userFields", {
+    id: serial("id").primaryKey(),
+    userId: serial("userId").notNull()
+        .references(() => users.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    seedId: integer("seedId")
+        .references(() => seeds.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    status: fieldStatus('status').notNull().default(FieldStatusEnum.pending),
+});
 
 
 

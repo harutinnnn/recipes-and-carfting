@@ -113,12 +113,6 @@ const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
                         </div>
 
                         <div className="input-row">
-                            <label htmlFor="nickname">Nickname</label>
-                            <Field type="text" id={"nickname"} name={"nickname"} placeholder="Your nickname"/>
-                            <ErrorMessage name="nickname" component="div" className="error-msg"/>
-                        </div>
-
-                        <div className="input-row">
                             <label htmlFor="email">Gender</label>
                             <Field as="select" name="gender" id="gender">
 

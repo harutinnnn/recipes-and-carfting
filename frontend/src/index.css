@@ -27,7 +27,6 @@
     --green-light: #b0ffc9;
     --green: #558f66;
     --green-dark: #235e35;
-    --green-dark-op: rgba(35, 94, 53, 0.47);
     --green-darkest: #163e22;
 
 
@@ -36,10 +35,14 @@
     --error-color: #c85757;
 
 
-
     --warn-lightest-color: #fff3cd;
     --warn-light-color: #ffecb5;
     --warn-color: #664d03;
+
+
+    --green-dark-op: rgba(35, 94, 53, 0.47);
+    --light-gray-op: rgba(71, 71, 71, 0.3);
+    --warn-light-color-op: rgba(255, 236, 181, 0.3);
 }
 
 * {
