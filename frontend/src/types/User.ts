@@ -10,4 +10,5 @@ export type User = {
     realMoney: number;
     level: number,
     xp: number;
+    isAdmin: boolean;
 };

@@ -15,10 +15,13 @@ export const AuthPage = () => {
     const [authType, setAuthType] = useState<AuthViewType>("login");
 
     useEffect(() => {
+
         if (user) {
-
+            if (user?.isAdmin) {
+                navigate("/admin", {replace: true});
+            } else {
                 navigate("/", {replace: true});
-
+            }
         }
     }, [user, navigate]);
 
