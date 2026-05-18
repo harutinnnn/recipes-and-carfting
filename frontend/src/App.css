@@ -67,12 +67,18 @@ input:-webkit-autofill:active {
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+    padding: 0 20px;
 
     &:hover {
         background-color: var(--light-gray);
         border-color: var(--light-gray);
         color: var(--lightest-gray);
     }
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: no-drop;
 }
 
 .btn.green {
@@ -182,11 +188,20 @@ input:-webkit-autofill:active {
     border: solid 1px var(--warn-light-color);
 }
 
+.container-title {
+    color: var(--green-lightest);
+}
+
+.fields-container {
+    margin-top: 30px;
+    padding: 0 20px;
+}
+
 .fields-list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
-    padding: 0 20px;
+
     margin-top: 20px;
 }
 
@@ -196,6 +211,34 @@ input:-webkit-autofill:active {
     border-radius: 10px;
     background-color: var(--dark-gray);
     position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all .3s;
+
+    &:hover {
+        scale: 1.05;
+
+    }
+}
+.fields-list .field-item.empty {
+    background-image: url("/public/images/field-ground.png");
+    background-size: calc(100% - 40px);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+.fields-list .field-item .field-seed-new {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    border-radius: 10px;
+    background-color: var(--green-dark-op);
 }
 
 .fields-list .field-item .field-item-icon {
@@ -207,9 +250,15 @@ input:-webkit-autofill:active {
     transform: translate(-50%, -50%);
     border-radius: 10px;
     z-index: 1;
+    transition: all .3s;
 }
 
 .fields-list .field-item .field-item-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
     z-index: 1;
     position: absolute;
     bottom: 30px;
@@ -219,7 +268,26 @@ input:-webkit-autofill:active {
     font-weight: bold;
     background-color: var(--dark-gray);
     color: var(--green-light);
-    padding: 10px 20px;
+    padding: 10px 15px;
     width: calc(100% - 60px);
     border: solid 1px var(--light-gray);
+}
+
+.fields-list .field-item .field-item-info .field-seed-status {
+    margin-left: auto;
+    color: var(--error-color);
+    background-color: var(--error-lightest-color);
+    font-size: 14px;
+    padding: 3px 7px;
+    border-radius: 15px;
+}
+
+.fields-list .field-item .field-item-info .field-seed-progress {
+
+    background-color: var(--green-light);
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    opacity: 0.3;
 }

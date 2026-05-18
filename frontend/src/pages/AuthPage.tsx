@@ -1,7 +1,7 @@
 import '../components/auth/Auth.css'
 import {LoginComponent} from "@/components/auth/LoginComponent";
 import {useEffect, useState} from "react";
-import {RegisterComponent} from "@/components/auth/RegisterComponent";
+import RegisterComponent from "@/components/auth/RegisterComponent";
 import type {AuthViewType} from "@/types/auth";
 import {ForgotComponent} from "@/components/auth/ForgotComponent";
 import {useAuth} from "@/hooks/useAuth";

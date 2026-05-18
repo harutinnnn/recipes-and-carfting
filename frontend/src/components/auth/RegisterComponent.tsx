@@ -8,7 +8,7 @@ import {useState} from "react";
 import {Alerts} from "@/components/Alerts";
 import {AlertEnums} from "@/enums/AlertEnums";
 
-export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
+const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
 
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -21,7 +21,10 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
         gender: Yup.mixed<GenderEnum>()
             .oneOf(Object.values(GenderEnum), "Invalid gender")
             .required("Gender is required"),
-        password: Yup.string().min(6, "Minimum 6 characters").required("Required")
+        password: Yup.string().min(6, "Minimum 6 characters").required("Required"),
+        passwordConf: Yup.string()
+            .oneOf([Yup.ref("password")], "Password and Password confirmation does not match!")
+            .required("Required"),
     });
 
     type RegisterFormValues = {
@@ -30,9 +33,12 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
         nickname: string;
         gender: GenderEnum.MALE,
         password: string;
+        passwordConf: string;
     };
 
     const handleRegisterSubmit = async (values: RegisterFormValues) => {
+
+        setDisableBtn(true)
 
         const email = values.email;
         const name = values.name;
@@ -59,6 +65,7 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
             values.nickname = ''
             values.email = ''
             values.password = ''
+            values.passwordConf = ''
         }
         setDisableBtn(false);
 
@@ -87,6 +94,7 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
                     nickname: "",
                     gender: GenderEnum.MALE,
                     password: "",
+                    passwordConf: "",
                 }}
                         onSubmit={handleRegisterSubmit}
                         validationSchema={registerSchema}
@@ -111,7 +119,7 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
                         </div>
 
                         <div className="input-row">
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">Gender</label>
                             <Field as="select" name="gender" id="gender">
 
                                 <option value={GenderEnum.MALE}
@@ -137,8 +145,16 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
                             <Field type="password" id={"password"} name={"password"}/>
                             <ErrorMessage name="password" component="div" className="error-msg"/>
                         </div>
+
                         <div className="input-row">
-                            <button className={"btn green"}>Register</button>
+                            <label htmlFor="passwordConf">Password confirmation</label>
+                            <Field type="password" id={"passwordConf"} name={"passwordConf"}/>
+                            <ErrorMessage name="passwordConf" component="div" className="error-msg"/>
+                        </div>
+
+
+                        <div className="input-row">
+                            <button className={"btn green"} disabled={disableBtn}>Register</button>
                         </div>
 
                     </Form>
@@ -164,3 +180,4 @@ export const RegisterComponent = ({cb}: { cb: AuthViewCallback }) => {
         </div>
     )
 }
+export default RegisterComponent
