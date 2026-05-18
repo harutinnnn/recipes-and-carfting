@@ -1,0 +1,5 @@
+export enum IngredientTypesEnum {
+    VEGETABLE = "VEGETABLE",
+    ANIMAL_PRODUCT = "ANIMAL_PRODUCT",
+    MADE_IN_FACTORY = "MADE_IN_FACTORY",
+}

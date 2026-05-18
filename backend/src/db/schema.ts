@@ -6,6 +6,7 @@ import {
     pgTable,
     serial,
     uniqueIndex,
+    unique,
     text,
     timestamp,
     uuid
@@ -14,6 +15,7 @@ import {number} from "zod";
 import {relations} from "drizzle-orm/relations";
 import {Statuses} from "../enums/Statuses";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
+import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 
 export const itemCategory = pgEnum("item_category", [
     "seed",
@@ -63,6 +65,7 @@ export const seeds = pgTable("seeds", {
     img: text("img").notNull(),
     givesExperience: integer("givesExperience").default(0),
     availableLevel: integer("availableLevel").default(1),
+    xpOnCollect: integer("xpOnCollect").default(0),
 });
 
 export const userSeeds = pgTable("userSeeds", {
@@ -106,5 +109,51 @@ export const userFields = pgTable("userFields", {
 });
 
 
+export const factories = pgTable("factories", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull().unique(),
+    price: integer("price").notNull(),
+    img: text("img").notNull(),
+    availableFromLevel: integer("availableFromLevel").default(1),
+});
+
+export const recipes = pgTable("recipes", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull().unique(),
+    price: integer("price").default(0),
+    img: text("img").notNull(),
+    availableFromLevel: integer("availableFromLevel").default(1),
+    xpOnCollect: integer("xpOnCollect").default(0),
+});
+
+export const ingredientType = pgEnum("ingredientType", IngredientTypesEnum);
+
+export const recipesIngredients = pgTable("recipesIngredients", {
+        id: serial("id").primaryKey(),
+        recipesId: integer("recipesId")
+            .references(() => recipes.id, {
+                onDelete: "cascade",
+                onUpdate: "cascade",
+            }),
+        ingredientId: integer("ingredientId").notNull(),
+        ingredientType: ingredientType('ingredientType').notNull(),
+        ingredientNeeds: integer("ingredientNeeds").notNull(),
+        price: integer("price").default(0),
+        img: text("img").notNull(),
+        availableFromLevel: integer("availableFromLevel").default(1),
+        xpOnCollect: integer("xpOnCollect").default(0),
+    },
+    (table) => [
+        unique("skills_name_company_unique").on(
+            table.recipesId,
+            table.ingredientId
+        ),
+    ]);
 
 
+export const recipesIngredientsRelation = relations(recipes,
+    ({many}) => (
+        {
+            ingredients: many(recipesIngredients)
+        }
+    ))
