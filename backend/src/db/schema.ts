@@ -63,8 +63,10 @@ export const seeds = pgTable("seeds", {
     title: text("title").notNull().unique(),
     price: integer("price").default(0),
     icon: text("icon"),
+    productImage: text("productImage"),
     availableLevel: integer("availableLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
+    collectionTime:integer("collection_time").default(0),
 });
 
 export const userSeeds = pgTable("userSeeds", {
@@ -105,6 +107,8 @@ export const userFields = pgTable("userFields", {
             onUpdate: "cascade",
         }),
     status: fieldStatus('status').notNull().default(FieldStatusEnum.pending),
+    startedAt: timestamp("started_at"),
+    finishedAt: timestamp("finished_at"),
 });
 
 

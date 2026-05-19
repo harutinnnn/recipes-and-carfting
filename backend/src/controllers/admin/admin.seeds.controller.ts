@@ -4,6 +4,9 @@ import {seeds} from "../../db/schema";
 import {eq} from "drizzle-orm";
 import path from "node:path";
 import {removeFile, uploadFile} from "../../helpers/file.helper";
+import type {db} from "../../db";
+
+type SeedsTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 export class AdminSeedsController {
 
@@ -45,19 +48,14 @@ export class AdminSeedsController {
 
     editSeed = async (req: Request, res: Response) => {
 
-
-        if (!req?.user?.isAdmin) {
-            throw Error("Wrong user");
-        }
-
         try {
 
-            const {id, title, price, availableLevel, xpOnCollect} = req.body;
+            const {id, title, price, availableLevel, xpOnCollect, collectionTime} = req.body;
 
             const tmpId = !isNaN(id) ? id : 0;
 
 
-            this.context.db.transaction(async (trx: any) => {
+            await this.context.db.transaction(async (trx: SeedsTransaction) => {
 
                 const [seed] = await trx.select().from(seeds).where(eq(seeds.id, parseInt(tmpId)));
 
@@ -65,22 +63,50 @@ export class AdminSeedsController {
                 if (seed?.id) {
 
                     let iconUrl = seed.icon;
+                    let productImageUrl = seed.productImage;
 
 
-                    if (req?.file) {
+                    const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
+                    const icon = files?.icon?.[0];
+                    const productImage = files?.productImage?.[0];
+
+                    if (icon) {
 
                         const rootDir = process.cwd();
-                        await removeFile(path.join(rootDir, iconUrl));
+                        if (iconUrl) {
+                            await removeFile(path.join(rootDir, iconUrl));
+                        }
 
-                        iconUrl = await uploadFile(req.file, 'seeds');
+                        const uploadedIcon = await uploadFile(icon, 'seeds');
+                        if (uploadedIcon instanceof Error) {
+                            throw uploadedIcon;
+                        }
+                        iconUrl = uploadedIcon;
+                    }
+
+                    if (productImage) {
+
+                        const rootDir = process.cwd();
+
+                        if (productImageUrl) {
+                            await removeFile(path.join(rootDir, productImageUrl));
+                        }
+
+                        const uploadedProductImage = await uploadFile(productImage, 'seeds');
+                        if (uploadedProductImage instanceof Error) {
+                            throw uploadedProductImage;
+                        }
+                        productImageUrl = uploadedProductImage;
                     }
 
                     await trx.update(seeds).set({
                         title: title,
                         price: price,
-                        availableLevel: availableLevel,
-                        xpOnCollect: xpOnCollect,
-                        icon: iconUrl
+                        availableLevel: Number(availableLevel),
+                        xpOnCollect: Number(xpOnCollect),
+                        collectionTime: Number(collectionTime),
+                        icon: iconUrl,
+                        productImage: productImageUrl
                     }).where(eq(seeds.id, seed.id));
 
 
@@ -93,24 +119,46 @@ export class AdminSeedsController {
                     const [tmpSeed] = await trx.insert(seeds).values({
                         title: title,
                         icon: "",
+                        productImage: "",
                         price: Number(price),
                         availableLevel: Number(availableLevel),
                         xpOnCollect: Number(xpOnCollect),
+                        collectionTime: Number(collectionTime),
 
                     }).returning({id: seeds.id});
                     const insertId = tmpSeed?.id;
 
 
-                    if (req?.file) {
+                    const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
+                    const icon = files?.icon?.[0];
+                    const productImage = files?.productImage?.[0];
+                    let iconUrl = "";
+                    let productImageUrl = "";
 
-                        const fileUrl = await uploadFile(req.file, 'seeds')
+                    if (icon) {
 
-                       const a = await trx.update(seeds).set({
-                            icon: fileUrl,
+                        const uploadedIcon = await uploadFile(icon, 'seeds');
+                        if (uploadedIcon instanceof Error) {
+                            throw uploadedIcon;
+                        }
+                        iconUrl = uploadedIcon;
+                    }
+
+                    if (productImage) {
+
+                        const uploadedProductImage = await uploadFile(productImage, 'seeds');
+                        if (uploadedProductImage instanceof Error) {
+                            throw uploadedProductImage;
+                        }
+                        productImageUrl = uploadedProductImage;
+                    }
+
+                    if (iconUrl || productImageUrl) {
+
+                        await trx.update(seeds).set({
+                            icon: iconUrl,
+                            productImage: productImageUrl,
                         }).where(eq(seeds.id, insertId));
-
-                        console.log(a)
-
                     }
 
 
@@ -121,14 +169,13 @@ export class AdminSeedsController {
 
                 }
 
-            }).catch((err: any) => {
+            }).catch((err: unknown) => {
                 console.log(err)
-                return new Error("Failed to register user")
+                res.status(400).json({message: "Failed to create seed"});
             })
 
 
         } catch (err) {
-            console.log(err);
             res.status(400).json({message: "Invalid token"});
         }
     }

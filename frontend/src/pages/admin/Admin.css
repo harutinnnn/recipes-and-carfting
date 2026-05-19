@@ -106,3 +106,42 @@ ul.admin-sidebar-nav {
 .items-list table tr td div.quick-actions .delete {
     stroke: var(--error-color);
 }
+
+.img-list-thumbnail {
+    height: 100px;
+    border-radius: 15px;
+    /*border: 1px solid var(--light-gray);*/
+
+    box-shadow: 0px 0px 2px 0px rgba(198, 198, 198, 0.62);
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(198, 198, 198, 0.62);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(198, 198, 198, 0.62);
+    background-color: var(--white);
+}
+
+.ReactModal__Content {
+    background-color: var(--dark-gray) !important;
+}
+
+.form-container {
+    position: relative;
+    /*margin-top: 15px;*/
+}
+
+.ReactModal__Content {
+    padding-right: 5px !important;
+}
+.ReactModal__Content .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.modal-container {
+    width: 100vw;
+    max-width: 600px;
+    margin-top: 20px;
+    height: calc(100vh - 100px);
+    padding-right: 10px;
+    overflow: auto;
+
+}

@@ -5,7 +5,7 @@
     margin-bottom: 25px;
 }
 
-.input-row input,
+.input-row input:not([type="file"]),
 .input-row select {
     height: 50px;
     background-color: var(--gark-1-gray);

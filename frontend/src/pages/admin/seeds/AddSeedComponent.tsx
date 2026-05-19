@@ -5,6 +5,8 @@ import {Loader} from "lucide-react";
 import * as Yup from "yup";
 import {AxiosError} from "axios";
 import {ErrorMessage, Field, Form, Formik} from "formik";
+import {Alerts} from "@/components/Alerts";
+import {AlertEnums} from "@/enums/AlertEnums";
 
 export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
@@ -36,7 +38,8 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         title: Yup.string().required("Title is required"),
         price: Yup.number().required("Number is required"),
         availableLevel: Yup.number().required("Available Level is required"),
-        xpOnCollect: Yup.number().required("XP On Collect")
+        xpOnCollect: Yup.number().required("XP On Collect"),
+        collectionTime: Yup.number().required("Collection Time")
     });
 
 
@@ -50,6 +53,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         const price = values.price;
         const availableLevel = values.availableLevel;
         const xpOnCollect = values.xpOnCollect;
+        const collectionTime = values.collectionTime;
 
         const formData = new FormData();
         formData.append('id', id.toString())
@@ -57,9 +61,14 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         formData.append("price", price.toString());
         formData.append("availableLevel", availableLevel.toString());
         formData.append("xpOnCollect", xpOnCollect.toString());
+        formData.append("collectionTime", collectionTime.toString());
 
         if (values.icon) {
             formData.append("icon", values.icon);
+        }
+
+        if (values.productImage) {
+            formData.append("productImage", values.productImage);
         }
 
         try {
@@ -100,7 +109,15 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
     }
     return (
         <div className={"form-container"}>
-            <div className={"form-container"}>
+
+            {error && <Alerts text={error} type={AlertEnums.danger} cb={() => {
+                setError(null)
+            }}/>}
+            {success && <Alerts text={success} type={AlertEnums.success} cb={() => {
+                setSuccess(null)
+            }}/>}
+
+            <div>
 
                 <Formik
                     enableReinitialize
@@ -109,7 +126,9 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                         price: seed?.price || 0,
                         availableLevel: seed?.availableLevel || 0,
                         xpOnCollect: seed?.xpOnCollect || 0,
-                        icon: null
+                        collectionTime: seed?.collectionTime || 0,
+                        icon: null,
+                        productImage: null
                     }}
                     validationSchema={validateSchema}
                     onSubmit={handleSubmit}
@@ -130,15 +149,21 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                             </div>
 
                             <div className="input-row">
-                                <label htmlFor="availableLevel">Price</label>
-                                <Field type="number" id="availableLevel" name="availableLevel" placeholder="availableLevel"/>
+                                <label htmlFor="availableLevel">Available Level</label>
+                                <Field type="number" id="availableLevel" name="availableLevel" placeholder="Available Level"/>
                                 <ErrorMessage name="availableLevel" component="div" className="error-msg"/>
                             </div>
 
                             <div className="input-row">
-                                <label htmlFor="xpOnCollect">Price</label>
-                                <Field type="number" id="xpOnCollect" name="xpOnCollect" placeholder="xpOnCollect"/>
+                                <label htmlFor="xpOnCollect">XP On Collect</label>
+                                <Field type="number" id="xpOnCollect" name="xpOnCollect" placeholder="XP On Collect"/>
                                 <ErrorMessage name="xpOnCollect" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="collectionTime">Collection Time seconds</label>
+                                <Field type="number" id="collectionTime" name="collectionTime" placeholder="Collection Time"/>
+                                <ErrorMessage name="collectionTime" component="div" className="error-msg"/>
                             </div>
 
                             <div className="input-row">
@@ -161,8 +186,30 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                 </div>
                             }
 
+
                             <div className="input-row">
-                                <button type={'submit'} className={'btn btn-green'}>Save</button>
+                                <label htmlFor="productImage">Product image</label>
+                                <input
+                                    type="file"
+                                    id="productImage"
+                                    name="productImage"
+                                    onChange={(e) => {
+                                        setFieldValue("productImage", e.currentTarget.files?.[0]);
+                                    }}
+                                />
+                                <ErrorMessage name="productImage" component="div" className="error-msg"/>
+                            </div>
+
+                            {seed?.productImage &&
+                                <div className={'data-image thumbnail m-b-2'}>
+                                    <img src={import.meta.env.VITE_API_URL + seed?.productImage} alt=""
+                                         style={{width: '200px'}}/>
+                                </div>
+                            }
+
+
+                            <div className="input-row">
+                                <button type={'submit'} disabled={disableBtn} className={'btn btn-green'}>Save</button>
                             </div>
 
 

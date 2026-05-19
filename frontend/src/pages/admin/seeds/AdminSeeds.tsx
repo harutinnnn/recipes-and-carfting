@@ -47,6 +47,7 @@ export const AdminSeeds = () => {
                         <th>Title</th>
                         <th>icon</th>
                         <th>Price</th>
+                        <th>Collection Time</th>
                         <th>Available from level</th>
                         <th>Actions</th>
                     </tr>
@@ -57,9 +58,10 @@ export const AdminSeeds = () => {
                             <tr>
                                 <td>{seed.title}</td>
                                 <td>
-                                    <img src={import.meta.env.VITE_API_URL + seed.icon} alt=""/>
+                                    <img src={import.meta.env.VITE_API_URL + seed.icon} alt="" className={"img-list-thumbnail"}/>
                                 </td>
                                 <td>{seed.price}</td>
+                                <td>{seed.collectionTime} Seconds</td>
                                 <td>{seed.availableLevel}</td>
                                 <td>
                                     <div className="quick-actions">

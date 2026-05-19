@@ -1,10 +1,17 @@
 import {FieldStatusEnum} from "@/enums/FieldStatusEnum";
+import {SeedType} from "@/types/UserSeedsType";
 
 export type FieldItemType = {
     id: number;
-    img: string,
+    userId: number,
+    seedId: number,
     status: FieldStatusEnum,
-    title: string,
-    startDate: Date | string,
-    endDate: Date | string,
+    startedAt: Date | string,
+    finishedAt: Date | string,
 }
+
+export type FieldItemTypeJoin = {
+    userFields: FieldItemType,
+    seeds: SeedType,
+}
+

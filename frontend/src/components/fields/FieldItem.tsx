@@ -1,9 +1,9 @@
-import {FieldItemType} from "@/types/FieldItemType";
+import { FieldItemTypeJoin} from "@/types/FieldItemType";
 import {FieldStatusEnum} from "@/enums/FieldStatusEnum";
 import {useEffect, useState} from "react";
 import {getDateProgressPercentage} from "@/helpers/date.helper";
 
-export const FieldItem = ({field, height}: { field: FieldItemType | null, height: number }) => {
+export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, height: number }) => {
 
     const [currentDate, setCurrentDate] = useState(() => new Date());
 
@@ -13,7 +13,7 @@ export const FieldItem = ({field, height}: { field: FieldItemType | null, height
     }, [])
 
 
-    if (field === null) {
+    if (field && field.userFields?.seedId === null) {
         return (
             <div className={"field-item empty"} style={{height: `${height - 30}px`}}>
                 <div className={"field-seed-new"}>
@@ -23,14 +23,21 @@ export const FieldItem = ({field, height}: { field: FieldItemType | null, height
         );
     }
 
-    const progress = getDateProgressPercentage(field.startDate, field.endDate, currentDate);
-    const isReady = field.status === FieldStatusEnum.ready || progress >= 100;
+    if (!field) {
+        return null;
+    }
+
+    let progress = 0;
+    if (field.userFields?.startedAt && field.userFields?.finishedAt) {
+        progress = getDateProgressPercentage(field.userFields.startedAt, field.userFields.finishedAt, currentDate);
+    }
+    const isReady = field.userFields?.status === FieldStatusEnum.ready || progress >= 100;
 
     return (
         <div className={"field-item"} style={{height: `${height - 30}px`}}>
-            <img src={field.img} alt="" className={"field-item-icon"}/>
+            <img src={import.meta.env.VITE_API_URL + field?.seeds?.productImage} alt="" className={"field-item-icon"}/>
             <div className={"field-item-info"}>
-                <span className={"field-seed-title"}>{field.title}</span>
+                <span className={"field-seed-title"}>{field?.seeds?.title}</span>
                 {isReady &&
                     <span className={"field-seed-status"}>Ready</span>
                 }
