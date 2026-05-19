@@ -150,7 +150,8 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
                             <div className="input-row">
                                 <label htmlFor="availableLevel">Available Level</label>
-                                <Field type="number" id="availableLevel" name="availableLevel" placeholder="Available Level"/>
+                                <Field type="number" id="availableLevel" name="availableLevel"
+                                       placeholder="Available Level"/>
                                 <ErrorMessage name="availableLevel" component="div" className="error-msg"/>
                             </div>
 
@@ -162,51 +163,56 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
                             <div className="input-row">
                                 <label htmlFor="collectionTime">Collection Time seconds</label>
-                                <Field type="number" id="collectionTime" name="collectionTime" placeholder="Collection Time"/>
+                                <Field type="number" id="collectionTime" name="collectionTime"
+                                       placeholder="Collection Time"/>
                                 <ErrorMessage name="collectionTime" component="div" className="error-msg"/>
                             </div>
 
-                            <div className="input-row">
-                                <label htmlFor="icon">Icon</label>
-                                <input
-                                    type="file"
-                                    id="icon"
-                                    name="icon"
-                                    onChange={(e) => {
-                                        setFieldValue("icon", e.currentTarget.files?.[0]);
-                                    }}
-                                />
-                                <ErrorMessage name="icon" component="div" className="error-msg"/>
+                            <div className={"image-container"}>
+                                <div className="input-row">
+                                    <label htmlFor="icon">Icon</label>
+                                    <input
+                                        type="file"
+                                        id="icon"
+                                        name="icon"
+                                        onChange={(e) => {
+                                            setFieldValue("icon", e.currentTarget.files?.[0]);
+                                        }}
+                                    />
+                                    <ErrorMessage name="icon" component="div" className="error-msg"/>
+                                </div>
+
+                                {seed?.icon &&
+                                    <div className={'data-image thumbnail m-b-2'}>
+                                        <img src={import.meta.env.VITE_API_URL + seed?.icon} alt=""
+                                             style={{width: '200px'}}/>
+                                    </div>
+                                }
                             </div>
 
-                            {seed?.icon &&
-                                <div className={'data-image thumbnail m-b-2'}>
-                                    <img src={import.meta.env.VITE_API_URL + seed?.icon} alt=""
-                                         style={{width: '200px'}}/>
+
+                            <div className={"image-container"}>
+                                <div className="input-row">
+                                    <label htmlFor="productImage">Product image</label>
+                                    <input
+                                        type="file"
+                                        id="productImage"
+                                        name="productImage"
+                                        onChange={(e) => {
+                                            setFieldValue("productImage", e.currentTarget.files?.[0]);
+                                        }}
+                                    />
+                                    <ErrorMessage name="productImage" component="div" className="error-msg"/>
                                 </div>
-                            }
 
+                                {seed?.productImage &&
+                                    <div className={'data-image thumbnail m-b-2'}>
+                                        <img src={import.meta.env.VITE_API_URL + seed?.productImage} alt=""
+                                             style={{width: '200px'}}/>
+                                    </div>
+                                }
 
-                            <div className="input-row">
-                                <label htmlFor="productImage">Product image</label>
-                                <input
-                                    type="file"
-                                    id="productImage"
-                                    name="productImage"
-                                    onChange={(e) => {
-                                        setFieldValue("productImage", e.currentTarget.files?.[0]);
-                                    }}
-                                />
-                                <ErrorMessage name="productImage" component="div" className="error-msg"/>
                             </div>
-
-                            {seed?.productImage &&
-                                <div className={'data-image thumbnail m-b-2'}>
-                                    <img src={import.meta.env.VITE_API_URL + seed?.productImage} alt=""
-                                         style={{width: '200px'}}/>
-                                </div>
-                            }
-
 
                             <div className="input-row">
                                 <button type={'submit'} disabled={disableBtn} className={'btn btn-green'}>Save</button>

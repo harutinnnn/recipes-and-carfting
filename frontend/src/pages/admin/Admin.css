@@ -130,6 +130,7 @@ ul.admin-sidebar-nav {
 .ReactModal__Content {
     padding-right: 5px !important;
 }
+
 .ReactModal__Content .close-modal {
     position: absolute;
     top: 10px;
@@ -138,10 +139,17 @@ ul.admin-sidebar-nav {
 
 .modal-container {
     width: 100vw;
-    max-width: 600px;
+    max-width: 800px;
     margin-top: 20px;
     height: calc(100vh - 100px);
     padding-right: 10px;
     overflow: auto;
+}
 
+.image-container {
+    padding: 10px;
+    background-color: var(--gray);
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 2px dashed var(--light-gray);
 }

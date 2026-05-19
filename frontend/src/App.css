@@ -8,12 +8,13 @@
 .input-row input:not([type="file"]),
 .input-row select {
     height: 50px;
-    background-color: var(--gark-1-gray);
+    background-color: var(--light-gray);
     color: var(--lightest-gray);
     border: none;
     outline: none;
     padding: 0 10px;
     font-size: 16px;
+    border-radius: 5px;
 }
 
 .input-row select,
