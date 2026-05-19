@@ -37,7 +37,7 @@ export const mainRouter = (context: AppContext) => {
     );
 
 
-    router.get(
+    router.post(
         "/set-user-seed",
         authenticateJWT,
         validate(UserSeedSchema),

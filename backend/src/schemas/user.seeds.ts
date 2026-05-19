@@ -10,7 +10,7 @@ export const SeedsSchema = z.object({
 
 
 export const UserSeedSchema = z.object({
-    fieldId: z.coerce.number({error: "Price is required"}),
-    fieldId: z.coerce.number({error: "Price is required"}),
+    fieldId: z.coerce.number({error: "Field is required"}),
+    seedId: z.coerce.number({error: "Seed is required"}),
 });
 

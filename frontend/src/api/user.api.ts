@@ -6,7 +6,7 @@ export type SetUserSeedType = {
 };
 
 export async function setUserSeed(data: any): Promise<SetUserSeedType> {
-    const response = await api.get<SetUserSeedType>("/set-user-seed", data);
+    const response = await api.post<SetUserSeedType>("/set-user-seed", data);
     return response.data;
 }
 

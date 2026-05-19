@@ -66,7 +66,7 @@ export const seeds = pgTable("seeds", {
     productImage: text("productImage"),
     availableLevel: integer("availableLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
-    collectionTime:integer("collection_time").default(0),
+    collectionTime: integer("collection_time").default(0),
 });
 
 export const userSeeds = pgTable("userSeeds", {
@@ -92,7 +92,11 @@ export const userSeedsRelation = relations(users,
     ))
 
 
-export const fieldStatus = pgEnum("status", FieldStatusEnum);
+export const fieldStatus = pgEnum("fieldStatus", [
+    FieldStatusEnum.pending,
+    FieldStatusEnum.in_progress,
+    FieldStatusEnum.ready,
+]);
 
 export const userFields = pgTable("userFields", {
     id: serial("id").primaryKey(),
@@ -106,7 +110,7 @@ export const userFields = pgTable("userFields", {
             onDelete: "cascade",
             onUpdate: "cascade",
         }),
-    status: fieldStatus('status').notNull().default(FieldStatusEnum.pending),
+    status: fieldStatus('fieldStatus').notNull().default(FieldStatusEnum.pending),
     startedAt: timestamp("started_at"),
     finishedAt: timestamp("finished_at"),
 });
