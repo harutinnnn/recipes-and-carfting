@@ -354,6 +354,22 @@ input:-webkit-autofill:active {
     gap: 20px;
 }
 
+.user-seeds-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.user-seed {
+    padding: 20px;
+    background-color: var(--gray);
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.user-seed .user-seed-icon{
+
+}
 
 @media (max-width: 600px) {
     .fields-list {

@@ -7,3 +7,10 @@ export const SeedsSchema = z.object({
     xpOnCollect: z.coerce.number({error: "XP On Collect is required"}),
     collectionTime: z.coerce.number({error: "Collection Time is required"}),
 });
+
+
+export const UserSeedSchema = z.object({
+    fieldId: z.coerce.number({error: "Price is required"}),
+    fieldId: z.coerce.number({error: "Price is required"}),
+});
+

@@ -1,6 +1,6 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
-import {seeds, userFields} from "../db/schema";
+import {seeds, userFields, userSeeds} from "../db/schema";
 import {eq} from "drizzle-orm";
 
 export class MainController {
@@ -53,6 +53,57 @@ export class MainController {
                 res.json({
                     items: items,
                 });
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            console.error(err);
+            res.status(400).json({message: "Invalid token"});
+        }
+    }
+
+    userSeeds = async (req: Request, res: Response) => {
+        try {
+
+            if (req.user?.id) {
+
+                const items =
+                    await this.context.db.select()
+                        .from(userSeeds)
+                        .where(eq(userSeeds.userId, req.user?.id))
+                        .leftJoin(seeds, eq(seeds.id, userSeeds.seedId));
+
+                res.json({
+                    items: items,
+                });
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            console.error(err);
+            res.status(400).json({message: "Invalid token"});
+        }
+    }
+
+    setUserSeeds = async (req: Request, res: Response) => {
+        try {
+
+            const {fieldId,fieldId} = req.body
+
+            if (req.user?.id) {
+
+
+                await this.context.db.transaction(async (trx: SeedsTransaction) => {
+
+
+                }).catch((err: unknown) => {
+                    console.log(err)
+                    res.status(400).json({message: "Failed to create seed"});
+                })
+
+
             } else {
                 res.status(500).json({error: "Failed fetch user"});
             }

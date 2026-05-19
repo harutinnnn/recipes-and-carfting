@@ -18,3 +18,17 @@ export type SeedFileType = {
     xpOnCollect: number;
     collectionTime: number;
 }
+
+
+export type UserSeedsType = {
+    id: number,
+    userId: number,
+    seedId: number,
+    count: number
+}
+
+export  type UserSeedTypeJoin = {
+    userSeeds: UserSeedsType
+    seeds: SeedType
+}
+

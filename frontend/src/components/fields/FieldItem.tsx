@@ -1,11 +1,17 @@
-import { FieldItemTypeJoin} from "@/types/FieldItemType";
+import {FieldItemTypeJoin} from "@/types/FieldItemType";
 import {FieldStatusEnum} from "@/enums/FieldStatusEnum";
 import {useEffect, useState} from "react";
 import {getDateProgressPercentage} from "@/helpers/date.helper";
+import {AddSeedComponent} from "@/pages/admin/seeds/AddSeedComponent";
+import {MyModal} from "@/components/admin/MyModal";
+import {UserSeeds} from "@/components/fields/UserSeedsComponent";
+import {UserSeedTypeJoin} from "@/types/UserSeedsType";
+import {setUserSeed} from "@/api/user.api";
 
 export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, height: number }) => {
 
     const [currentDate, setCurrentDate] = useState(() => new Date());
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => setCurrentDate(new Date()), 1000)
@@ -13,12 +19,41 @@ export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, he
     }, [])
 
 
+    const handleGetSeeds = () => {
+        setIsOpenModal(true);
+    }
+
+
+    const handleCLoseModal = () => {
+        console.log("handleCLoseModal");
+    }
+
+
+    const handleSetSeeds = async (fieldId: number, seedId: number) => {
+
+        const data = await setUserSeed({
+            fieldId: fieldId, seedId: seedId,
+        })
+
+    }
+
     if (field && field.userFields?.seedId === null) {
         return (
             <div className={"field-item empty"} style={{height: `${height - 30}px`}}>
                 <div className={"field-seed-new"}>
-                    <button className={"btn green rounded"}>Seed</button>
+                    <button className={"btn green rounded"} onClick={() => handleGetSeeds()}>Seed</button>
                 </div>
+
+                <MyModal
+                    afterOpen={() => {
+                        handleCLoseModal();
+                    }} openModal={isOpenModal}
+                    closedModal={() => setIsOpenModal(false)}
+                    contend={<UserSeeds cb={async (userSeed: UserSeedTypeJoin) => {
+                        await handleSetSeeds(field.userFields.id, userSeed.seeds.id)
+                        setIsOpenModal(false)
+                    }}/>}
+                />
             </div>
         );
     }
