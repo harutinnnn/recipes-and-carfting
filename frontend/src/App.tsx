@@ -10,7 +10,7 @@ import {AuthPage} from "@/pages/AuthPage";
 import ProtectedAdminLayout from "@/layouts/ProtectedAdminLayout";
 import {useAuth} from "@/hooks/useAuth";
 import {AdminMain} from "@/pages/admin/admin.main";
-import {AdminSeeds} from "@/pages/admin/AdminSeeds";
+import {AdminSeeds} from "@/pages/admin/seeds/AdminSeeds";
 
 function App() {
 

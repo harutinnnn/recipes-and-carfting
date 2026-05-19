@@ -1,0 +1,176 @@
+import {useEffect, useState} from "react";
+import {SeedFileType, SeedType} from "@/types/UserSeedsType";
+import {getSeed, saveSeedRequest} from "@/api/admin/admin.seeds.api";
+import {Loader} from "lucide-react";
+import * as Yup from "yup";
+import {AxiosError} from "axios";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+
+export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
+
+
+    const [seed, setSeed] = useState<SeedType | undefined>(undefined);
+
+    const [loading, setLoading] = useState(true);
+
+    const handleGetSeed = async (id: number) => {
+        setLoading(true);
+        const seeditem = await getSeed(id);
+        setSeed(seeditem.item);
+        setLoading(false);
+    };
+
+    useEffect(() => {
+
+        (async () => {
+            await handleGetSeed(id);
+        })()
+
+    }, [id, setSeed]);
+
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+    const [disableBtn, setDisableBtn] = useState(false);
+
+    const validateSchema = Yup.object({
+        title: Yup.string().required("Title is required"),
+        price: Yup.number().required("Number is required"),
+        availableLevel: Yup.number().required("Available Level is required"),
+        xpOnCollect: Yup.number().required("XP On Collect")
+    });
+
+
+    const handleSubmit = async (values: SeedFileType) => {
+
+        setError(null);
+        setDisableBtn(true);
+
+
+        const title = values.title;
+        const price = values.price;
+        const availableLevel = values.availableLevel;
+        const xpOnCollect = values.xpOnCollect;
+
+        const formData = new FormData();
+        formData.append('id', id.toString())
+        formData.append("title", title);
+        formData.append("price", price.toString());
+        formData.append("availableLevel", availableLevel.toString());
+        formData.append("xpOnCollect", xpOnCollect.toString());
+
+        if (values.icon) {
+            formData.append("icon", values.icon);
+        }
+
+        try {
+
+            const data = await saveSeedRequest(formData);
+
+            if ("error" in data) {
+                setError(data.error as string);
+            } else {
+
+                values.title = ""
+            }
+            cb()
+            setDisableBtn(false);
+
+            const product = await handleGetSeed(id);
+
+            if (product !== undefined) {
+                setSeed(product);
+            }
+
+        } catch (err) {
+
+            setDisableBtn(false);
+
+            if (err instanceof AxiosError) {
+
+                setError(err.response?.data?.message || "Login failed");
+
+            }
+
+        }
+    };
+
+
+    if (loading) {
+        return <Loader/>;
+    }
+    return (
+        <div className={"form-container"}>
+            <div className={"form-container"}>
+
+                <Formik
+                    enableReinitialize
+                    initialValues={{
+                        title: seed?.title || "",
+                        price: seed?.price || 0,
+                        availableLevel: seed?.availableLevel || 0,
+                        xpOnCollect: seed?.xpOnCollect || 0,
+                        icon: null
+                    }}
+                    validationSchema={validateSchema}
+                    onSubmit={handleSubmit}
+                >
+                    {({setFieldValue}) => (
+                        <Form>
+
+                            <div className="input-row">
+                                <label htmlFor="title">Title</label>
+                                <Field type="text" id="title" name="title" placeholder="Title"/>
+                                <ErrorMessage name="title" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="price">Price</label>
+                                <Field type="number" id="price" name="price" placeholder="Price"/>
+                                <ErrorMessage name="price" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="availableLevel">Price</label>
+                                <Field type="number" id="availableLevel" name="availableLevel" placeholder="availableLevel"/>
+                                <ErrorMessage name="availableLevel" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="xpOnCollect">Price</label>
+                                <Field type="number" id="xpOnCollect" name="xpOnCollect" placeholder="xpOnCollect"/>
+                                <ErrorMessage name="xpOnCollect" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="icon">Icon</label>
+                                <input
+                                    type="file"
+                                    id="icon"
+                                    name="icon"
+                                    onChange={(e) => {
+                                        setFieldValue("icon", e.currentTarget.files?.[0]);
+                                    }}
+                                />
+                                <ErrorMessage name="icon" component="div" className="error-msg"/>
+                            </div>
+
+                            {seed?.icon &&
+                                <div className={'data-image thumbnail m-b-2'}>
+                                    <img src={import.meta.env.VITE_API_URL + seed?.icon} alt=""
+                                         style={{width: '200px'}}/>
+                                </div>
+                            }
+
+                            <div className="input-row">
+                                <button type={'submit'} className={'btn btn-green'}>Save</button>
+                            </div>
+
+
+                        </Form>
+                    )}
+                </Formik>
+
+            </div>
+        </div>
+    )
+}

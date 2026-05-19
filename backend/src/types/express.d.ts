@@ -10,6 +10,7 @@ global {
         interface User {
             id: number;
             email: string;
+            isAdmin:boolean,
             gameMoney: number,
             realMoney: number,
             xp: number,
@@ -17,7 +18,6 @@ global {
             avatarUrl: string,
             name: string;
             nickname: string;
-            role: string;
         }
 
         interface Request {

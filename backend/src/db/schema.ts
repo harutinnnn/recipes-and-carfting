@@ -62,8 +62,7 @@ export const seeds = pgTable("seeds", {
     id: serial("id").primaryKey(),
     title: text("title").notNull().unique(),
     price: integer("price").default(0),
-    img: text("img").notNull(),
-    givesExperience: integer("givesExperience").default(0),
+    icon: text("icon"),
     availableLevel: integer("availableLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
 });
