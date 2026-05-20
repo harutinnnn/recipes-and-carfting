@@ -138,7 +138,8 @@ export class MainController {
 
                     //TODO some thing wrong with dates
                     const now = new Date();
-                    const endDate = new Date(now.getSeconds() + Number(seed.collectionTime));
+                    const endDate = new Date(Date.now() + Number(seed.collectionTime) * 1000);
+                    ;
 
                     console.log(now)
                     console.log(endDate)
@@ -185,6 +186,69 @@ export class MainController {
         } catch (err) {
             console.error(err);
             res.status(400).json({message: "Invalid token"});
+        }
+    }
+
+    CollectUserField = async (req: Request, res: Response) => {
+        try {
+
+
+            const {id} = req.params
+
+
+            if (req.user?.id) {
+
+
+                await this.context.db.transaction(async (trx: SeedsTransaction) => {
+
+
+                    const [userField] = await trx.select().from(userFields).where(
+                        and(
+                            eq(userFields.id, Number(id)),
+                            eq(userFields.userId, Number(req.user?.id)))
+                    )
+
+                    if (userField) {
+
+                        if (userField.status === FieldStatusEnum.in_progress) {
+
+
+                            const now = new Date();
+
+                            if (userField.finishedAt !== null && ((userField.finishedAt - now) / 1000)){
+
+                            }else{
+
+                            }
+
+
+                                return res.json({
+                                    field: userField,
+                                });
+
+                        } else {
+
+                            return res.status(400).json({message: "The field not ready yet!"});
+                        }
+
+
+                    } else {
+                        return res.status(400).json({message: "Wrong field"});
+                    }
+
+                }).catch((err: unknown) => {
+                    console.error(err);
+                    return res.status(400).json({message: "Failed to create seed"});
+                })
+
+
+            } else {
+                return res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            console.error(err);
+            return res.status(400).json({message: "Invalid token"});
         }
     }
 

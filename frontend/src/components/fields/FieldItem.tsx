@@ -2,13 +2,12 @@ import {FieldItemTypeJoin} from "@/types/FieldItemType";
 import {FieldStatusEnum} from "@/enums/FieldStatusEnum";
 import {useEffect, useState} from "react";
 import {getDateProgressPercentage} from "@/helpers/date.helper";
-import {AddSeedComponent} from "@/pages/admin/seeds/AddSeedComponent";
 import {MyModal} from "@/components/admin/MyModal";
 import {UserSeeds} from "@/components/fields/UserSeedsComponent";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
-import {setUserSeed} from "@/api/user.api";
+import {collectUserField, setUserSeed} from "@/api/user.api";
 
-export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, height: number }) => {
+export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null, height: number, cb: () => void }) => {
 
     const [currentDate, setCurrentDate] = useState(() => new Date());
     const [isOpenModal, setIsOpenModal] = useState(false);
@@ -31,9 +30,8 @@ export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, he
 
     const handleSetSeeds = async (fieldId: number, seedId: number) => {
 
-        const data = await setUserSeed({
-            fieldId: fieldId, seedId: seedId,
-        })
+        await setUserSeed({fieldId: fieldId, seedId: seedId})
+        cb()
 
 
     }
@@ -64,10 +62,18 @@ export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, he
     }
 
     let progress = 0;
+
     if (field.userFields?.startedAt && field.userFields?.finishedAt) {
         progress = getDateProgressPercentage(field.userFields.startedAt, field.userFields.finishedAt, currentDate);
     }
     const isReady = field.userFields?.status === FieldStatusEnum.ready || progress >= 100;
+
+    const collectFromField = async (field: FieldItemTypeJoin) => {
+
+        const userFieldData = await collectUserField(field.userFields.id);
+        console.log(userFieldData)
+
+    }
 
     return (
         <div className={"field-item"} style={{height: `${height - 30}px`}}>
@@ -82,7 +88,8 @@ export const FieldItem = ({field, height}: { field: FieldItemTypeJoin | null, he
             </div>
             {isReady &&
                 <div className={"field-collect"}>
-                    <button className={"btn green rounded"}> Click to collect</button>
+                    <button className={"btn green rounded"} onClick={() => collectFromField(field)}> Click to collect
+                    </button>
                 </div>
             }
         </div>

@@ -6,8 +6,6 @@ export const Header = () => {
 
     const {user} = useAuth()
 
-    console.log(JSON.stringify(user, null, 2))
-
     return (
         <header>
 

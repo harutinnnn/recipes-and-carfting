@@ -2,8 +2,9 @@ import {Router} from 'express';
 import {AppContext} from "../types/app.context.type";
 import {MainController} from "../controllers/main.controller";
 import {authenticateJWT} from "../middlewares/auth";
-import {validate} from "../middlewares/validate";
+import {validate, validateParams} from "../middlewares/validate";
 import {UserSeedSchema} from "../schemas/user.seeds";
+import {QueryParamId} from "../schemas/main.schema";
 
 export const mainRouter = (context: AppContext) => {
 
@@ -42,6 +43,12 @@ export const mainRouter = (context: AppContext) => {
         authenticateJWT,
         validate(UserSeedSchema),
         mainController.setUserSeeds
+    );
+    router.get(
+        "/collect-user-field/:id",
+        authenticateJWT,
+        validateParams(QueryParamId),
+        mainController.CollectUserField
     );
 
     return router

@@ -32,12 +32,16 @@ export const MainPage = () => {
             // const seeds = await getSeedsFront()
             // console.log(seeds)
 
-            const userFields = await getUserFieldsJoin()
-            setFields(userFields.items)
+            await getUserFields()
         })()
     }, [setFields]);
 
     const [fieldsCount] = useState<number>(4);
+
+    const getUserFields = async () => {
+        const userFields = await getUserFieldsJoin()
+        setFields(userFields.items)
+    }
 
     return (
 
@@ -49,7 +53,8 @@ export const MainPage = () => {
 
                 <div className={"fields-list"}>
 
-                    {fields.map(field => <FieldItem field={field} key={field.userFields.id} height={width / 3}/>)}
+                    {fields.map(field => <FieldItem field={field} key={field.userFields.id} height={width / 3}
+                                                    cb={() => getUserFields()}/>)}
 
                     <div className={"field-item"}>
 

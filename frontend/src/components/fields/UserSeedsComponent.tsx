@@ -1,9 +1,8 @@
 import {useEffect, useState} from "react";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
-import {getSeeds} from "@/api/admin/admin.seeds.api";
 import {getUserSeeds} from "@/api/main.api";
 
-export const UserSeeds = ({cb}: { cb: (userSeed: UserSeedTypeJoin) => UserSeedTypeJoin }) => {
+export const UserSeeds = ({cb}: { cb: (userSeed: UserSeedTypeJoin) => void }) => {
 
 
     const [userSeeds, setUserSeeds] = useState<UserSeedTypeJoin[]>([])

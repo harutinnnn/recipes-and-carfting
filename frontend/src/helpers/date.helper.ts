@@ -7,12 +7,14 @@ export const datePlusSomeTime = (date: Date, seconds: number) => {
 }
 
 
-const parseLocalDate = (date: Date | string) => {
-    if (typeof date === 'string') {
-        return new Date(date.replace('Z', ''));
+const parseDateTimestamp = (date: Date | string) => {
+    const timestamp = date instanceof Date ? date.getTime() : new Date(date).getTime();
+
+    if (Number.isNaN(timestamp)) {
+        throw new Error(`Invalid date: ${date}`);
     }
 
-    return new Date(date);
+    return timestamp;
 };
 
 export const getDateProgressPercentage = (
@@ -20,9 +22,9 @@ export const getDateProgressPercentage = (
     endDate: Date | string,
     currentDate = new Date()
 ) => {
-    const start = parseLocalDate(startDate).getTime();
-    const end = parseLocalDate(endDate).getTime();
-    const current = parseLocalDate(currentDate).getTime();
+    const start = parseDateTimestamp(startDate);
+    const end = parseDateTimestamp(endDate);
+    const current = parseDateTimestamp(currentDate);
 
     const total = end - start;
     const passed = current - start;
