@@ -370,8 +370,24 @@ input:-webkit-autofill:active {
     position: relative;
 }
 
-.user-seed .user-seed-icon{
+.user-seed .user-seed-icon {
 
+}
+
+.react-tabs__tab:focus:after {
+    background: var(--dark-gray) !important;
+    bottom: -5px !important;
+}
+
+.react-tabs__tab {
+    color: var(--lightest-gray) !important;
+}
+
+.react-tabs__tab--selected {
+    background: var(--dark-gray) !important;
+    border-color: var(--lightest-gray) !important;
+    color: var(--green-light) !important;
+    font-weight: bold;
 }
 
 @media (max-width: 800px) {
@@ -379,11 +395,13 @@ input:-webkit-autofill:active {
         width: calc(100% - 20px);
         height: calc(100% - 20px);
     }
-    .fields-list .field-item.empty{
+
+    .fields-list .field-item.empty {
         background-size: calc(100% - 20px);
     }
 
 }
+
 @media (max-width: 600px) {
     .fields-list {
         grid-template-columns: 1fr !important;
@@ -393,7 +411,8 @@ input:-webkit-autofill:active {
         width: calc(100% - 40px);
         height: calc(100% - 40px);
     }
-    .fields-list .field-item.empty{
+
+    .fields-list .field-item.empty {
         background-size: calc(100% - 40px);
     }
 

@@ -30,11 +30,16 @@ export const mainRouter = (context: AppContext) => {
     );
 
 
-
     router.get(
         "/user-seeds",
         authenticateJWT,
         mainController.userSeeds
+    );
+
+    router.get(
+        "/user-products",
+        authenticateJWT,
+        mainController.userProducts
     );
 
 
@@ -44,6 +49,7 @@ export const mainRouter = (context: AppContext) => {
         validate(UserSeedSchema),
         mainController.setUserSeeds
     );
+
     router.get(
         "/collect-user-field/:id",
         authenticateJWT,

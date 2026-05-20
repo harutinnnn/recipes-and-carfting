@@ -94,6 +94,29 @@ export class MainController {
         }
     }
 
+    userProducts = async (req: Request, res: Response) => {
+        try {
+
+            if (req.user?.id) {
+
+                const items =
+                    await this.context.db.select()
+                        .from(userProducts)
+                        .where(eq(userProducts.userId, req.user?.id))
+                        .leftJoin(seeds, eq(seeds.id, userProducts.seedId));
+
+                res.json({
+                    items: items,
+                });
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            res.status(400).json({message: "Invalid token"});
+        }
+    }
+
     setUserSeeds = async (req: Request, res: Response) => {
         try {
 

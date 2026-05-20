@@ -1,11 +1,21 @@
 import './Header.css'
 import {useAuth} from "@/hooks/useAuth";
 import {getPercent} from "@/helpers/user.progress.helper";
+import {MyModal} from "@/components/admin/MyModal";
+import {AddSeedComponent} from "@/pages/admin/seeds/AddSeedComponent";
+import {useState} from "react";
+import {UserInventoryComponent} from "@/components/UserInventoryComponent";
 
 export const Header = () => {
 
-
     const {user} = useAuth()
+
+    const [isOpenModal, setIsOpenModal] = useState(false);
+
+
+    const handleCLoseModal = () => {
+        console.log("handleCLoseModal");
+    }
 
     return (
         <header>
@@ -20,7 +30,7 @@ export const Header = () => {
                     LVL {user?.level ?? 1}
                 </div>
 
-                <div className={"user-inventory-icon"}>
+                <div className={"user-inventory-icon"} onClick={() => setIsOpenModal(true)}>
                     <img src="/public/images/icons/inventory-256.png" alt=""/>
                 </div>
 
@@ -53,6 +63,13 @@ export const Header = () => {
                      style={{width: `${getPercent(Number(user?.xp), Number(user?.nextLevelXP))}%`}}></div>
             </div>
 
+            <MyModal
+                afterOpen={() => {
+                    handleCLoseModal();
+                }} openModal={isOpenModal}
+                closedModal={() => setIsOpenModal(false)}
+                contend={ <UserInventoryComponent cb={() => {}}/>}
+            />
         </header>
     )
 }
