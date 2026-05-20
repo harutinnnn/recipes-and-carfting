@@ -6,6 +6,7 @@ export const SeedsSchema = z.object({
     availableLevel: z.coerce.number({error: "Available Level is required"}),
     xpOnCollect: z.coerce.number({error: "XP On Collect is required"}),
     collectionTime: z.coerce.number({error: "Collection Time is required"}),
+    takeEnergyCollect: z.coerce.number({error: "Take Energy Collect"}),
 });
 
 

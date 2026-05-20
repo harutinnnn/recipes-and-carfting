@@ -6,11 +6,13 @@ import {MyModal} from "@/components/admin/MyModal";
 import {UserSeeds} from "@/components/fields/UserSeedsComponent";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {collectUserField, setUserSeed} from "@/api/user.api";
+import {useAuth} from "@/hooks/useAuth";
 
 export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null, height: number, cb: () => void }) => {
 
     const [currentDate, setCurrentDate] = useState(() => new Date());
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const {refreshUser} = useAuth();
 
     useEffect(() => {
         const interval = setInterval(() => setCurrentDate(new Date()), 1000)
@@ -70,8 +72,8 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
 
     const collectFromField = async (field: FieldItemTypeJoin) => {
 
-        const userFieldData = await collectUserField(field.userFields.id);
-        console.log(userFieldData)
+        await collectUserField(field.userFields.id);
+        await refreshUser();
 
     }
 

@@ -1,27 +1,19 @@
-import {NextFunction, Request, Response} from "express";
+import {Request, Response} from "express";
 import bcrypt from "bcrypt";
 import {randomUUID} from "node:crypto";
-import {Gender} from "../enums/Gender";
 import {userFields, users} from "../db/schema";
 import {Statuses} from "../enums/Statuses";
 import {eq} from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import {mailService} from "../modules/mail/mail.service";
 import {newMemberTemplate} from "../modules/mail/templates/newMember.template";
-import {AppContext} from "../types/app.context.type";
 import {UserSchema} from "../schemas/user.schema";
 import {db} from "../db";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
+import {DbTransaction} from "../types/db.types";
+import {UserService} from "./user.service";
 
 type DB = typeof db;
-
-type RegisterValidateDataType = {
-    name: string,
-    nickname: string,
-    email: string,
-    gender: Gender,
-    password: string,
-}
 
 export class AuthService {
 
@@ -33,6 +25,8 @@ export class AuthService {
 
         try {
 
+            const userService = new UserService();
+
             const validatedData = UserSchema.parse(req.body);
 
             const [existingUser] = await db.select().from(users).where(eq(users.email, validatedData.email));
@@ -41,7 +35,7 @@ export class AuthService {
             }
 
 
-            this.db.transaction(async (trx: any) => {
+            await this.db.transaction(async (trx: DbTransaction) => {
 
                 const hashedPassword = await bcrypt.hash(validatedData.password, 10);
                 const activationHash = randomUUID();
@@ -51,23 +45,21 @@ export class AuthService {
                     name: validatedData.name,
                     nickname: validatedData.nickname,
                     email: validatedData.email,
-                    gender: validatedData.gender,
                     password: hashedPassword,
                     status: Statuses.NOT_ACTIVATED,
                     activationToken: activationHash,
-                    gameMoney: process.env.DEFF_USER_MONEY,
+                    gameMoney: Number(process.env.DEFF_USER_MONEY ?? 0),
                     realMoney: 0,
                     level: 1,
                     xp: 0,
+                    nextLevelXP: userService.userUpToNextLvlByPercent(1),
+                    energy: 100
                 });
 
                 const [newUser] = await trx.select().from(users).where(eq(users.email, validatedData.email));
 
                 const maxRows: number = Number(process.env.DEFF_USER_FIELDS || 1);
                 const fieldRows = [];
-
-
-                console.log('maxRows', maxRows)
 
                 for (let i = 0; i < maxRows; i++) {
 
@@ -106,7 +98,7 @@ export class AuthService {
                     user: {id: newUser.id, name: newUser.name, email: newUser.email}
                 });
 
-            }).catch((err: any) => {
+            }).catch((err: unknown) => {
                 console.log(err)
                 return new Error("Failed to register user")
             })

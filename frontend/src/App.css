@@ -348,6 +348,7 @@ input:-webkit-autofill:active {
     top: 0;
     height: 100%;
     opacity: 0.3;
+    transition: all .3s;
 }
 
 .grid-2 {

@@ -14,10 +14,13 @@ global {
             gameMoney: number,
             realMoney: number,
             xp: number,
+            nextLevelXP: number,
             level: number,
+            energy: number,
             avatarUrl: string,
             name: string;
             nickname: string;
+            takeEnergyCollect: number;
         }
 
         interface Request {

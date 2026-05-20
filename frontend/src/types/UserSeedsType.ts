@@ -8,6 +8,7 @@ export  type SeedType = {
     availableLevel: number;
     xpOnCollect: number;
     collectionTime: number;
+    takeEnergyCollect: number;
 }
 
 export type SeedFileType = {
@@ -19,6 +20,7 @@ export type SeedFileType = {
     availableLevel: number;
     xpOnCollect: number;
     collectionTime: number;
+    takeEnergyCollect: number;
 }
 
 

@@ -48,7 +48,7 @@ export const mainRouter = (context: AppContext) => {
         "/collect-user-field/:id",
         authenticateJWT,
         validateParams(QueryParamId),
-        mainController.CollectUserField
+        mainController.collectUserField
     );
 
     return router

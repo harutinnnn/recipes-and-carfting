@@ -36,8 +36,6 @@ export const MainPage = () => {
         })()
     }, [setFields]);
 
-    const [fieldsCount] = useState<number>(4);
-
     const getUserFields = async () => {
         const userFields = await getUserFieldsJoin()
         setFields(userFields.items)
@@ -48,8 +46,7 @@ export const MainPage = () => {
         <div>
 
             <div className="fields-container" ref={elementRef}>
-                <h2 className={"container-title"}>Fields
-                    ({fieldsCount}/{(fieldsCount - (fieldsCount - fields.length))})</h2>
+                <h2 className={"container-title"}>Fields</h2>
 
                 <div className={"fields-list"}>
 

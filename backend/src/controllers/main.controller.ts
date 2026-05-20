@@ -5,8 +5,9 @@ import {and, asc, eq} from "drizzle-orm";
 import type {db} from "../db";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
-
-type SeedsTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+import {DbTransaction} from "../types/db.types";
+import {UserService} from "../services/user.service";
+import {number} from "zod";
 
 
 export class MainController {
@@ -104,7 +105,7 @@ export class MainController {
             if (req.user?.id) {
 
 
-                await this.context.db.transaction(async (trx: SeedsTransaction) => {
+                await this.context.db.transaction(async (trx: DbTransaction) => {
 
 
                     const [seed] = await trx.select().from(seeds).where(eq(
@@ -135,8 +136,17 @@ export class MainController {
                     );
 
 
-                    if (!userSeedsData || (userSeedsData.count && userSeedsData.count <= 0)) {
+                    console.log('userSeedsData.count', userSeedsData.count)
+
+                    if (!userSeedsData) {
                         return res.status(400).json({message: "You dont have enough seeds!"});
+                    }
+
+                    if (userSeedsData) {
+
+                        if (Number(userSeedsData?.count) < 1) {
+                            return res.status(400).json({message: "You dont have enough seeds!"});
+                        }
                     }
 
 
@@ -177,7 +187,6 @@ export class MainController {
                     res.status(400).json({message: "Failed to create seed"});
                 })
 
-
             } else {
                 res.status(500).json({error: "Failed fetch user"});
             }
@@ -188,18 +197,14 @@ export class MainController {
         }
     }
 
-    CollectUserField = async (req: Request, res: Response) => {
+    collectUserField = async (req: Request, res: Response) => {
         try {
-
 
             const {id} = req.params
 
-
             if (req.user?.id) {
 
-
-                await this.context.db.transaction(async (trx: SeedsTransaction) => {
-
+                await this.context.db.transaction(async (trx: DbTransaction) => {
 
                     const [userField] = await trx.select().from(userFields).where(
                         and(
@@ -222,6 +227,11 @@ export class MainController {
                                 return res.status(400).json({message: "Can not find seed from current field!"});
                             }
 
+
+                            if (req.user?.energy && seed?.takeEnergyCollect && req.user?.energy < seed?.takeEnergyCollect) {
+                                return res.status(400).json({message: "You dont have enough energy please. restore energy!"});
+                            }
+
                             const now = new Date();
 
                             //TODO check after
@@ -241,9 +251,29 @@ export class MainController {
                                     )
                                 );
 
+                                const userService = new UserService();
+
+                                let xpAdd = Number(req.user?.xp) + Number(seed.xpOnCollect);
+                                const tmpNewLevel = Number(req.user?.level) + 1;
+                                const nextLevelXp = userService.userUpToNextLvlByPercent(Number(req.user?.level))
+                                let newNextLevelXp = nextLevelXp;
+
+                                let newLevel: number = Number(req.user?.level);
+
+                                if (xpAdd >= nextLevelXp) {
+                                    xpAdd = 0;
+                                    newLevel = tmpNewLevel;
+                                    newNextLevelXp = userService.userUpToNextLvlByPercent(Number(req.user?.level) + 1);
+                                }
+
+                                // console.log('newLevel', newLevel)
+                                // console.log('nextLevelXp', nextLevelXp)
 
                                 await trx.update(users).set({
-                                    xp: Number(req.user?.xp) + Number(seed.xpOnCollect),
+                                    xp: xpAdd,
+                                    level: newLevel,
+                                    nextLevelXP: newNextLevelXp,
+                                    energy: Number(req.user?.energy) - Number(seed.takeEnergyCollect),
                                 }).where(
                                     eq(users.id, Number(req.user?.id))
                                 )

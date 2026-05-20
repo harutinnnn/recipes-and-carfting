@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { getMeRequest, refreshRequest } from "@/api/auth.api";
 import { AxiosError } from "axios";
 import { AuthContext } from "./AuthContext";
@@ -20,10 +20,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         clearAuthStorage();
         setUser(null);
-    };
+    }, []);
+
+    const refreshUser = useCallback(async () => {
+        const userFromApi = await getMeRequest();
+        setUser(userFromApi);
+        return userFromApi;
+    }, []);
 
     useEffect(() => {
         async function restoreSession() {
@@ -31,8 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 const token = getAccessToken();
                 if (!token) return setLoading(false);
 
-                const userFromApi = await getMeRequest();
-                setUser(userFromApi);
+                await refreshUser();
             } catch (err) {
 
                 if (err instanceof AxiosError) {
@@ -51,8 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                             refreshToken: refresh.refreshToken ?? refreshToken,
                         });
 
-                        const userFromApi = await getMeRequest();
-                        setUser(userFromApi);
+                        await refreshUser();
                     } else logout();
                 } else {
                     logout();
@@ -63,15 +67,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         restoreSession();
-    }, []);
+    }, [logout, refreshUser]);
 
-    const login = (token: string, user: User) => {
+    const login = useCallback((token: string, user: User) => {
         setAuthTokens({ accessToken: token });
         localStorage.setItem("user", JSON.stringify(user));
         setUser(user);
-    };
+    }, []);
 
-    const value = useMemo(() => ({ user, loading, login, logout }), [user, loading]);
+    const value = useMemo(() => ({ user, loading, login, logout, refreshUser }), [user, loading, login, logout, refreshUser]);
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

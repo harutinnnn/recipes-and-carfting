@@ -1,12 +1,10 @@
 import {Request, Response} from "express";
 import {AppContext} from "../../types/app.context.type";
-import {seeds} from "../../db/schema";
-import {eq} from "drizzle-orm";
+import {seeds, userFields} from "../../db/schema";
+import {asc, eq} from "drizzle-orm";
 import path from "node:path";
 import {removeFile, uploadFile} from "../../helpers/file.helper";
-import type {db} from "../../db";
-
-type SeedsTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+import {DbTransaction} from "../../types/db.types";
 
 export class AdminSeedsController {
 
@@ -18,7 +16,9 @@ export class AdminSeedsController {
     index = async (req: Request, res: Response) => {
         try {
 
-            const items = await this.context.db.select().from(seeds);
+            const items = await this.context.db.select().from(seeds).orderBy(
+                asc(seeds.id)
+            );
 
             res.json({
                 items: items,
@@ -50,12 +50,12 @@ export class AdminSeedsController {
 
         try {
 
-            const {id, title, price, availableLevel, xpOnCollect, collectionTime} = req.body;
+            const {id, title, price, availableLevel, xpOnCollect, collectionTime,takeEnergyCollect} = req.body;
 
             const tmpId = !isNaN(id) ? id : 0;
 
 
-            await this.context.db.transaction(async (trx: SeedsTransaction) => {
+            await this.context.db.transaction(async (trx: DbTransaction) => {
 
                 const [seed] = await trx.select().from(seeds).where(eq(seeds.id, parseInt(tmpId)));
 
@@ -123,6 +123,7 @@ export class AdminSeedsController {
                         availableLevel: Number(availableLevel),
                         xpOnCollect: Number(xpOnCollect),
                         collectionTime: Number(collectionTime),
+                        takeEnergyCollect: Number(takeEnergyCollect),
                         icon: iconUrl,
                         productImage: productImageUrl,
                         readyProductImage: readyProductImageUrl
@@ -144,6 +145,7 @@ export class AdminSeedsController {
                         availableLevel: Number(availableLevel),
                         xpOnCollect: Number(xpOnCollect),
                         collectionTime: Number(collectionTime),
+                        takeEnergyCollect: Number(takeEnergyCollect),
 
                     }).returning({id: seeds.id});
                     const insertId = tmpSeed?.id;

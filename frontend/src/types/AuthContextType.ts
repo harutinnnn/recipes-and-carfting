@@ -5,4 +5,5 @@ export type AuthContextType = {
     loading: boolean;
     login: (token: string, user: User) => void;
     logout: () => void;
+    refreshUser: () => Promise<User | null>;
 };

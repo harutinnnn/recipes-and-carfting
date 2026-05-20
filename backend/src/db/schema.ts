@@ -43,10 +43,14 @@ export const userStatus = pgEnum("status", [Statuses.PENDING, Statuses.PUBLISHED
 export const users = pgTable("users", {
     id: serial("id").primaryKey(),
     email: text("email").notNull().unique(),
+    name: text("name").notNull(),
+    nickname: text("nickname").notNull(),
     gameMoney: integer("gameMoney").default(0),
     realMoney: integer("realMoney").default(0),
     xp: integer("xp").default(0),
+    nextLevelXP: integer("nextLevelXP").default(0),
     level: integer("level").default(1),
+    energy: integer("energy").default(100),
     googleId: text("google_id").unique(),
     avatarUrl: text("avatar_url"),
     status: userStatus('status',).notNull().default(Statuses.NOT_ACTIVATED),
@@ -67,6 +71,7 @@ export const seeds = pgTable("seeds", {
     readyProductImage: text("readyProductImage"),
     availableLevel: integer("availableLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
+    takeEnergyCollect: integer("takeEnergyCollect").default(0),
     collectionTime: integer("collection_time").default(0),
 });
 

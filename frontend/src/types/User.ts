@@ -10,5 +10,8 @@ export type User = {
     realMoney: number;
     level: number,
     xp: number;
+    nextLevelXP: number;
+    takeEnergyCollect: number;
+    energy: number;
     isAdmin: boolean;
 };

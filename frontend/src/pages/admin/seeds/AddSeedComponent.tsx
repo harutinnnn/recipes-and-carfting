@@ -39,7 +39,8 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         price: Yup.number().required("Number is required"),
         availableLevel: Yup.number().required("Available Level is required"),
         xpOnCollect: Yup.number().required("XP On Collect"),
-        collectionTime: Yup.number().required("Collection Time")
+        collectionTime: Yup.number().required("Collection Time"),
+        takeEnergyCollect: Yup.number().required("Collection Time")
     });
 
 
@@ -54,6 +55,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         const availableLevel = values.availableLevel;
         const xpOnCollect = values.xpOnCollect;
         const collectionTime = values.collectionTime;
+        const takeEnergyCollect = values.takeEnergyCollect;
 
         const formData = new FormData();
         formData.append('id', id.toString())
@@ -62,6 +64,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         formData.append("availableLevel", availableLevel.toString());
         formData.append("xpOnCollect", xpOnCollect.toString());
         formData.append("collectionTime", collectionTime.toString());
+        formData.append("takeEnergyCollect", takeEnergyCollect.toString());
 
         if (values.icon) {
             formData.append("icon", values.icon);
@@ -130,6 +133,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                         availableLevel: seed?.availableLevel || 0,
                         xpOnCollect: seed?.xpOnCollect || 0,
                         collectionTime: seed?.collectionTime || 0,
+                        takeEnergyCollect: seed?.takeEnergyCollect || 0,
                         icon: null,
                         productImage: null,
                         readyProductImage: null
@@ -170,6 +174,13 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                 <Field type="number" id="collectionTime" name="collectionTime"
                                        placeholder="Collection Time"/>
                                 <ErrorMessage name="collectionTime" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="takeEnergyCollect">Take Energy Collect</label>
+                                <Field type="number" id="takeEnergyCollect" name="takeEnergyCollect"
+                                       placeholder="Collection Time"/>
+                                <ErrorMessage name="takeEnergyCollect" component="div" className="error-msg"/>
                             </div>
 
                             <div className={"image-container"}>
