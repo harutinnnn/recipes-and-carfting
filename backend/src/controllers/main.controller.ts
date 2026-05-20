@@ -215,6 +215,7 @@ export class MainController {
 
                             const now = new Date();
 
+                            //TODO check after
                             if (userField.finishedAt !== null && ((userField.finishedAt - now) / 1000)){
 
                             }else{
