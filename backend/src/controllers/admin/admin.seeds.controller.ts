@@ -64,11 +64,13 @@ export class AdminSeedsController {
 
                     let iconUrl = seed.icon;
                     let productImageUrl = seed.productImage;
+                    let readyProductImageUrl = seed.readyProductImage;
 
 
                     const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
                     const icon = files?.icon?.[0];
                     const productImage = files?.productImage?.[0];
+                    const readyProductImage = files?.readyProductImage?.[0];
 
                     if (icon) {
 
@@ -99,6 +101,22 @@ export class AdminSeedsController {
                         productImageUrl = uploadedProductImage;
                     }
 
+
+                    if (readyProductImage) {
+
+                        const rootDir = process.cwd();
+
+                        if (readyProductImageUrl) {
+                            await removeFile(path.join(rootDir, readyProductImageUrl));
+                        }
+
+                        const uploadedReadyProductImage = await uploadFile(readyProductImage, 'seeds');
+                        if (uploadedReadyProductImage instanceof Error) {
+                            throw uploadedReadyProductImage;
+                        }
+                        readyProductImageUrl = uploadedReadyProductImage;
+                    }
+
                     await trx.update(seeds).set({
                         title: title,
                         price: price,
@@ -106,7 +124,8 @@ export class AdminSeedsController {
                         xpOnCollect: Number(xpOnCollect),
                         collectionTime: Number(collectionTime),
                         icon: iconUrl,
-                        productImage: productImageUrl
+                        productImage: productImageUrl,
+                        readyProductImage: readyProductImageUrl
                     }).where(eq(seeds.id, seed.id));
 
 
@@ -120,6 +139,7 @@ export class AdminSeedsController {
                         title: title,
                         icon: "",
                         productImage: "",
+                        readyProductImage: "",
                         price: Number(price),
                         availableLevel: Number(availableLevel),
                         xpOnCollect: Number(xpOnCollect),
@@ -132,8 +152,10 @@ export class AdminSeedsController {
                     const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
                     const icon = files?.icon?.[0];
                     const productImage = files?.productImage?.[0];
+                    const readyProductImage = files?.readyProductImage?.[0];
                     let iconUrl = "";
                     let productImageUrl = "";
+                    let readyProductImageUrl = "";
 
                     if (icon) {
 
@@ -153,11 +175,21 @@ export class AdminSeedsController {
                         productImageUrl = uploadedProductImage;
                     }
 
-                    if (iconUrl || productImageUrl) {
+                    if (readyProductImage) {
+
+                        const uploadedReadyProductImage = await uploadFile(readyProductImage, 'seeds');
+                        if (uploadedReadyProductImage instanceof Error) {
+                            throw uploadedReadyProductImage;
+                        }
+                        readyProductImageUrl = uploadedReadyProductImage;
+                    }
+
+                    if (iconUrl || productImageUrl || readyProductImageUrl) {
 
                         await trx.update(seeds).set({
                             icon: iconUrl,
                             productImage: productImageUrl,
+                            readyProductImage: readyProductImageUrl,
                         }).where(eq(seeds.id, insertId));
                     }
 

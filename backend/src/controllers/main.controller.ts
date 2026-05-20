@@ -1,9 +1,10 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
-import {seeds, userFields, userSeeds} from "../db/schema";
-import {and, eq} from "drizzle-orm";
+import {seeds, userFields, userProducts, users, userSeeds} from "../db/schema";
+import {and, asc, eq} from "drizzle-orm";
 import type {db} from "../db";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
+import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 
 type SeedsTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -15,7 +16,7 @@ export class MainController {
     }
 
 
-    index(req: Request, res: Response) {
+    index(_req: Request, res: Response) {
         try {
 
 
@@ -23,7 +24,7 @@ export class MainController {
                 message: 'Hello World',
             });
 
-        } catch (err) {
+        } catch (_err) {
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -53,11 +54,14 @@ export class MainController {
                     await this.context.db.select()
                         .from(userFields)
                         .where(eq(userFields.userId, req.user?.id))
-                        .leftJoin(seeds, eq(seeds.id, userFields.seedId));
+                        .leftJoin(seeds, eq(seeds.id, userFields.seedId)).orderBy(
+                            asc(userFields.id)
+                        );
 
                 res.json({
                     items: items,
                 });
+
             } else {
                 res.status(500).json({error: "Failed fetch user"});
             }
@@ -136,15 +140,10 @@ export class MainController {
                     }
 
 
-                    //TODO some thing wrong with dates
                     const now = new Date();
                     const endDate = new Date(Date.now() + Number(seed.collectionTime) * 1000);
-                    ;
 
-                    console.log(now)
-                    console.log(endDate)
-
-                    const seedUserField = await trx.update(userFields).set(
+                    await trx.update(userFields).set(
                         {
                             seedId: seedId,
                             status: FieldStatusEnum.in_progress,
@@ -158,7 +157,7 @@ export class MainController {
                         )
                     )
 
-                    const discountUserSeed = await trx.update(userSeeds).set(
+                    await trx.update(userSeeds).set(
                         {
                             count: Number(userSeedsData.count) - 1,
                         }
@@ -211,21 +210,78 @@ export class MainController {
                     if (userField) {
 
                         if (userField.status === FieldStatusEnum.in_progress) {
+                            if (userField.seedId === null) {
+                                return res.status(400).json({message: "Can not find seed from current field!"});
+                            }
 
+                            const [seed] = await trx.select().from(seeds).where(eq(
+                                seeds.id, userField.seedId
+                            ));
+
+                            if (!seed) {
+                                return res.status(400).json({message: "Can not find seed from current field!"});
+                            }
 
                             const now = new Date();
 
                             //TODO check after
-                            if (userField.finishedAt !== null && ((userField.finishedAt - now) / 1000)){
+                            if (userField.finishedAt !== null && ((userField.finishedAt.getTime() - now.getTime()) / 1000) <= 0) {
 
-                            }else{
+                                await trx.update(userFields).set(
+                                    {
+                                        seedId: null,
+                                        status: FieldStatusEnum.pending,
+                                        startedAt: null,
+                                        finishedAt: null,
+                                    }
+                                ).where(
+                                    and(
+                                        eq(userFields.userId, Number(req.user?.id)),
+                                        eq(userFields.id, Number(id)),
+                                    )
+                                );
 
+
+                                await trx.update(users).set({
+                                    xp: Number(req.user?.xp) + Number(seed.xpOnCollect),
+                                }).where(
+                                    eq(users.id, Number(req.user?.id))
+                                )
+
+                                const [userProduct] = await trx.select().from(userProducts).where(and(
+                                    eq(userProducts.userId, Number(req.user?.id)),
+                                    eq(userProducts.seedId, Number(seed.id)),
+                                ))
+
+                                if (userProduct) {
+
+                                    await trx.update(userProducts).set(
+                                        {
+                                            count: Number(userProduct.count) + 1,
+                                        }
+                                    ).where(
+                                        eq(userProducts.id, Number(userProduct.id)),
+                                    )
+
+                                } else {
+
+                                    await trx.insert(userProducts).values({
+                                        userId: Number(req.user?.id),
+                                        seedId: Number(seed.id),
+                                        count: 1,
+                                        userProductTypes: IngredientTypesEnum.VEGETABLE
+                                    })
+                                }
+
+
+                            } else {
+                                return res.status(400).json({message: "The field not ready yet!"});
                             }
 
 
-                                return res.json({
-                                    field: userField,
-                                });
+                            return res.json({
+                                field: userField,
+                            });
 
                         } else {
 

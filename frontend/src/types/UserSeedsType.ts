@@ -4,6 +4,7 @@ export  type SeedType = {
     price: number;
     icon: string;
     productImage: string;
+    readyProductImage: string;
     availableLevel: number;
     xpOnCollect: number;
     collectionTime: number;
@@ -14,6 +15,7 @@ export type SeedFileType = {
     price: number;
     icon: File | null,
     productImage: File | null,
+    readyProductImage: File | null,
     availableLevel: number;
     xpOnCollect: number;
     collectionTime: number;

@@ -88,7 +88,10 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
             </div>
             {isReady &&
                 <div className={"field-collect"}>
-                    <button className={"btn green rounded"} onClick={() => collectFromField(field)}> Click to collect
+                    <button className={"btn green rounded"} onClick={async () => {
+                        await collectFromField(field)
+                        cb()
+                    }}> Click to collect
                     </button>
                 </div>
             }

@@ -64,6 +64,7 @@ export const seeds = pgTable("seeds", {
     price: integer("price").default(0),
     icon: text("icon"),
     productImage: text("productImage"),
+    readyProductImage: text("readyProductImage"),
     availableLevel: integer("availableLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
     collectionTime: integer("collection_time").default(0),
@@ -133,7 +134,7 @@ export const recipes = pgTable("recipes", {
     xpOnCollect: integer("xpOnCollect").default(0),
 });
 
-export const ingredientType = pgEnum("ingredientType", IngredientTypesEnum);
+export const ingredientType = pgEnum("ingredientType", [IngredientTypesEnum.VEGETABLE, IngredientTypesEnum.ANIMAL_PRODUCT, IngredientTypesEnum.MADE_IN_FACTORY]);
 
 export const recipesIngredients = pgTable("recipesIngredients", {
         id: serial("id").primaryKey(),
@@ -164,3 +165,22 @@ export const recipesIngredientsRelation = relations(recipes,
             ingredients: many(recipesIngredients)
         }
     ))
+
+
+export const userProductTypes = pgEnum("userProductTypes", [IngredientTypesEnum.ANIMAL_PRODUCT, IngredientTypesEnum.MADE_IN_FACTORY, IngredientTypesEnum.VEGETABLE]);
+
+export const userProducts = pgTable("userProducts", {
+    id: serial("id").primaryKey(),
+    userId: serial("userId").notNull()
+        .references(() => users.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    seedId: integer("seedId")
+        .references(() => seeds.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    count: integer("count").default(0),
+    userProductTypes: userProductTypes('userProductTypes').notNull()
+});

@@ -70,6 +70,9 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         if (values.productImage) {
             formData.append("productImage", values.productImage);
         }
+        if (values.readyProductImage) {
+            formData.append("readyProductImage", values.readyProductImage);
+        }
 
         try {
 
@@ -128,7 +131,8 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                         xpOnCollect: seed?.xpOnCollect || 0,
                         collectionTime: seed?.collectionTime || 0,
                         icon: null,
-                        productImage: null
+                        productImage: null,
+                        readyProductImage: null
                     }}
                     validationSchema={validateSchema}
                     onSubmit={handleSubmit}
@@ -208,6 +212,30 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                 {seed?.productImage &&
                                     <div className={'data-image thumbnail m-b-2'}>
                                         <img src={import.meta.env.VITE_API_URL + seed?.productImage} alt=""
+                                             style={{width: '200px'}}/>
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div className={"image-container"}>
+                                <div className="input-row">
+                                    <label htmlFor="readyProductImage">Product image</label>
+                                    <input
+                                        type="file"
+                                        id="readyProductImage"
+                                        name="readyProductImage"
+                                        onChange={(e) => {
+                                            setFieldValue("readyProductImage", e.currentTarget.files?.[0]);
+                                        }}
+                                    />
+                                    <ErrorMessage name="readyProductImage" component="div" className="error-msg"/>
+                                </div>
+
+                                {seed?.readyProductImage &&
+                                    <div className={'data-image thumbnail m-b-2'}>
+                                        <img src={import.meta.env.VITE_API_URL + seed?.readyProductImage} alt=""
                                              style={{width: '200px'}}/>
                                     </div>
                                 }
