@@ -41,7 +41,6 @@ export class MainController {
             });
 
         } catch (err) {
-            console.error(err);
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -68,7 +67,6 @@ export class MainController {
             }
 
         } catch (err) {
-            console.error(err);
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -92,7 +90,6 @@ export class MainController {
             }
 
         } catch (err) {
-            console.error(err);
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -134,9 +131,6 @@ export class MainController {
                             eq(userSeeds.seedId, Number(seedId)),
                         )
                     );
-
-
-                    console.log('userSeedsData.count', userSeedsData.count)
 
                     if (!userSeedsData) {
                         return res.status(400).json({message: "You dont have enough seeds!"});
@@ -183,7 +177,6 @@ export class MainController {
                     });
 
                 }).catch((err: unknown) => {
-                    console.error(err);
                     res.status(400).json({message: "Failed to create seed"});
                 })
 
@@ -192,7 +185,7 @@ export class MainController {
             }
 
         } catch (err) {
-            console.error(err);
+
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -266,9 +259,6 @@ export class MainController {
                                     newNextLevelXp = userService.userUpToNextLvlByPercent(Number(req.user?.level) + 1);
                                 }
 
-                                // console.log('newLevel', newLevel)
-                                // console.log('nextLevelXp', nextLevelXp)
-
                                 await trx.update(users).set({
                                     xp: xpAdd,
                                     level: newLevel,
@@ -324,7 +314,7 @@ export class MainController {
                     }
 
                 }).catch((err: unknown) => {
-                    console.error(err);
+
                     return res.status(400).json({message: "Failed to create seed"});
                 })
 
@@ -334,7 +324,6 @@ export class MainController {
             }
 
         } catch (err) {
-            console.error(err);
             return res.status(400).json({message: "Invalid token"});
         }
     }

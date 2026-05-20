@@ -99,7 +99,6 @@ export class AuthService {
                 });
 
             }).catch((err: unknown) => {
-                console.log(err)
                 return new Error("Failed to register user")
             })
 

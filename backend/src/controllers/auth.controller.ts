@@ -60,7 +60,6 @@ export class AuthController {
 
 
         } catch (err) {
-            console.log(err);
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -72,7 +71,6 @@ export class AuthController {
             return await this.authService.register(req, res);
 
         } catch (error) {
-            console.log(error);
             if (error instanceof ZodError) {
                 res.status(400).json({error: (error as any).errors});
             } else {

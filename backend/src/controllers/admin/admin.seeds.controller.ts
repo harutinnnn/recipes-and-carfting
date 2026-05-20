@@ -25,7 +25,6 @@ export class AdminSeedsController {
             });
 
         } catch (err) {
-            console.error(err);
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -41,7 +40,6 @@ export class AdminSeedsController {
             });
 
         } catch (err) {
-            console.error(err);
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -204,7 +202,6 @@ export class AdminSeedsController {
                 }
 
             }).catch((err: unknown) => {
-                console.log(err)
                 res.status(400).json({message: "Failed to create seed"});
             })
 
