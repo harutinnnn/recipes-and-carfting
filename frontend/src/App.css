@@ -324,9 +324,10 @@ input:-webkit-autofill:active {
     transform: translateX(-50%);
     border-radius: 25px;
     font-weight: bold;
+    font-size: 14px;
     background-color: var(--dark-gray);
     color: var(--green-light);
-    padding: 10px 15px;
+    padding: 5px 10px;
     width: calc(100% - 60px);
     border: solid 1px var(--light-gray);
 }

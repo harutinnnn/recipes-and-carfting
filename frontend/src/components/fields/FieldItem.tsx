@@ -31,7 +31,6 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
 
 
     const handleSetSeeds = async (fieldId: number, seedId: number) => {
-
         await setUserSeed({fieldId: fieldId, seedId: seedId})
         cb()
 
