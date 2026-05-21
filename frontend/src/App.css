@@ -252,7 +252,7 @@ input:-webkit-autofill:active {
     position: relative;
     cursor: pointer;
     overflow: hidden;
-    transition: all .3s;
+    transition: box-shadow .3s;
     z-index: 0;
 
     &:hover {
@@ -348,7 +348,7 @@ input:-webkit-autofill:active {
     top: 0;
     height: 100%;
     opacity: 0.3;
-    transition: all .3s;
+    transition: width .3s;
 }
 
 .grid-2 {
