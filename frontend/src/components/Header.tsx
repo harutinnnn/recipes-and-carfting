@@ -30,10 +30,17 @@ export const Header = () => {
                     LVL {user?.level ?? 1}
                 </div>
 
-                <div className={"user-inventory-icon"} onClick={() => setIsOpenModal(true)}>
-                    <img src="/public/images/icons/inventory-256.png" alt=""/>
-                </div>
+                <div className={"flex flex-row gap-15"}>
 
+                    <div className={"market-icon"}>
+                        <img src="/public/assets/icons/market-icon.png" alt=""/>
+                    </div>
+
+                    <div className={"user-inventory-icon"} onClick={() => setIsOpenModal(true)}>
+                        <img src="/public/images/icons/inventory-256.png" alt=""/>
+                    </div>
+
+                </div>
 
                 <div className="user-money-info">
 
@@ -68,7 +75,8 @@ export const Header = () => {
                     handleCLoseModal();
                 }} openModal={isOpenModal}
                 closedModal={() => setIsOpenModal(false)}
-                contend={ <UserInventoryComponent cb={() => {}}/>}
+                contend={<UserInventoryComponent cb={() => {
+                }}/>}
             />
         </header>
     )

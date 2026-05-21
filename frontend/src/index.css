@@ -22,7 +22,7 @@
     --gark-1-gray: #171717;
     --gray: #232323;
     --light-gray: #474747;
-        --lightest-gray: #c4c4c4;
+    --lightest-gray: #c4c4c4;
 
     --green-lightest: #c2ffd5;
     --green-light: #b0ffc9;
@@ -77,4 +77,23 @@ html, body {
     background: var(--gark-bg);
     display: flex;
     flex-direction: column;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.gap-10 {
+    gap: 10px;
+}
+
+.gap-15 {
+    gap: 15px;
+}
+.gap-20 {
+    gap: 20px;
 }

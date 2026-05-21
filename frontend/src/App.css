@@ -358,20 +358,36 @@ input:-webkit-autofill:active {
 }
 
 .user-seeds-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    gap: 15px;
 }
 
 .user-seed {
+    width: 200px;
+    /*height: 170px;*/
     padding: 20px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
     background-color: var(--gray);
     border-radius: 10px;
     cursor: pointer;
     position: relative;
+
+    &:hover {
+        box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
+    }
 }
 
+.user-seed .user-seed-info {
+    margin-top: 5px;
+}
 .user-seed .user-seed-icon {
-
+    width: 100%;
 }
 
 .react-tabs__tab:focus:after {
@@ -389,6 +405,35 @@ input:-webkit-autofill:active {
     color: var(--green-light) !important;
     font-weight: bold;
 }
+
+
+.inventory-items {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    gap: 15px;
+}
+
+.inventory-item {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    border: solid 1px var(--light-gray);
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all .3s;
+
+    &:hover {
+        box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
+    }
+}
+
 
 @media (max-width: 800px) {
     .fields-list .field-item .field-item-icon {

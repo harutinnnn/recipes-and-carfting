@@ -19,7 +19,7 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
             const productsData = await getUserProducts()
             setUserProducts(productsData.items)
         })()
-    }, [setUserSeeds,setUserProducts])
+    }, [setUserSeeds, setUserProducts])
 
     return (
         <div className={"user-inventory"}>
@@ -34,29 +34,28 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
                     </TabList>
 
                     <TabPanel>
-                        <div className="user-inventory-seeds">
-                            Seeds
-                            <div>
-                                {userSeeds && userSeeds.map(seed => {
-                                    return (
-                                        <div>
-                                            {seed.seeds.title} - {seed.userSeeds.count}
-                                            <img src={import.meta.env.VITE_API_URL + seed.seeds.icon}
-                                                 style={{width: '100px'}}
-                                                 alt=""/>
-                                        </div>
-                                    )
-                                })}
-                            </div>
+                        <h3>Seeds</h3>
+                        <div className="user-inventory-seeds inventory-items">
+                            {userSeeds && userSeeds.map(seed => {
+                                return (
+                                    <div className={"inventory-item"}>
+                                        <img src={import.meta.env.VITE_API_URL + seed.seeds.icon}
+                                             style={{width: '100px'}}
+                                             alt=""/>
+                                        {seed.seeds.title} ({seed.userSeeds.count})
+                                    </div>
+                                )
+                            })}
                         </div>
                     </TabPanel>
                     <TabPanel>
-                        <div className="user-inventory-products">
-                            Products
+                        <h3>Products</h3>
+                        <div className="user-inventory-products inventory-items">
+
 
                             {userProducts && userProducts.map(product => {
                                 return (
-                                    <div>
+                                    <div className={"inventory-item"}>
                                         {product.seeds.title} - {product.userProducts.count}
                                         <img src={import.meta.env.VITE_API_URL + product.seeds.readyProductImage}
                                              style={{width: '100px'}}
