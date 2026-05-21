@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {AppContext} from "../../types/app.context.type";
-import {seeds, userFields} from "../../db/schema";
-import {asc, eq} from "drizzle-orm";
+import {seeds, seedsProgressImages, userFields} from "../../db/schema";
+import {and, asc, eq} from "drizzle-orm";
 import path from "node:path";
 import {removeFile, uploadFile} from "../../helpers/file.helper";
 import {DbTransaction} from "../../types/db.types";
@@ -48,7 +48,7 @@ export class AdminSeedsController {
 
         try {
 
-            const {id, title, price, availableLevel, xpOnCollect, collectionTime,takeEnergyCollect} = req.body;
+            const {id, title, price, availableLevel, xpOnCollect, collectionTime, takeEnergyCollect} = req.body;
 
             const tmpId = !isNaN(id) ? id : 0;
 
@@ -207,6 +207,108 @@ export class AdminSeedsController {
 
 
         } catch (err) {
+            res.status(400).json({message: "Invalid token"});
+        }
+    }
+
+
+    uploadSeedProgressFile = async (req: Request, res: Response) => {
+
+        try {
+
+            const {seedId, pos} = req.body;
+            const seedIdValue = Number(seedId);
+            const posValue = Number(pos);
+
+
+            await this.context.db.transaction(async (trx: DbTransaction) => {
+
+                const [seed] = await trx.select().from(seeds).where(eq(seeds.id, seedIdValue));
+
+                if (seed?.id) {
+
+                    const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
+                    const icon = files?.icon?.[0];
+                    let iconUrl = "";
+
+                    if (icon) {
+
+                        const uploadedIcon = await uploadFile(icon, 'seeds');
+
+                        if (uploadedIcon instanceof Error) {
+                            throw uploadedIcon;
+                        }
+                        iconUrl = uploadedIcon;
+                    }
+
+
+                    if (iconUrl) {
+                        const [progressImage] = await trx.select().from(seedsProgressImages).where(
+                            and(
+                                eq(seedsProgressImages.seedId, seedIdValue),
+                                eq(seedsProgressImages.pos, posValue)
+                            )
+                        );
+
+                        if (progressImage?.icon) {
+                            await removeFile(path.join(process.cwd(), progressImage.icon));
+                        }
+
+                        const [seedsProgressImagesData] = progressImage?.id
+                            ? await trx.update(seedsProgressImages).set({
+                                icon: iconUrl,
+                            }).where(eq(seedsProgressImages.id, progressImage.id)).returning()
+                            : await trx.insert(seedsProgressImages).values({
+                                icon: iconUrl,
+                                seedId: seedIdValue,
+                                pos: posValue
+                            }).returning();
+
+
+                        return res.json({
+                            seedsProgressImages: seedsProgressImagesData,
+                        });
+
+                    } else {
+                        return res.status(200).json({message: "Filed to upload seed progress image"});
+                    }
+
+
+                } else {
+
+                    return res.status(200).json({message: "Filed to upload seed progress image"});
+
+                }
+
+            }).catch((err: unknown) => {
+                return res.status(400).json({message: "Failed to create seed"});
+            })
+
+
+        } catch (err) {
+            res.status(400).json({message: "Invalid token"});
+        }
+    }
+
+    getSeedProgressImages = async (req: Request, res: Response) => {
+        try {
+
+
+            const {id} = req.params;
+            const items = await this.context.db.select().from(seedsProgressImages).orderBy(
+                asc(seedsProgressImages.pos)
+            ).where(
+                eq(
+                    seedsProgressImages.seedId, Number(id)
+                )
+            );
+
+            res.json({
+                items: items,
+            });
+
+        } catch (err) {
+            console.log(err)
             res.status(400).json({message: "Invalid token"});
         }
     }

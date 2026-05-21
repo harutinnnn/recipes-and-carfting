@@ -15,3 +15,9 @@ export const UserSeedSchema = z.object({
     seedId: z.coerce.number({error: "Seed is required"}),
 });
 
+
+export const UploadSeedProgressFile = z.object({
+    seedId: z.coerce.number({error: "Seed is required"}),
+    pos: z.coerce.number({error: "Position is required"}).min(1).max(4),
+});
+

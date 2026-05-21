@@ -5,7 +5,7 @@ import {authenticateJWT} from "../../middlewares/auth";
 import multer from "multer";
 import {storage} from "../../config/storage";
 import {validate} from "../../middlewares/validate";
-import {SeedsSchema} from "../../schemas/user.seeds";
+import {SeedsSchema, UploadSeedProgressFile} from "../../schemas/user.seeds";
 import {checkIsAdmin} from "../../utils/admin/admin.utilities";
 
 const MAX_FILE_SIZE_MB = 2;
@@ -66,6 +66,12 @@ export const seedsRouter = (context: AppContext) => {
         adminSeedsController.index
     );
 
+    router.get(
+        "/get-seed-progress-images/:id",
+        authenticateJWT,
+        adminSeedsController.getSeedProgressImages
+    );
+
 
     router.get(
         "/:id",
@@ -80,6 +86,14 @@ export const seedsRouter = (context: AppContext) => {
         handleSeedImageUpload,
         validate(SeedsSchema),
         adminSeedsController.editSeed
+    );
+
+    router.post(
+        "/upload-progress-file",
+        authenticateJWT,
+        handleSeedImageUpload,
+        validate(UploadSeedProgressFile),
+        adminSeedsController.uploadSeedProgressFile
     );
 
     return router

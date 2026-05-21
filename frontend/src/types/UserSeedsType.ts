@@ -10,6 +10,12 @@ export  type SeedType = {
     collectionTime: number;
     takeEnergyCollect: number;
 }
+export  type SeedProgressImageType = {
+    id: number;
+    seedId: string;
+    icon: string;
+    pos: number;
+}
 
 export type SeedFileType = {
     title: string,

@@ -1,19 +1,27 @@
 import {useEffect, useState} from "react";
-import {SeedFileType, SeedType} from "@/types/UserSeedsType";
-import {getSeed, saveSeedRequest} from "@/api/admin/admin.seeds.api";
+import {SeedFileType, SeedProgressImageType, SeedType} from "@/types/UserSeedsType";
+import {getSeed, getSeedProgressImages, saveSeedRequest, uploadSeedProgressFile} from "@/api/admin/admin.seeds.api";
 import {Loader} from "lucide-react";
 import * as Yup from "yup";
 import {AxiosError} from "axios";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Alerts} from "@/components/Alerts";
 import {AlertEnums} from "@/enums/AlertEnums";
+import {FileUploadComponent} from "@/pages/admin/seeds/FileUploadComponent";
 
 export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
 
     const [seed, setSeed] = useState<SeedType | undefined>(undefined);
+    const [progressImages, setProgressImages] = useState<SeedProgressImageType[]>([]);
 
     const [loading, setLoading] = useState(true);
+
+
+    const [progressImage1, setProgressImage1] = useState<File | null>(null);
+    const [progressImage2, setProgressImage2] = useState<File | null>(null);
+    const [progressImage3, setProgressImage3] = useState<File | null>(null);
+    const [progressImage4, setProgressImage4] = useState<File | null>(null);
 
     const handleGetSeed = async (id: number) => {
         setLoading(true);
@@ -22,10 +30,16 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         setLoading(false);
     };
 
+    const handleGetSeedProgressImage = async (seedId: number) => {
+        const data = await getSeedProgressImages(seedId)
+        setProgressImages(data)
+    }
+
     useEffect(() => {
 
         (async () => {
             await handleGetSeed(id);
+            await handleGetSeedProgressImage(id)
         })()
 
     }, [id, setSeed]);
@@ -73,6 +87,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         if (values.productImage) {
             formData.append("productImage", values.productImage);
         }
+
         if (values.readyProductImage) {
             formData.append("readyProductImage", values.readyProductImage);
         }
@@ -84,6 +99,27 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
             if ("error" in data) {
                 setError(data.error as string);
             } else {
+                const progressImages = [
+                    progressImage1,
+                    progressImage2,
+                    progressImage3,
+                    progressImage4,
+                ];
+
+                await Promise.all(
+                    progressImages.map((progressImage, index) => {
+                        if (!progressImage) {
+                            return Promise.resolve();
+                        }
+
+                        const formDataImg = new FormData();
+                        formDataImg.append("seedId", data.id.toString());
+                        formDataImg.append("pos", (index + 1).toString());
+                        formDataImg.append("icon", progressImage);
+
+                        return uploadSeedProgressFile(formDataImg);
+                    })
+                );
 
                 values.title = ""
             }
@@ -250,6 +286,41 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                              style={{width: '200px'}}/>
                                     </div>
                                 }
+
+                            </div>
+
+                            <div className={"image-container"}>
+                                <div className="input-row">
+                                    <label>Progress images list</label>
+
+                                    <div className={"file-upload-list"}>
+                                        {Array.from({length: 4}).map((_, index) => (
+                                            <FileUploadComponent
+                                                progressImage={progressImages.find(
+                                                    (icon) => Number(icon.pos) === index + 1
+                                                )}
+                                                key={index} cb={(file) => {
+
+                                                switch (index) {
+                                                    case 0:
+                                                        setProgressImage1(file)
+                                                        break;
+                                                    case 1:
+                                                        setProgressImage2(file)
+                                                        break;
+                                                    case 2:
+                                                        setProgressImage3(file)
+                                                        break;
+                                                    case 3:
+                                                        setProgressImage4(file)
+                                                        break;
+                                                }
+
+                                            }}/>
+                                        ))}
+                                    </div>
+
+                                </div>
 
                             </div>
 

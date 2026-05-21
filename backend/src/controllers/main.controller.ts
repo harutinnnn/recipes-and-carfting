@@ -22,11 +22,11 @@ export class MainController {
 
 
             res.json({
-                message: 'Hello World',
+                error: 'Hello World',
             });
 
         } catch (_err) {
-            res.status(400).json({message: "Invalid token"});
+            res.status(400).json({error: "Invalid token"});
         }
     }
 
@@ -41,7 +41,7 @@ export class MainController {
             });
 
         } catch (err) {
-            res.status(400).json({message: "Invalid token"});
+            res.status(400).json({error: "Invalid token"});
         }
     }
 
@@ -67,7 +67,7 @@ export class MainController {
             }
 
         } catch (err) {
-            res.status(400).json({message: "Invalid token"});
+            res.status(400).json({error: "Invalid token"});
         }
     }
 
@@ -90,7 +90,7 @@ export class MainController {
             }
 
         } catch (err) {
-            res.status(400).json({message: "Invalid token"});
+            res.status(400).json({error: "Invalid token"});
         }
     }
 
@@ -113,7 +113,7 @@ export class MainController {
             }
 
         } catch (err) {
-            res.status(400).json({message: "Invalid token"});
+            res.status(400).json({error: "Invalid token"});
         }
     }
 
@@ -132,8 +132,14 @@ export class MainController {
                         seeds.id, seedId
                     ));
 
+
+                    if (req.user?.energy && seed?.takeEnergyCollect && req.user?.energy < seed?.takeEnergyCollect) {
+                        return res.status(200).json({error: "You dont have enough energy please. restore energy!"});
+                    }
+
+
                     if (!seed) {
-                        return res.status(400).json({message: "Wrong seed!"});
+                        return res.status(200).json({error: "Wrong seed!"});
                     }
 
                     const [userField] = await trx.select().from(userFields).where(
@@ -145,7 +151,7 @@ export class MainController {
                     );
 
                     if (!userField) {
-                        return res.status(400).json({message: "Field already seeded!"});
+                        return res.status(200).json({error: "Field already seeded!"});
                     }
 
                     const [userSeedsData] = await trx.select().from(userSeeds).where(
@@ -156,13 +162,13 @@ export class MainController {
                     );
 
                     if (!userSeedsData) {
-                        return res.status(400).json({message: "You dont have enough seeds!"});
+                        return res.status(200).json({error: "You dont have enough seeds!"});
                     }
 
                     if (userSeedsData) {
 
                         if (Number(userSeedsData?.count) < 1) {
-                            return res.status(400).json({message: "You dont have enough seeds!"});
+                            return res.status(200).json({error: "You dont have enough seeds!"});
                         }
                     }
 
@@ -195,12 +201,18 @@ export class MainController {
                         )
                     )
 
+                    await trx.update(users).set({
+                        energy: Number(req.user?.energy) - Number(seed.takeEnergyCollect),
+                    }).where(
+                        eq(users.id, Number(req.user?.id))
+                    )
+
                     res.json({
                         items: 1,
                     });
 
                 }).catch((err: unknown) => {
-                    res.status(400).json({message: "Failed to create seed"});
+                    res.status(400).json({error: "Failed to create seed"});
                 })
 
             } else {
@@ -209,7 +221,7 @@ export class MainController {
 
         } catch (err) {
 
-            res.status(400).json({message: "Invalid token"});
+            res.status(400).json({error: "Invalid token"});
         }
     }
 
@@ -232,7 +244,7 @@ export class MainController {
 
                         if (userField.status === FieldStatusEnum.in_progress) {
                             if (userField.seedId === null) {
-                                return res.status(400).json({message: "Can not find seed from current field!"});
+                                return res.status(200).json({error: "Can not find seed from current field!"});
                             }
 
                             const [seed] = await trx.select().from(seeds).where(eq(
@@ -240,12 +252,12 @@ export class MainController {
                             ));
 
                             if (!seed) {
-                                return res.status(400).json({message: "Can not find seed from current field!"});
+                                return res.status(200).json({error: "Can not find seed from current field!"});
                             }
 
 
                             if (req.user?.energy && seed?.takeEnergyCollect && req.user?.energy < seed?.takeEnergyCollect) {
-                                return res.status(400).json({message: "You dont have enough energy please. restore energy!"});
+                                return res.status(200).json({error: "You dont have enough energy please. restore energy!"});
                             }
 
                             const now = new Date();
@@ -318,7 +330,7 @@ export class MainController {
 
 
                             } else {
-                                return res.status(400).json({message: "The field not ready yet!"});
+                                return res.status(200).json({error: "The field not ready yet!"});
                             }
 
 
@@ -328,17 +340,17 @@ export class MainController {
 
                         } else {
 
-                            return res.status(400).json({message: "The field not ready yet!"});
+                            return res.status(200).json({error: "The field not ready yet!"});
                         }
 
 
                     } else {
-                        return res.status(400).json({message: "Wrong field"});
+                        return res.status(200).json({error: "Wrong field"});
                     }
 
                 }).catch((err: unknown) => {
 
-                    return res.status(400).json({message: "Failed to create seed"});
+                    return res.status(400).json({error: "Failed to create seed"});
                 })
 
 
@@ -347,7 +359,7 @@ export class MainController {
             }
 
         } catch (err) {
-            return res.status(400).json({message: "Invalid token"});
+            return res.status(400).json({error: "Invalid token"});
         }
     }
 

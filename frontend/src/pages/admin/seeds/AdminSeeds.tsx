@@ -53,12 +53,14 @@ export const AdminSeeds = () => {
                     </tr>
                     </thead>
 
+                    <tbody>
                     {seeds && seeds.map(seed => {
                         return (
-                            <tr>
+                            <tr key={seed.id}>
                                 <td>{seed.title}</td>
                                 <td>
-                                    <img src={import.meta.env.VITE_API_URL + seed.icon} alt="" className={"img-list-thumbnail"}/>
+                                    <img src={import.meta.env.VITE_API_URL + seed.icon} alt=""
+                                         className={"img-list-thumbnail"}/>
                                 </td>
                                 <td>{seed.price}</td>
                                 <td>{seed.collectionTime} Seconds</td>
@@ -75,6 +77,7 @@ export const AdminSeeds = () => {
                             </tr>
                         )
                     })}
+                    </tbody>
 
                 </table>
             </div>

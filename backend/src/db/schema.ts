@@ -75,6 +75,17 @@ export const seeds = pgTable("seeds", {
     collectionTime: integer("collection_time").default(0),
 });
 
+export const seedsProgressImages = pgTable("seedsProgressImages", {
+    id: serial("id").primaryKey(),
+    seedId: serial("seedId").notNull()
+        .references(() => seeds.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    icon: text("icon"),
+    pos: integer("pos").default(0),
+});
+
 export const userSeeds = pgTable("userSeeds", {
     id: serial("id").primaryKey(),
     userId: serial("userId").notNull()

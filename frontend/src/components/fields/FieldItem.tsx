@@ -7,6 +7,7 @@ import {UserSeeds} from "@/components/fields/UserSeedsComponent";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {collectUserField, setUserSeed} from "@/api/user.api";
 import {useAuth} from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null, height: number, cb: () => void }) => {
 
@@ -31,8 +32,15 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
 
 
     const handleSetSeeds = async (fieldId: number, seedId: number) => {
-        await setUserSeed({fieldId: fieldId, seedId: seedId})
-        cb()
+        const data = await setUserSeed({fieldId: fieldId, seedId: seedId})
+
+        if ("error" in data) {
+            toast.error(data.error + '')
+        } else {
+            setIsOpenModal(false)
+            await refreshUser();
+            cb()
+        }
 
 
     }
@@ -51,7 +59,6 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
                     closedModal={() => setIsOpenModal(false)}
                     contend={<UserSeeds cb={async (userSeed: UserSeedTypeJoin) => {
                         await handleSetSeeds(field.userFields.id, userSeed.seeds.id)
-                        setIsOpenModal(false)
                     }}/>}
                 />
             </div>
@@ -71,7 +78,13 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
 
     const collectFromField = async (field: FieldItemTypeJoin) => {
 
-        await collectUserField(field.userFields.id);
+        const data = await collectUserField(field.userFields.id);
+
+        if ("error" in data) {
+            console.log(data)
+            toast.error(data?.error + "")
+        }
+
         await refreshUser();
 
     }
