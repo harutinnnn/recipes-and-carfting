@@ -38,7 +38,7 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
                         <div className="user-inventory-seeds inventory-items">
                             {userSeeds && userSeeds.map(seed => {
                                 return (
-                                    <div className={"inventory-item"}>
+                                    <div className={"inventory-item"} key={seed.seeds.id}>
                                         <img src={import.meta.env.VITE_API_URL + seed.seeds.icon}
                                              style={{width: '100px'}}
                                              alt=""/>
@@ -55,7 +55,7 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
 
                             {userProducts && userProducts.map(product => {
                                 return (
-                                    <div className={"inventory-item"}>
+                                    <div className={"inventory-item"} key={product.seeds.id}>
                                         {product.seeds.title} - {product.userProducts.count}
                                         <img src={import.meta.env.VITE_API_URL + product.seeds.readyProductImage}
                                              style={{width: '100px'}}
