@@ -8,6 +8,7 @@ import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {collectUserField, setUserSeed} from "@/api/user.api";
 import {useAuth} from "@/hooks/useAuth";
 import toast from "react-hot-toast";
+import {getFieldProgressImage} from "@/helpers/field.helper";
 
 export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null, height: number, cb: () => void }) => {
 
@@ -91,12 +92,17 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
 
     return (
         <div className={"field-item"} style={{height: `${height - 30}px`}}>
-            <img src={import.meta.env.VITE_API_URL + field?.seeds?.productImage} alt="" className={"field-item-icon"}/>
+
+            <span className={"field-seed-title"}>{field?.seeds?.title}</span>
+
+            {isReady &&
+                <span className={"field-seed-status"}>Ready</span>
+            }
+            <img src={getFieldProgressImage(field,progress,import.meta.env.VITE_API_URL)} alt="" className={"field-item-icon"}/>
+
             <div className={"field-item-info"}>
-                <span className={"field-seed-title"}>{field?.seeds?.title}</span>
-                {isReady &&
-                    <span className={"field-seed-status"}>Ready</span>
-                }
+
+
                 <span className={'field-seed-progress'}
                       style={{width: `${progress}%`}}></span>
             </div>

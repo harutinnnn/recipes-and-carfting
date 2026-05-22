@@ -1,13 +1,16 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
-import {seeds, userFields, userProducts, users, userSeeds} from "../db/schema";
+import {seeds, seedsProgressImages, userFields, userProducts, users, userSeeds} from "../db/schema";
 import {and, asc, eq} from "drizzle-orm";
-import type {db} from "../db";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 import {DbTransaction} from "../types/db.types";
 import {UserService} from "../services/user.service";
-import {number} from "zod";
+
+type UserFieldWithSeed = {
+    userFields: typeof userFields.$inferSelect;
+    seeds: typeof seeds.$inferSelect | null;
+};
 
 
 export class MainController {
@@ -58,8 +61,20 @@ export class MainController {
                             asc(userFields.id)
                         );
 
+
+                const itemsRes = await Promise.all(items.map(async (item: UserFieldWithSeed) => ({
+                    ...item,
+                    seedsProgressImage: item.seeds
+                        ? await this.context.db.select()
+                            .from(seedsProgressImages)
+                            .where(eq(seedsProgressImages.seedId, item.seeds.id)).orderBy(
+                                asc(seedsProgressImages.pos)
+                            )
+                        : [],
+                })));
+
                 res.json({
-                    items: items,
+                    items: itemsRes,
                 });
 
             } else {
@@ -67,6 +82,7 @@ export class MainController {
             }
 
         } catch (err) {
+            console.log(err);
             res.status(400).json({error: "Invalid token"});
         }
     }

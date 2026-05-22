@@ -27,19 +27,19 @@ export const MainPage = () => {
         };
     }, []);
 
+    const getUserFields = async () => {
+        const userFields = await getUserFieldsJoin()
+        setFields(userFields.items)
+    }
+
+
     useEffect(() => {
         (async () => {
-            // const seeds = await getSeedsFront()
-            // console.log(seeds)
 
             await getUserFields()
         })()
     }, [setFields]);
 
-    const getUserFields = async () => {
-        const userFields = await getUserFieldsJoin()
-        setFields(userFields.items)
-    }
 
     return (
 
