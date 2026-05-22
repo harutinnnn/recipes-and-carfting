@@ -48,7 +48,7 @@ export class AuthService {
                     password: hashedPassword,
                     status: Statuses.NOT_ACTIVATED,
                     activationToken: activationHash,
-                    gameMoney: Number(process.env.DEFF_USER_MONEY ?? 0),
+                    gameMoney: Number(process.env.DEFF_USER_MONEY ?? 0).toString(),
                     realMoney: 0,
                     level: 1,
                     xp: 0,

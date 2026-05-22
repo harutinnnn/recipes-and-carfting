@@ -1,6 +1,6 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
-import {seeds, seedsProgressImages, userFields, userProducts, users, userSeeds} from "../db/schema";
+import {foods, seeds, seedsProgressImages, userFields, userFoods, userProducts, users, userSeeds} from "../db/schema";
 import {and, asc, eq} from "drizzle-orm";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
@@ -96,7 +96,7 @@ export class MainController {
                     await this.context.db.select()
                         .from(userSeeds)
                         .where(eq(userSeeds.userId, req.user?.id))
-                        .leftJoin(seeds, eq(seeds.id, userSeeds.seedId));
+                        .leftJoin(seeds, eq(seeds.id, userSeeds.seedId)).orderBy(asc(userSeeds.seedId));
 
                 res.json({
                     items: items,
@@ -121,6 +121,30 @@ export class MainController {
                         .where(eq(userProducts.userId, req.user?.id))
                         .leftJoin(seeds, eq(seeds.id, userProducts.seedId))
                         .orderBy(asc(userProducts.id));
+
+                res.json({
+                    items: items,
+                });
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            res.status(400).json({error: "Invalid token"});
+        }
+    }
+
+    userFoods = async (req: Request, res: Response) => {
+        try {
+
+            if (req.user?.id) {
+
+                const items =
+                    await this.context.db.select()
+                        .from(userFoods)
+                        .where(eq(userFoods.userId, req.user?.id))
+                        .leftJoin(foods, eq(foods.id, userFoods.foodId))
+                        .orderBy(asc(foods.id));
 
                 res.json({
                     items: items,

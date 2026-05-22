@@ -52,6 +52,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
     const validateSchema = Yup.object({
         title: Yup.string().required("Title is required"),
         price: Yup.number().required("Number is required"),
+        minSellPrice: Yup.number().required("Number is required"),
         availableLevel: Yup.number().required("Available Level is required"),
         xpOnCollect: Yup.number().required("XP On Collect"),
         collectionTime: Yup.number().required("Collection Time"),
@@ -67,6 +68,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
         const title = values.title;
         const price = values.price;
+        const minSellPrice = values.minSellPrice;
         const availableLevel = values.availableLevel;
         const xpOnCollect = values.xpOnCollect;
         const collectionTime = values.collectionTime;
@@ -76,6 +78,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         formData.append('id', id.toString())
         formData.append("title", title);
         formData.append("price", price.toString());
+        formData.append("minSellPrice", minSellPrice.toString());
         formData.append("availableLevel", availableLevel.toString());
         formData.append("xpOnCollect", xpOnCollect.toString());
         formData.append("collectionTime", collectionTime.toString());
@@ -167,6 +170,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                     initialValues={{
                         title: seed?.title || "",
                         price: seed?.price || 0,
+                        minSellPrice: seed?.minSellPrice || 0,
                         availableLevel: seed?.availableLevel || 0,
                         xpOnCollect: seed?.xpOnCollect || 0,
                         collectionTime: seed?.collectionTime || 0,
@@ -191,6 +195,12 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                 <label htmlFor="price">Price</label>
                                 <Field type="number" id="price" name="price" placeholder="Price"/>
                                 <ErrorMessage name="price" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="minSellPrice">Minimum selling price</label>
+                                <Field type="number" id="minSellPrice" name="minSellPrice" step={.1} placeholder="Minimum selling price"/>
+                                <ErrorMessage name="minSellPrice" component="div" className="error-msg"/>
                             </div>
 
                             <div className="input-row">

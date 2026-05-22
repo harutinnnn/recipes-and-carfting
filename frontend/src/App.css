@@ -345,8 +345,8 @@ input:-webkit-autofill:active {
 }
 
 .fields-list .field-item .field-seed-status {
-    color: var(--error-color);
-    background-color: var(--error-lightest-color);
+    color: var(--white);
+    background-color: var(--green-dark);
     position: absolute;
 
     z-index: 5;

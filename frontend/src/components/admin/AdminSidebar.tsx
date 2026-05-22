@@ -1,5 +1,18 @@
 import {Link} from "react-router-dom";
-import {Apple, Bean, CookingPot, Factory, Gauge, House, LogOut, PawPrint, Settings, Sprout, Users} from "lucide-react";
+import {
+    Apple,
+    Bean,
+    CookingPot,
+    Factory,
+    Gauge,
+    Hamburger,
+    House,
+    LogOut,
+    PawPrint,
+    Settings,
+    Sprout,
+    Users
+} from "lucide-react";
 
 export const AdminSidebar = () => {
 
@@ -20,6 +33,12 @@ export const AdminSidebar = () => {
                     <Link to={'/admin/seeds'}>
                         <Bean size={18}/>
                         <span>Seeds</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link to={'/admin/foods'}>
+                        <Hamburger size={18}/>
+                        <span>Foods</span>
                     </Link>
                 </li>
 

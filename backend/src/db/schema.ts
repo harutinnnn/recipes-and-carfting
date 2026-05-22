@@ -9,7 +9,7 @@ import {
     unique,
     text,
     timestamp,
-    uuid
+    uuid, numeric
 } from "drizzle-orm/pg-core";
 import {number} from "zod";
 import {relations} from "drizzle-orm/relations";
@@ -45,7 +45,10 @@ export const users = pgTable("users", {
     email: text("email").notNull().unique(),
     name: text("name").notNull(),
     nickname: text("nickname").notNull(),
-    gameMoney: integer("gameMoney").default(0),
+    gameMoney: numeric("gameMoney", {
+        precision: 10,
+        scale: 2,
+    }).notNull().default("0"),
     realMoney: integer("realMoney").default(0),
     xp: integer("xp").default(0),
     nextLevelXP: integer("nextLevelXP").default(0),
@@ -65,7 +68,14 @@ export const users = pgTable("users", {
 export const seeds = pgTable("seeds", {
     id: serial("id").primaryKey(),
     title: text("title").notNull().unique(),
-    price: integer("price").default(0),
+    price: numeric("price", {
+        precision: 10,
+        scale: 2,
+    }).notNull().default("0"),
+    minSellPrice: numeric("minSellPrice", {
+        precision: 10,
+        scale: 2,
+    }).notNull().default("0"),
     icon: text("icon"),
     productImage: text("productImage"),
     readyProductImage: text("readyProductImage"),
@@ -200,3 +210,43 @@ export const userProducts = pgTable("userProducts", {
     count: integer("count").default(0),
     userProductTypes: userProductTypes('userProductTypes').notNull()
 });
+
+
+export const gameProducts = pgTable("gameProducts", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull().unique(),
+    price: numeric("price", {
+        precision: 10,
+        scale: 2,
+    }).notNull().default("0"),
+    icon: text("icon"),
+    availableLevel: integer("availableLevel").default(1),
+});
+
+
+export const foods = pgTable("foods", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    price: numeric("price", {
+        precision: 10,
+        scale: 2,
+    }).notNull().default("0"),
+    energyPower: integer("energyPower").default(0),
+    icon: text("icon")
+});
+
+export const userFoods = pgTable("userFoods", {
+    id: serial("id").primaryKey(),
+    userId: serial("userId").notNull()
+        .references(() => users.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    foodId: serial("foodId").notNull()
+        .references(() => foods.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    count: integer("count").default(0),
+});
+

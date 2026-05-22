@@ -48,9 +48,21 @@ export class AdminSeedsController {
 
         try {
 
-            const {id, title, price, availableLevel, xpOnCollect, collectionTime, takeEnergyCollect} = req.body;
+            const {
+                id,
+                title,
+                price,
+                minSellPrice,
+                availableLevel,
+                xpOnCollect,
+                collectionTime,
+                takeEnergyCollect
+            } = req.body;
 
             const tmpId = !isNaN(id) ? id : 0;
+            const titleValue = String(title);
+            const priceValue = Number(price).toString();
+            const minSellPriceValue = Number(minSellPrice).toString();
 
 
             await this.context.db.transaction(async (trx: DbTransaction) => {
@@ -116,8 +128,9 @@ export class AdminSeedsController {
                     }
 
                     await trx.update(seeds).set({
-                        title: title,
-                        price: price,
+                        title: titleValue,
+                        price: priceValue,
+                        minSellPrice: minSellPriceValue,
                         availableLevel: Number(availableLevel),
                         xpOnCollect: Number(xpOnCollect),
                         collectionTime: Number(collectionTime),
@@ -135,11 +148,12 @@ export class AdminSeedsController {
                 } else {
 
                     const [tmpSeed] = await trx.insert(seeds).values({
-                        title: title,
+                        title: titleValue,
                         icon: "",
                         productImage: "",
                         readyProductImage: "",
-                        price: Number(price),
+                        price: priceValue,
+                        minSellPrice: minSellPriceValue,
                         availableLevel: Number(availableLevel),
                         xpOnCollect: Number(xpOnCollect),
                         collectionTime: Number(collectionTime),
@@ -202,6 +216,7 @@ export class AdminSeedsController {
                 }
 
             }).catch((err: unknown) => {
+                console.error(err);
                 res.status(400).json({message: "Failed to create seed"});
             })
 

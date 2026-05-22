@@ -17,18 +17,6 @@ export default function ProtectedAdminLayout() {
 
     const pageUrl: string = getUrlPart(location.pathname, 0)
 
-    // useEffect(() => {
-    //     if (!user) {
-    //         socket.disconnect();
-    //         return;
-    //     }
-    //
-    //     reconnectSocketWithFreshToken();
-    //
-    //     return () => {
-    //         socket.disconnect();
-    //     };
-    // }, [user]);
 
 
     return (

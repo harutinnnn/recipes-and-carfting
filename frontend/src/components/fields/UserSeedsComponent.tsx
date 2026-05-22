@@ -22,7 +22,7 @@ export const UserSeeds = ({cb}: { cb: (userSeed: UserSeedTypeJoin) => void }) =>
             <h3>Seeds</h3>
 
             <div className={"user-seeds-list"}>
-                {userSeeds && userSeeds.map(userSeed => {
+                {userSeeds && userSeeds.filter(userSeed => userSeed.userSeeds.count > 0).map(userSeed => {
                     return (
                         <div className={"user-seed"} onClick={() => cb(userSeed)} key={userSeed.userSeeds.id}>
                             <img className={"user-seed-icon"} src={import.meta.env.VITE_API_URL + userSeed.seeds.icon}

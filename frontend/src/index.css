@@ -103,3 +103,14 @@ html, body {
 .gap-20 {
     gap: 20px;
 }
+
+
+.w-100{
+    width: 100%;
+}
+
+/*Font sizes*/
+.fs-14{
+    font-size: 14px;
+}
+/*Font sizes*/

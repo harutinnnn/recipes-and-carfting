@@ -3,6 +3,7 @@ import {SeedsResponse} from "@/api/admin/admin.seeds.api";
 import {FieldItemType, FieldItemTypeJoin} from "@/types/FieldItemType";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {UserProductTypeJoin} from "@/types/UserProductType";
+import {FoodTypeJoin} from "@/types/FoodType";
 
 
 export type UserFieldsResponse = {
@@ -19,6 +20,10 @@ export type UserSeedsResponseJoin = {
 
 export type UserProductResponseJoin = {
     items: UserProductTypeJoin[]
+};
+
+export type UserFoodResponseJoin = {
+    items: FoodTypeJoin[]
 };
 
 export async function getSeedsFront(): Promise<SeedsResponse> {
@@ -47,6 +52,12 @@ export async function getUserSeeds(): Promise<UserSeedsResponseJoin> {
 
 export async function getUserProducts(): Promise<UserProductResponseJoin> {
     const response = await api.get<UserProductResponseJoin>("/user-products");
+    return response.data;
+}
+
+
+export async function getUserFoods(): Promise<UserFoodResponseJoin> {
+    const response = await api.get<UserFoodResponseJoin>("/user-foods");
     return response.data;
 }
 

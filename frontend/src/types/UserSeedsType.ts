@@ -2,6 +2,7 @@ export  type SeedType = {
     id: number;
     title: string;
     price: number;
+    minSellPrice: number;
     icon: string;
     productImage: string;
     readyProductImage: string;
@@ -20,6 +21,7 @@ export  type SeedProgressImageType = {
 export type SeedFileType = {
     title: string,
     price: number;
+    minSellPrice: number;
     icon: File | null,
     productImage: File | null,
     readyProductImage: File | null,

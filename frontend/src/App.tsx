@@ -11,6 +11,7 @@ import ProtectedAdminLayout from "@/layouts/ProtectedAdminLayout";
 import {useAuth} from "@/hooks/useAuth";
 import {AdminMain} from "@/pages/admin/admin.main";
 import {AdminSeeds} from "@/pages/admin/seeds/AdminSeeds";
+import {AdminFoods} from "@/pages/admin/foods/AdminFoods";
 
 function App() {
 
@@ -53,6 +54,9 @@ function App() {
 
                     <Route path="/admin/seeds"
                        element={isAdminUser ? <AdminSeeds/> : <Navigate to="/" replace/>}/>
+
+                    <Route path="/admin/foods"
+                           element={isAdminUser ? <AdminFoods/> : <Navigate to="/" replace/>}/>
 
 
                 </Route>
