@@ -7,6 +7,7 @@ import * as http from "node:http";
 import {mainRouter} from "./main.route";
 import {authRouter} from "./auth.route";
 import {seedsRouter} from "./admin/seeds.route";
+import {marketRouter} from "./market.route";
 
 export const createApp = (context: AppContext) => {
 
@@ -24,6 +25,7 @@ export const createApp = (context: AppContext) => {
 
     app.use('/api', mainRouter(context));
     app.use('/api/auth', authRouter(context));
+    app.use('/api/market', marketRouter(context));
 
 
     // Admin

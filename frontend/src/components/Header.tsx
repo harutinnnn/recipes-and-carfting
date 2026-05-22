@@ -5,17 +5,14 @@ import {MyModal} from "@/components/admin/MyModal";
 import {AddSeedComponent} from "@/pages/admin/seeds/AddSeedComponent";
 import {useState} from "react";
 import {UserInventoryComponent} from "@/components/UserInventoryComponent";
+import {MarketComponent} from "@/components/MarketComponent";
 
 export const Header = () => {
 
     const {user} = useAuth()
 
     const [isOpenModal, setIsOpenModal] = useState(false);
-
-
-    const handleCLoseModal = () => {
-        console.log("handleCLoseModal");
-    }
+    const [isOpenModalMarket, setIsOpenModalMarket] = useState(false);
 
     return (
         <header>
@@ -32,7 +29,7 @@ export const Header = () => {
 
                 <div className={"flex flex-row gap-15"}>
 
-                    <div className={"market-icon"}>
+                    <div className={"market-icon"} onClick={() => setIsOpenModalMarket(true)}>
                         <img src="/public/assets/icons/market-icon.png" alt=""/>
                     </div>
 
@@ -71,9 +68,15 @@ export const Header = () => {
             </div>
 
             <MyModal
-                afterOpen={() => {
-                    handleCLoseModal();
-                }} openModal={isOpenModal}
+                afterOpen={() => {}}
+                openModal={isOpenModalMarket}
+                closedModal={() => setIsOpenModalMarket(false)}
+                contend={<MarketComponent/>}
+            />
+
+            <MyModal
+                afterOpen={() => {}}
+                openModal={isOpenModal}
                 closedModal={() => setIsOpenModal(false)}
                 contend={<UserInventoryComponent cb={() => {
                 }}/>}

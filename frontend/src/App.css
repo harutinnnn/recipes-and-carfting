@@ -435,7 +435,7 @@ input:-webkit-autofill:active {
 
 .inventory-item {
     width: 150px;
-    height: 150px;
+    /*height: 150px;*/
     border-radius: 10px;
     border: solid 1px var(--light-gray);
     padding: 10px;
@@ -451,6 +451,14 @@ input:-webkit-autofill:active {
         -webkit-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
         -moz-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
     }
+}
+
+.inventory-item .sell-product-btn {
+    margin-top: 5px;
+}
+
+.game-money-icon {
+    height: 15px;
 }
 
 

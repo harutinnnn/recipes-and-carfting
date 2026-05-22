@@ -37,7 +37,7 @@ export class MainController {
     seeds = async (req: Request, res: Response) => {
         try {
 
-            const items = await this.context.db.select().from(seeds);
+            const items = await this.context.db.select().from(seeds).orderBy(asc(seeds.id));
 
             res.json({
                 items: items,
@@ -119,7 +119,8 @@ export class MainController {
                     await this.context.db.select()
                         .from(userProducts)
                         .where(eq(userProducts.userId, req.user?.id))
-                        .leftJoin(seeds, eq(seeds.id, userProducts.seedId));
+                        .leftJoin(seeds, eq(seeds.id, userProducts.seedId))
+                        .orderBy(asc(userProducts.id));
 
                 res.json({
                     items: items,
