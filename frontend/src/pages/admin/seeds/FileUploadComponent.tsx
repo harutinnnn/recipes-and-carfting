@@ -10,8 +10,9 @@ export const FileUploadComponent = (
     const [fileSrc, setFileSrc] = useState<string | null>("/public/assets/icons/image.png")
 
     useEffect(() => {
+        console.log('progressImage',progressImage)
         if (progressImage) {
-            setFileSrc(import.meta.env.VITE_API_URL + progressImage)
+            setFileSrc(import.meta.env.VITE_API_URL + progressImage.icon)
         }
     }, [])
 

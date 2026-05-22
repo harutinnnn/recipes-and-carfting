@@ -27,12 +27,12 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         setLoading(true);
         const seeditem = await getSeed(id);
         setSeed(seeditem.item);
-        setLoading(false);
     };
 
     const handleGetSeedProgressImage = async (seedId: number) => {
+        setLoading(true);
         const data = await getSeedProgressImages(seedId)
-        setProgressImages(data)
+        setProgressImages(data.items)
     }
 
     useEffect(() => {
@@ -40,6 +40,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         (async () => {
             await handleGetSeed(id);
             await handleGetSeedProgressImage(id)
+            setLoading(false);
         })()
 
     }, [id, setSeed]);
