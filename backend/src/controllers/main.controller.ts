@@ -1,11 +1,23 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
-import {foods, seeds, seedsProgressImages, userFields, userFoods, userProducts, users, userSeeds} from "../db/schema";
+import {
+    foods,
+    seeds,
+    seedsProgressImages,
+    settings,
+    userFields,
+    userFoods,
+    userProducts,
+    users,
+    userSeeds
+} from "../db/schema";
 import {and, asc, eq} from "drizzle-orm";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 import {DbTransaction} from "../types/db.types";
 import {UserService} from "../services/user.service";
+import * as wasi from "node:wasi";
+import {SettingEnums} from "../enums/SettingEnums";
 
 type UserFieldWithSeed = {
     userFields: typeof userFields.$inferSelect;
@@ -27,6 +39,76 @@ export class MainController {
             res.json({
                 error: 'Hello World',
             });
+
+        } catch (_err) {
+            res.status(400).json({error: "Invalid token"});
+        }
+    }
+
+
+    fieldPrice = async (_req: Request, res: Response) => {
+        try {
+
+
+            const [fieldPrice] = await this.context.db.select().from(settings).where(
+                eq(
+                    settings.key, SettingEnums.FIELD_PRICE
+                )
+            );
+
+            if (!fieldPrice.value) {
+                return res.status(200).json({error: "Cant get field price"});
+            }
+
+            return res.json(Number(fieldPrice.value));
+
+
+        } catch (_err) {
+            res.status(400).json({error: "Invalid token"});
+        }
+    }
+
+    buyNewField = async (req: Request, res: Response) => {
+        try {
+
+            await this.context.db.transaction(async (trx: DbTransaction) => {
+                const [fieldPrice] = await trx.select().from(settings).where(
+                    eq(
+                        settings.key, SettingEnums.FIELD_PRICE
+                    )
+                );
+
+                if (!fieldPrice.value) {
+                    return res.status(200).json({error: "Cant get field price"});
+                }
+
+                if (req.user?.id) {
+
+                    if (req.user.gameMoney && Number(req.user.gameMoney) >= Number(fieldPrice.value)) {
+
+                        await trx.insert(userFields).values({
+                            userId: Number(req.user?.id),
+                        })
+
+
+                        await trx.update(users).set({
+                            gameMoney: (Number(req.user.gameMoney) - Number(fieldPrice.value)).toString(),
+                        })
+
+                        return res.json({success: true});
+
+
+                    } else {
+                        res.status(200).json({error: "Dont have enough money!"});
+                    }
+
+                } else {
+                    res.status(200).json({error: "Failed fetch user"});
+                }
+
+            }).catch((err: unknown) => {
+                res.status(400).json({error: "Failed to buy field"});
+            })
 
         } catch (_err) {
             res.status(400).json({error: "Invalid token"});

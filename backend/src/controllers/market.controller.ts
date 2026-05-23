@@ -43,7 +43,7 @@ export class MarketController {
                     const [seed] = await trx.select().from(seeds).where(eq(seeds.id, Number(id)));
 
                     if (Number(seed.availableLevel) > Number(req.user?.level)) {
-                        return res.status(200).json({error: `You can buy it from level ${req.user?.level}`});
+                        return res.status(200).json({error: `You can buy it from level ${seed.availableLevel} !`});
                     }
 
                     if (!req.user || !req.user.gameMoney || (seed && seed.price && Number(req.user.gameMoney) < Number(seed.price))) {
@@ -158,7 +158,6 @@ export class MarketController {
         }
     }
 
-
     sellProduct = async (req: Request, res: Response) => {
 
         try {
@@ -216,7 +215,6 @@ export class MarketController {
 
     }
 
-
     useFood = async (req: Request, res: Response) => {
 
         try {
@@ -238,7 +236,7 @@ export class MarketController {
                     }
 
                     if (userFood && Number(userFood.count) <= 0) {
-                        return res.status(200).json({error: "Dont have product for sell!"});
+                        return res.status(200).json({error: "Dont have food for eat!"});
                     }
 
                     const [food] = await trx.select().from(foods).where(eq(foods.id, Number(userFood.foodId)));

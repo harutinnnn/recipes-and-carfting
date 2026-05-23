@@ -12,6 +12,7 @@ import {useAuth} from "@/hooks/useAuth";
 import {AdminMain} from "@/pages/admin/admin.main";
 import {AdminSeeds} from "@/pages/admin/seeds/AdminSeeds";
 import {AdminFoods} from "@/pages/admin/foods/AdminFoods";
+import { AdminSettings } from "./pages/admin/settings/AdminSettings";
 
 function App() {
 
@@ -57,6 +58,10 @@ function App() {
 
                     <Route path="/admin/foods"
                            element={isAdminUser ? <AdminFoods/> : <Navigate to="/" replace/>}/>
+
+
+                    <Route path="/admin/settings"
+                           element={isAdminUser ? <AdminSettings/> : <Navigate to="/" replace/>}/>
 
 
                 </Route>

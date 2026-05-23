@@ -18,6 +18,16 @@ export const mainRouter = (context: AppContext) => {
     );
 
     router.get(
+        "/field-price",
+        mainController.fieldPrice
+    );
+    router.get(
+        "/buy-new-field",
+        authenticateJWT,
+        mainController.buyNewField
+    );
+
+    router.get(
         "/seeds",
         authenticateJWT,
         mainController.seeds

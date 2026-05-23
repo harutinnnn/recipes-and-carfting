@@ -9,6 +9,7 @@ import {authRouter} from "./auth.route";
 import {seedsRouter} from "./admin/seeds.route";
 import {marketRouter} from "./market.route";
 import {foodRouter} from "./admin/food.route";
+import {settingRouter} from "./admin/settings.route";
 
 export const createApp = (context: AppContext) => {
 
@@ -32,6 +33,7 @@ export const createApp = (context: AppContext) => {
     // Admin
     app.use('/api/admin/seeds', seedsRouter(context));
     app.use('/api/admin/foods', foodRouter(context));
+    app.use('/api/admin/settings', settingRouter(context));
 
 
     return http.createServer(app);

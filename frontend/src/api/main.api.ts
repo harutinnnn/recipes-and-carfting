@@ -26,6 +26,10 @@ export type UserFoodResponseJoin = {
     items: FoodTypeJoin[]
 };
 
+export type BuyNewFieldResponse = {
+    success: boolean
+}
+
 export async function getSeedsFront(): Promise<SeedsResponse> {
     const response = await api.get<SeedsResponse>("/seeds");
     return response.data;
@@ -58,6 +62,18 @@ export async function getUserProducts(): Promise<UserProductResponseJoin> {
 
 export async function getUserFoods(): Promise<UserFoodResponseJoin> {
     const response = await api.get<UserFoodResponseJoin>("/user-foods");
+    return response.data;
+}
+
+
+export async function getFieldPrice(): Promise<number> {
+    const response = await api.get<number>("/field-price");
+    return response.data;
+}
+
+
+export async function buyNewField(): Promise<BuyNewFieldResponse> {
+    const response = await api.get<BuyNewFieldResponse>("/buy-new-field");
     return response.data;
 }
 

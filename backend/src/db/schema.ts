@@ -250,3 +250,12 @@ export const userFoods = pgTable("userFoods", {
     count: integer("count").default(0),
 });
 
+
+
+
+export const settings = pgTable("settings", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    key: text("key").notNull().unique(),
+    value: text("value").notNull(),
+});
