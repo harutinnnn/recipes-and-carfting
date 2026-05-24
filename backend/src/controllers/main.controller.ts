@@ -1,10 +1,11 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
 import {
-    foods,
+    factories,
+    foods, recipes,
     seeds,
     seedsProgressImages,
-    settings,
+    settings, userFactories,
     userFields,
     userFoods,
     userProducts,
@@ -179,6 +180,30 @@ export class MainController {
                         .from(userSeeds)
                         .where(eq(userSeeds.userId, req.user?.id))
                         .leftJoin(seeds, eq(seeds.id, userSeeds.seedId)).orderBy(asc(userSeeds.seedId));
+
+                res.json({
+                    items: items,
+                });
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            res.status(400).json({error: "Invalid token"});
+        }
+    }
+
+    userFactories = async (req: Request, res: Response) => {
+        try {
+
+            if (req.user?.id) {
+
+                const items =
+                    await this.context.db.select()
+                        .from(userFactories)
+                        .where(eq(userFactories.userId, req.user?.id))
+                        .leftJoin(factories, eq(factories.id, userFactories.factoryId))
+                        .leftJoin(recipes, eq(recipes.id, userFactories.recipeId)).orderBy(asc(userFactories.factoryId));
 
                 res.json({
                     items: items,

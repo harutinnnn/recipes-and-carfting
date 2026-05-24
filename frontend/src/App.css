@@ -335,6 +335,7 @@ input:-webkit-autofill:active {
     padding: 25px;
     border-radius: 10px;
     background-color: var(--green-dark-op);
+    z-index: 5;
 }
 
 .fields-list .field-item .field-item-icon {
@@ -460,7 +461,8 @@ input:-webkit-autofill:active {
 }
 
 .inventory-item {
-    width: 150px;
+    width: auto;
+    max-width: 200px;
     /*height: 150px;*/
     border-radius: 10px;
     border: solid 1px var(--light-gray);
@@ -477,6 +479,11 @@ input:-webkit-autofill:active {
         -webkit-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
         -moz-box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);
     }
+}
+
+.inventory-item.disabled-market-item {
+    opacity: 0.5;
+    filter: grayscale(80%);
 }
 
 .inventory-item .sell-product-btn {
@@ -496,6 +503,7 @@ input:-webkit-autofill:active {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    z-index: 99999;
 }
 
 .confirm-modal .inner-confirm-modal {
@@ -514,6 +522,16 @@ input:-webkit-autofill:active {
     margin-bottom: 10px;
 }
 
+.ReactModal__Content {
+    max-width: calc(100% - 10px);
+}
+
+.ReactModal__Overlay{
+    z-index: 99999;
+}
+[data-rht-toaster]{
+    z-index: 999999 !important;
+}
 
 @media (max-width: 800px) {
     .fields-list .field-item .field-item-icon {

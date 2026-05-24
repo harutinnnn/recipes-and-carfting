@@ -47,6 +47,12 @@ export const mainRouter = (context: AppContext) => {
     );
 
     router.get(
+        "/user-factories",
+        authenticateJWT,
+        mainController.userFactories
+    );
+
+    router.get(
         "/user-products",
         authenticateJWT,
         mainController.userProducts

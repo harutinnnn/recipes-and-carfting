@@ -1,19 +1,21 @@
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import 'react-tabs/style/react-tabs.css';
 import {useEffect, useState} from "react";
-import {buyFoodRequest, buySeed as buySeedRequest, getMarketItems} from "@/api/market.api";
+import {buyFactoryRequest, buyFoodRequest, buySeed as buySeedRequest, getMarketItems} from "@/api/market.api";
 import {MarketItemsType} from "@/types/market.types";
 import {SeedType} from "@/types/UserSeedsType";
 import toast from "react-hot-toast";
 import {useAuth} from "@/hooks/useAuth";
 import {FoodType} from "@/types/FoodType";
+import {FactoryType} from "@/types/FactoryType";
 
 export const MarketComponent = () => {
-    const {refreshUser} = useAuth();
+    const {refreshUser, user} = useAuth();
 
     const [marketItems, setMarketItems] = useState<MarketItemsType | null>({
         seeds: [],
         products: [],
+        factories: [],
         recipes: [],
         food: []
     });
@@ -48,9 +50,24 @@ export const MarketComponent = () => {
 
             toast.error(data?.error + "")
         } else {
-            toast.success('Successfully buying seed')
+            toast.success('Successfully buying food')
             await refreshUser();
         }
+    }
+
+    const handleBuyFactory = async (factoryId: number) => {
+
+        const data = await buyFactoryRequest(factoryId);
+
+        if ("error" in data) {
+
+            toast.error(data?.error + "")
+        } else {
+            toast.success('Successfully buying factory')
+            await refreshUser();
+        }
+
+
     }
 
     return (
@@ -62,6 +79,7 @@ export const MarketComponent = () => {
                     <TabList>
                         <Tab>Seeds</Tab>
                         <Tab>Products</Tab>
+                        <Tab>Factories</Tab>
                         <Tab>Recipes</Tab>
                         <Tab>Food</Tab>
                     </TabList>
@@ -98,6 +116,45 @@ export const MarketComponent = () => {
                         <div className="user-inventory-products inventory-items">
 
 
+                        </div>
+                    </TabPanel>
+                    <TabPanel>
+                        <div className="user-inventory-recipes">
+                            <h3>Factories</h3>
+                            <div className="user-inventory-seeds inventory-items">
+                                {marketItems?.factories && marketItems.factories.map((factory: FactoryType) => {
+                                    return (
+                                        <div
+                                            className={"inventory-item " + (user?.level && Number(user?.level) < Number(factory.availableFromLevel) ? "disabled-market-item" : "")}
+                                            key={factory.id}>
+                                            <img src={import.meta.env.VITE_API_URL + factory.icon}
+                                                 style={{width: '100px'}}
+                                                 alt=""/>
+                                            <div className={"flex flex-row gap-10 align-center fs-14"}>
+                                                <span>{factory.title}</span>
+                                                <span className={'flex flex-row gap-5 align-center'}>
+                                                {factory.price}
+                                                    <img
+                                                        src="/public/images/icons/game-money.png"
+                                                        className={"game-money-icon"}
+                                                        alt=""
+                                                    />
+                                            </span>
+                                            </div>
+                                            <div className={"flex flex-row gap-10 align-center fs-14"}>
+                                                <span>Available From Level:</span>
+                                                <span>{factory.availableFromLevel}</span>
+                                            </div>
+                                            <button className={"btn green sm sell-product-btn w-100"} onClick={() => {
+                                                handleBuyFactory(factory.id)
+                                            }}>
+                                                Buy
+                                            </button>
+                                        </div>
+                                    )
+                                })}
+
+                            </div>
                         </div>
                     </TabPanel>
                     <TabPanel>

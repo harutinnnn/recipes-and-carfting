@@ -10,6 +10,8 @@ import {seedsRouter} from "./admin/seeds.route";
 import {marketRouter} from "./market.route";
 import {foodRouter} from "./admin/food.route";
 import {settingRouter} from "./admin/settings.route";
+import {factoriesRouter} from "./admin/factories.route";
+import {recipesRouter} from "./admin/recipes.route";
 
 export const createApp = (context: AppContext) => {
 
@@ -34,6 +36,8 @@ export const createApp = (context: AppContext) => {
     app.use('/api/admin/seeds', seedsRouter(context));
     app.use('/api/admin/foods', foodRouter(context));
     app.use('/api/admin/settings', settingRouter(context));
+    app.use('/api/admin/factories', factoriesRouter(context));
+    app.use('/api/admin/recipes', recipesRouter(context));
 
 
     return http.createServer(app);

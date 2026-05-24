@@ -4,6 +4,7 @@ import {FieldItemType, FieldItemTypeJoin} from "@/types/FieldItemType";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {UserProductTypeJoin} from "@/types/UserProductType";
 import {FoodTypeJoin} from "@/types/FoodType";
+import {FactoryItemTypeJoin} from "@/types/FactoryType";
 
 
 export type UserFieldsResponse = {
@@ -30,6 +31,11 @@ export type BuyNewFieldResponse = {
     success: boolean
 }
 
+
+export type UserFactoriesResponseJoin = {
+    items: FactoryItemTypeJoin[]
+};
+
 export async function getSeedsFront(): Promise<SeedsResponse> {
     const response = await api.get<SeedsResponse>("/seeds");
     return response.data;
@@ -44,6 +50,12 @@ export async function getUserFields(): Promise<UserFieldsResponse> {
 
 export async function getUserFieldsJoin(): Promise<UserFieldsResponseJoin> {
     const response = await api.get<UserFieldsResponseJoin>("/fields");
+    return response.data;
+}
+
+
+export async function getUserFactoriesJoin(): Promise<UserFactoriesResponseJoin> {
+    const response = await api.get<UserFactoriesResponseJoin>("/user-factories");
     return response.data;
 }
 

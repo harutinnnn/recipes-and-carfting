@@ -147,39 +147,65 @@ export const factories = pgTable("factories", {
     id: serial("id").primaryKey(),
     title: text("title").notNull().unique(),
     price: integer("price").notNull(),
-    img: text("img").notNull(),
+    icon: text("icon").notNull(),
     availableFromLevel: integer("availableFromLevel").default(1),
+});
+
+
+export const userFactories = pgTable("userFactories", {
+    id: serial("id").primaryKey(),
+    userId: serial("userId").notNull()
+        .references(() => users.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    factoryId: integer("factoryId")
+        .references(() => factories.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    recipeId: integer("recipeId")
+        .references(() => recipes.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    status: fieldStatus('fieldStatus').notNull().default(FieldStatusEnum.pending),
+    startedAt: timestamp("started_at"),
+    finishedAt: timestamp("finished_at"),
 });
 
 export const recipes = pgTable("recipes", {
     id: serial("id").primaryKey(),
     title: text("title").notNull().unique(),
     price: integer("price").default(0),
-    img: text("img").notNull(),
+    factoryId: serial("factoryId").notNull()
+        .references(() => factories.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    icon: text("icon").notNull(),
     availableFromLevel: integer("availableFromLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
+    takeEnergyCollect: integer("takeEnergyCollect").default(0),
 });
+
 
 export const ingredientType = pgEnum("ingredientType", [IngredientTypesEnum.VEGETABLE, IngredientTypesEnum.ANIMAL_PRODUCT, IngredientTypesEnum.MADE_IN_FACTORY]);
 
 export const recipesIngredients = pgTable("recipesIngredients", {
         id: serial("id").primaryKey(),
-        recipesId: integer("recipesId")
+        recipeId: integer("recipeId")
             .references(() => recipes.id, {
                 onDelete: "cascade",
                 onUpdate: "cascade",
             }),
         ingredientId: integer("ingredientId").notNull(),
         ingredientType: ingredientType('ingredientType').notNull(),
-        ingredientNeeds: integer("ingredientNeeds").notNull(),
-        price: integer("price").default(0),
-        img: text("img").notNull(),
-        availableFromLevel: integer("availableFromLevel").default(1),
-        xpOnCollect: integer("xpOnCollect").default(0),
+        ingredientNeedsCount: integer("ingredientNeedsCount").notNull()
     },
     (table) => [
         unique("skills_name_company_unique").on(
-            table.recipesId,
+            table.recipeId,
             table.ingredientId
         ),
     ]);
@@ -249,8 +275,6 @@ export const userFoods = pgTable("userFoods", {
         }),
     count: integer("count").default(0),
 });
-
-
 
 
 export const settings = pgTable("settings", {

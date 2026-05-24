@@ -38,10 +38,24 @@ export const marketRouter = (context: AppContext) => {
     )
 
     router.get(
+        "/sell-product-all/:id",
+        authenticateJWT,
+        validateParams(QueryParamId),
+        marketController.sellProductAll
+    )
+
+    router.get(
         "/use-food/:id",
         authenticateJWT,
         validateParams(QueryParamId),
         marketController.useFood
+    )
+
+    router.get(
+        "/buy-factory/:id",
+        authenticateJWT,
+        validateParams(QueryParamId),
+        marketController.buyFactory
     )
 
     return router

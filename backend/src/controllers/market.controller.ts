@@ -1,7 +1,7 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
 import {and, asc, eq} from "drizzle-orm";
-import {foods, seeds, userFoods, userProducts, users, userSeeds} from "../db/schema";
+import {factories, foods, seeds, userFactories, userFoods, userProducts, users, userSeeds} from "../db/schema";
 import {DbTransaction} from "../types/db.types";
 
 
@@ -17,12 +17,14 @@ export class MarketController {
 
             const seedsData = await this.context.db.select().from(seeds).orderBy(asc(seeds.id));
             const foodsData = await this.context.db.select().from(foods).orderBy(asc(foods.id));
+            const factoriesData = await this.context.db.select().from(factories).orderBy(asc(factories.id));
 
             res.json(
                 {
                     items: {
                         seeds: seedsData,
-                        food: foodsData
+                        food: foodsData,
+                        factories: factoriesData
                     }
                 }
             );
@@ -215,6 +217,64 @@ export class MarketController {
 
     }
 
+    sellProductAll = async (req: Request, res: Response) => {
+
+        try {
+
+            const {id} = req.params;
+            if (req.user?.id) {
+
+                await this.context.db.transaction(async (trx: DbTransaction) => {
+
+                    const [userProduct] = await trx.select().from(userProducts).where(
+                        and(
+                            eq(userProducts.id, Number(id)),
+                            eq(userProducts.userId, Number(req.user?.id))
+                        )
+                    )
+
+
+                    if (!userProduct) {
+                        return res.status(200).json({error: "The product does not exists!"});
+                    }
+
+                    if (userProduct && Number(userProduct.count) <= 0) {
+                        return res.status(200).json({error: "Dont have product for sell!"});
+                    }
+
+                    const [seed] = await trx.select().from(seeds).where(eq(seeds.id, Number(userProduct.seedId)));
+
+                    await trx.update(userProducts).set({
+                        count: 0,
+                    }).where(eq(userProducts.id, userProduct.id))
+
+
+                    await trx.update(users).set({
+                        gameMoney: (Number(req.user?.gameMoney) + (Number(seed.minSellPrice) * Number(userProduct.count))).toString(),
+                    })
+
+                    userProduct.count = Number(userProduct.count) - 1;
+
+                    res.json(
+                        userProduct
+                    );
+
+                }).catch((err: unknown) => {
+                    console.log(err);
+
+                    return res.status(400).json({error: "Failed to sell product!"});
+                })
+
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (_err) {
+            res.status(400).json({error: "Invalid token"});
+        }
+
+    }
+
     useFood = async (req: Request, res: Response) => {
 
         try {
@@ -270,6 +330,50 @@ export class MarketController {
             res.status(400).json({error: "Invalid token"});
         }
 
+    }
+
+
+    buyFactory = async (req: Request, res: Response) => {
+        try {
+
+            const {id} = req.params;
+            if (req.user?.id) {
+
+                await this.context.db.transaction(async (trx: DbTransaction) => {
+
+                    const [factory] = await trx.select().from(factories).where(eq(factories.id, Number(id)));
+
+                    if (!req.user || !req.user.gameMoney || (factory && factory.price && Number(req.user.gameMoney) < Number(factory.price))) {
+                        return res.status(200).json({error: "You dont have enough money!"});
+                    }
+
+
+                    await trx.insert(userFactories).values({
+                        userId: req.user.id,
+                        factoryId: Number(id),
+                    })
+
+                    await trx.update(users).set({
+                        gameMoney: (Number(req.user.gameMoney) - Number(factory.price)).toString(),
+                    })
+
+                    res.json(
+                        {item: factory}
+                    );
+
+                }).catch((err: unknown) => {
+                    console.log(err)
+
+                    return res.status(400).json({error: "Failed to buy factory!"});
+                })
+
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (_err) {
+            res.status(400).json({error: "Invalid token"});
+        }
     }
 
 }

@@ -77,6 +77,7 @@ html, body {
     background: var(--gark-bg);
     display: flex;
     flex-direction: column;
+    padding-bottom: 20px;
 }
 
 .flex {
@@ -86,6 +87,7 @@ html, body {
 .flex-row {
     flex-direction: row;
 }
+
 .align-center {
     align-items: center;
 }
@@ -93,6 +95,7 @@ html, body {
 .gap-5 {
     gap: 5px;
 }
+
 .gap-10 {
     gap: 10px;
 }
@@ -100,17 +103,39 @@ html, body {
 .gap-15 {
     gap: 15px;
 }
+
 .gap-20 {
     gap: 20px;
 }
 
 
-.w-100{
+.w-100 {
     width: 100%;
 }
 
 /*Font sizes*/
-.fs-14{
+.fs-14 {
     font-size: 14px;
 }
+
 /*Font sizes*/
+
+
+/*Margins*/
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+/*Margins*/

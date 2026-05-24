@@ -170,7 +170,7 @@ ul.admin-sidebar-nav {
     overflow: hidden;
 
 
-    &:hover img{
+    &:hover img {
         filter: grayscale(1);
     }
 }
@@ -201,5 +201,29 @@ ul.admin-sidebar-nav {
     width: 100%;
     height: 100%;
     opacity: 0;
+    cursor: pointer;
+}
+
+.recipe-ingredient-component-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+
+.recipe-ingredinet-component {
+    position: relative;
+    border: dashed 2px var(--light-gray);
+    padding: 10px;
+    padding-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: var(--gray);
+}
+.recipe-ingredinet-component .delete-ingredient {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    stroke: var(--error-color);
     cursor: pointer;
 }

@@ -2,7 +2,11 @@ header {
     height: 70px;
     width: 100%;
     border-bottom: solid 1px var(--gray);
-    position: relative;
+
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    background-color: var(--gark-bg);
 }
 
 header .inner-header {

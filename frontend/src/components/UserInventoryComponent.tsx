@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {getUserFoods, getUserProducts, getUserSeeds} from "@/api/main.api";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {UserProductTypeJoin} from "@/types/UserProductType";
-import {sellUserProduct, useFood} from "@/api/market.api";
+import {sellUserProduct, sellUserProductAll, useFood} from "@/api/market.api";
 import toast from "react-hot-toast";
 import {useAuth} from "@/hooks/useAuth";
 import {FoodType, FoodTypeJoin} from "@/types/FoodType";
@@ -34,10 +34,14 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
     }
 
 
-    const sellProduct = async (productId: number) => {
+    const sellProduct = async (productId: number, all: boolean = false) => {
 
-
-        const data = await sellUserProduct(productId)
+        let data = null;
+        if (all) {
+            data = await sellUserProductAll(productId)
+        } else {
+            data = await sellUserProduct(productId)
+        }
 
         if ("error" in data) {
             toast.error(data?.error + "")
@@ -105,11 +109,20 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
                                         <div>{product.seeds.title} - {product.userProducts.count}</div>
 
                                         {product.userProducts.count ?
-                                            <button className={"btn green sm sell-product-btn w-100"} onClick={() => {
-                                                void sellProduct(product.userProducts.id)
-                                            }}>
-                                                Sell
-                                            </button> : ""}
+                                            <>
+                                                <button className={"btn green sm sell-product-btn w-100"}
+                                                        onClick={() => {
+                                                            void sellProduct(product.userProducts.id)
+                                                        }}>
+                                                    Sell
+                                                </button>
+                                                <button className={"btn green sm sell-product-btn w-100"}
+                                                        onClick={() => {
+                                                            void sellProduct(product.userProducts.id, true)
+                                                        }}>
+                                                    Sell All
+                                                </button>
+                                            </> : ""}
 
                                     </div>
                                 )

@@ -12,7 +12,9 @@ import {useAuth} from "@/hooks/useAuth";
 import {AdminMain} from "@/pages/admin/admin.main";
 import {AdminSeeds} from "@/pages/admin/seeds/AdminSeeds";
 import {AdminFoods} from "@/pages/admin/foods/AdminFoods";
-import { AdminSettings } from "./pages/admin/settings/AdminSettings";
+import {AdminSettings} from "./pages/admin/settings/AdminSettings";
+import {AdminFactories} from "@/pages/admin/factories/AdminFactories";
+import { AdminRecipes } from "./pages/admin/recipes/AdminRecipes";
 
 function App() {
 
@@ -54,14 +56,19 @@ function App() {
                     <Route path="/admin" element={isAdminUser ? <AdminMain/> : <Navigate to="/" replace/>}/>
 
                     <Route path="/admin/seeds"
-                       element={isAdminUser ? <AdminSeeds/> : <Navigate to="/" replace/>}/>
+                           element={isAdminUser ? <AdminSeeds/> : <Navigate to="/" replace/>}/>
 
                     <Route path="/admin/foods"
                            element={isAdminUser ? <AdminFoods/> : <Navigate to="/" replace/>}/>
 
-
                     <Route path="/admin/settings"
                            element={isAdminUser ? <AdminSettings/> : <Navigate to="/" replace/>}/>
+
+                    <Route path="/admin/factories"
+                           element={isAdminUser ? <AdminFactories/> : <Navigate to="/" replace/>}/>
+
+                    <Route path="/admin/recipes"
+                           element={isAdminUser ? <AdminRecipes/> : <Navigate to="/" replace/>}/>
 
 
                 </Route>
