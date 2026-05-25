@@ -1,5 +1,6 @@
 import api from "@/api/axios";
-import {RecipesType} from "@/types/RecipesType";
+import {IngredientTypes, RecipesType} from "@/types/RecipesType";
+import {SeedType} from "@/types/UserSeedsType";
 
 export type RecipeResponse = {
     items: RecipesType[]
@@ -7,6 +8,16 @@ export type RecipeResponse = {
 
 export type RecipeItemResponse = {
     item: RecipesType
+};
+
+export type RecipesIngredients = {
+    recipesIngredients: IngredientTypes
+    seeds: SeedType
+}
+
+export type RecipeItemResponseJoin = {
+    recipe: RecipesType,
+    recipesIngredients: RecipesIngredients[]
 };
 
 
@@ -20,7 +31,14 @@ export async function getRecipes(): Promise<RecipeResponse> {
 }
 
 export async function getRecipe(id: number): Promise<RecipeItemResponse> {
+
     const response = await api.get<RecipeItemResponse>(`/admin/recipes/${id}`);
+    return response.data;
+}
+
+export async function getRecipeJoin(id: number): Promise<RecipeItemResponseJoin> {
+
+    const response = await api.get<RecipeItemResponseJoin>(`/admin/recipes/${id}`);
     return response.data;
 }
 

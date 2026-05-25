@@ -5,8 +5,8 @@ import {AxiosError} from "axios";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Alerts} from "@/components/Alerts";
 import {AlertEnums} from "@/enums/AlertEnums";
-import {IngredientTypes, RecipesFileType, RecipesType} from "@/types/RecipesType";
-import {getRecipe, saveRecipesRequest} from "@/api/admin/admin.recipes.api";
+import {IngredientTypes, RecipesFileType} from "@/types/RecipesType";
+import {getRecipeJoin, RecipeItemResponseJoin, saveRecipesRequest} from "@/api/admin/admin.recipes.api";
 import {FactoryType} from "@/types/FactoryType";
 import {getFactories} from "@/api/admin/admin.factories.api";
 import {capitalize} from "@/helpers/text.helper";
@@ -25,11 +25,22 @@ const createIngredientFormItem = (clientId: number): IngredientFormItem => ({
     ingredientNeedsCount: 0,
 });
 
+const recipeIngredientToFormItem = (ingredient: IngredientTypes, fallbackClientId: number): IngredientFormItem => ({
+    clientId: ingredient.id ?? fallbackClientId,
+    id: ingredient.id ?? 0,
+    recipeId: ingredient.recipeId,
+    ingredientType: ingredient.ingredientType,
+    ingredientId: ingredient.ingredientId,
+    ingredientNeedsCount: ingredient.ingredientNeedsCount,
+});
+
 export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => {
+
+
 
     const [factories, setFactories] = useState<FactoryType[]>([]);
 
-    const [recipe, setRecipe] = useState<RecipesType | undefined>(undefined);
+    const [recipe, setRecipe] = useState<RecipeItemResponseJoin | undefined>(undefined);
 
     const [loading, setLoading] = useState(true);
 
@@ -41,8 +52,15 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
 
     const handleGetRecipe = async (id: number) => {
         setLoading(true);
-        const data = await getRecipe(id);
-        setRecipe(data.item);
+        const data = await getRecipeJoin(id);
+        setRecipe(data);
+        setIngredients(
+            data.recipesIngredients.length > 0
+                ? data.recipesIngredients.map((ingredient, index) =>
+                    recipeIngredientToFormItem(ingredient.recipesIngredients, Date.now() + index)
+                )
+                : [createIngredientFormItem(Date.now())]
+        );
 
         const factoryData = await getFactories();
         setFactories(factoryData.items);
@@ -69,6 +87,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
         availableFromLevel: Yup.number().required("Available From Level is required"),
         xpOnCollect: Yup.number().required("XP on collect is required"),
         takeEnergyCollect: Yup.number().required("Take Energy Collect is required"),
+        ingredientsCount: Yup.number().required("Need minimum 1 ingredient").moreThan(0, 'Need minimum 1 ingredient'),
     });
 
 
@@ -93,6 +112,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
         formData.append("availableFromLevel", availableFromLevel.toString());
         formData.append("takeEnergyCollect", takeEnergyCollect.toString());
         formData.append("xpOnCollect", xpOnCollect.toString());
+        formData.append("ingredients", JSON.stringify(ingredients));
 
         if (values.icon) {
             formData.append("icon", values.icon);
@@ -112,26 +132,20 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                 values.xpOnCollect = 1
                 values.takeEnergyCollect = 1
                 values.availableFromLevel = 1
+                values.ingredientsCount = 0
             }
             cb()
             setDisableBtn(false);
 
-            const recipe = await handleGetRecipe(id);
-
-            if (recipe !== undefined) {
-                setRecipe(recipe);
-            }
+            await handleGetRecipe(id);
 
         } catch (err) {
 
             setDisableBtn(false);
 
             if (err instanceof AxiosError) {
-
                 setError(err.response?.data?.message || "Login failed");
-
             }
-
         }
     };
 
@@ -160,7 +174,6 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                     : ingredient
             )
         );
-        console.log('ingredients LIST',ingredients)
     }
 
     if (loading) {
@@ -181,13 +194,14 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                 <Formik
                     enableReinitialize
                     initialValues={{
-                        title: recipe?.title || "",
-                        price: recipe?.price || 1,
-                        factoryId: recipe?.factoryId || 0,
-                        availableFromLevel: recipe?.availableFromLevel || 1,
+                        title: recipe?.recipe.title || "",
+                        price: recipe?.recipe.price || 1,
+                        factoryId: recipe?.recipe.factoryId || 0,
+                        availableFromLevel: recipe?.recipe.availableFromLevel || 1,
                         icon: null,
-                        xpOnCollect: recipe?.xpOnCollect || 1,
-                        takeEnergyCollect: recipe?.takeEnergyCollect || 1,
+                        xpOnCollect: recipe?.recipe.xpOnCollect || 1,
+                        takeEnergyCollect: recipe?.recipe.takeEnergyCollect || 1,
+                        ingredientsCount: ingredients.length,
                     }}
                     validationSchema={validateSchema}
                     onSubmit={handleSubmit}
@@ -259,42 +273,51 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                                     <ErrorMessage name="icon" component="div" className="error-msg"/>
                                 </div>
 
-                                {recipe?.icon &&
+                                {recipe?.recipe.icon &&
                                     <div className={'data-image thumbnail m-b-2'}>
-                                        <img src={import.meta.env.VITE_API_URL + recipe?.icon} alt=""
+                                        <img src={import.meta.env.VITE_API_URL + recipe?.recipe.icon} alt=""
                                              style={{width: '200px'}}/>
                                     </div>
                                 }
+                            </div>
+                            <div className="input-row">
+                                <button type={'submit'} disabled={disableBtn} className={'btn green'}>Save</button>
                             </div>
 
                             <div>
                                 <h3 className={"mb-20"}>Recipe ingredients</h3>
 
-                                <div className={'recipe-ingredient-component-list'}>
-                                {ingredients.map((ingredient) => (
-                                    <RecipeIngredientComponent
-                                        key={ingredient.clientId}
-                                        recipeId={id}
-                                        id={ingredient.id ?? 0}
-                                        cb={(ingredientValues) => {
-                                            handleUpdateIngredient(ingredient.clientId, ingredientValues);
-                                        }}
-                                        remove={() => {
-                                            handleRemoveIngredient(ingredient.clientId);
-                                        }}
-                                    />
-                                ))}
+
+                                <div className="input-row">
+                                    <Field type="number" id="ingredientsCount" name="ingredientsCount"
+                                           style={{display: 'none'}}/>
+                                    <ErrorMessage name="ingredientsCount" component="div" className="error-msg"/>
                                 </div>
+
+                                <div className={'recipe-ingredient-component-list'}>
+                                    {ingredients.map((ingredient) => (
+                                        <RecipeIngredientComponent
+                                            key={ingredient.clientId}
+                                            recipeId={id}
+                                            id={ingredient.id || ingredient.clientId}
+                                            cb={(ingredientValues) => {
+                                                handleUpdateIngredient(ingredient.clientId, ingredientValues);
+                                            }}
+                                            remove={() => {
+                                                handleRemoveIngredient(ingredient.clientId);
+                                            }}
+                                            addedIngredient={ingredient}
+                                        />
+                                    ))}
+                                </div>
+
+
                                 <div className="input-row">
                                     <button type={'button'} onClick={() => handleAddNewIngredient()}
                                             className={'btn info'}>Add new Ingredient
                                     </button>
                                 </div>
 
-                            </div>
-
-                            <div className="input-row">
-                                <button type={'submit'} disabled={disableBtn} className={'btn btn-green'}>Save</button>
                             </div>
 
                         </Form>

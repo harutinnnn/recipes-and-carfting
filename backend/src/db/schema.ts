@@ -176,7 +176,7 @@ export const userFactories = pgTable("userFactories", {
 
 export const recipes = pgTable("recipes", {
     id: serial("id").primaryKey(),
-    title: text("title").notNull().unique(),
+    title: text("title").notNull(),
     price: integer("price").default(0),
     factoryId: serial("factoryId").notNull()
         .references(() => factories.id, {

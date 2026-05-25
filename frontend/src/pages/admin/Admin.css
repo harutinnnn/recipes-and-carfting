@@ -204,7 +204,7 @@ ul.admin-sidebar-nav {
     cursor: pointer;
 }
 
-.recipe-ingredient-component-list{
+.recipe-ingredient-component-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -220,10 +220,65 @@ ul.admin-sidebar-nav {
     border-radius: 10px;
     background-color: var(--gray);
 }
+
 .recipe-ingredinet-component .delete-ingredient {
     position: absolute;
     top: 5px;
     right: 5px;
     stroke: var(--error-color);
     cursor: pointer;
+}
+
+
+.ingredient-items-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ingredient-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.3s;
+
+    border: 2px dashed transparent;
+
+    &:hover {
+        scale: 1.1;
+    }
+}
+
+.ingredient-item .ingredient-item-title {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    font-size: 12px;
+    padding: 3px 6px;
+    background-color: var(--dark-gray);
+    color: var(--white);
+    border-radius: 5px;
+}
+
+.ingredient-item input {
+    display: none;
+}
+
+.ingredient-item:has(input:checked) {
+    border-color: var(--green-lightest) !important;
+}
+
+.ingredient-item img {
+    width: 100%;
+    cursor: pointer;
+}
+
+.ingredient-item label {
+    margin: 0;
 }

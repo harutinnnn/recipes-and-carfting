@@ -1,10 +1,12 @@
 import {Request, Response} from "express";
 import {AppContext} from "../../types/app.context.type";
-import {recipes} from "../../db/schema";
+import {recipes, recipesIngredients, seeds} from "../../db/schema";
 import {asc, eq} from "drizzle-orm";
 import {DbTransaction} from "../../types/db.types";
 import {removeFile, uploadFile} from "../../helpers/file.helper";
 import path from "node:path";
+import {IngredientTypes} from "../../types/IngredientTypes";
+import {IngredientTypesEnum} from "../../enums/IngredientTypesEnum";
 
 export class AdminRecipesController {
 
@@ -35,11 +37,21 @@ export class AdminRecipesController {
             const {id} = req.params;
             const [item] = await this.context.db.select().from(recipes).where(eq(recipes.id, Number(id)));
 
+
+            const recipesIngredientItems = await this.context.db.select().from(recipesIngredients).where(
+                eq(
+                    recipesIngredients.recipeId, Number(id)
+                )
+            ).innerJoin(seeds, eq(seeds.id, recipesIngredients.ingredientId))
+                .orderBy(asc(recipesIngredients.id));
+
             res.json({
-                item: item,
+                recipe: item,
+                recipesIngredients: recipesIngredientItems
             });
 
         } catch (err) {
+            console.log(err)
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -56,7 +68,8 @@ export class AdminRecipesController {
                 factoryId,
                 availableFromLevel,
                 xpOnCollect,
-                takeEnergyCollect
+                takeEnergyCollect,
+                ingredients
             } = req.body;
 
             const tmpId = !isNaN(id) ? id : 0;
@@ -98,6 +111,10 @@ export class AdminRecipesController {
                         icon: iconUrl
                     }).where(eq(recipes.id, recipe?.id));
 
+                    if (ingredients && ingredients.length > 0) {
+                        await this.saveIngredients(recipe.id, ingredients, trx);
+                    }
+
 
                     return res.json({
                         recipe: recipe,
@@ -137,6 +154,9 @@ export class AdminRecipesController {
                             icon: iconUrl,
                         }).where(eq(recipes.id, insertId));
                     }
+                    if (ingredients && ingredients.length > 0) {
+                        await this.saveIngredients(insertId, ingredients, trx);
+                    }
 
                     return res.json({
                         recipe: tmpRecipe,
@@ -145,15 +165,42 @@ export class AdminRecipesController {
                 }
 
             }).catch((err: unknown) => {
-                console.error(err);
+
                 res.status(400).json({message: "Failed to create recipe"});
             })
 
 
         } catch (err) {
-            console.error(err);
             res.status(400).json({message: "Invalid token"});
         }
+    }
+
+    private saveIngredients = async (recipeId: number, ingredients: IngredientTypes[], trx: DbTransaction) => {
+        const ingredientRows = ingredients.map((ingredient) => {
+            const ingredientId = Number(ingredient.ingredientId);
+            const ingredientNeedsCount = Number(ingredient.ingredientNeedsCount);
+
+            if (
+                !Object.values(IngredientTypesEnum).includes(ingredient.ingredientType) ||
+                ingredientId <= 0 ||
+                ingredientNeedsCount <= 0
+            ) {
+                throw new Error('Wrong ingredient values');
+            }
+
+            return {
+                recipeId,
+                ingredientId,
+                ingredientType: ingredient.ingredientType,
+                ingredientNeedsCount,
+            };
+        });
+
+        await trx.delete(recipesIngredients).where(
+            eq(recipesIngredients.recipeId, recipeId)
+        );
+
+        await trx.insert(recipesIngredients).values(ingredientRows);
     }
 
 }

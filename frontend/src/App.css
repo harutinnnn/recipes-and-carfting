@@ -413,7 +413,7 @@ input:-webkit-autofill:active {
 .user-seed {
     width: 150px;
     /*height: 170px;*/
-    padding: 20px;
+    padding: 10px;
     align-items: center;
     display: flex;
     flex-direction: column;

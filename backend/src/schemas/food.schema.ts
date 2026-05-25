@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {recipes} from "../db/schema";
+import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 
 export const FoodSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -21,6 +21,36 @@ export const FactorySchema = z.object({
     availableFromLevel: z.coerce.number({error: "Price is required"}),
 });
 
+export const IngredientSchema = z.object({
+    recipeId: z.number().optional(),
+    ingredientType: z.enum(IngredientTypesEnum, {
+        error: "IngredientType is required",
+    }),
+    ingredientId: z.coerce.number({
+        error: "IngredientId is required",
+    }),
+    ingredientNeedsCount: z.coerce.number({
+        error: "IngredientNeedsCount is required",
+    }),
+});
+
+const IngredientsSchema = z.preprocess((value) => {
+    if (value === undefined || value === "") {
+        return [];
+    }
+
+    if (typeof value !== "string") {
+        return value;
+    }
+
+    try {
+        return JSON.parse(value);
+    } catch {
+        return value;
+    }
+}, z.array(IngredientSchema).default([]));
+
+
 export const RecipeSchema = z.object({
     title: z.string().min(1, "Title is required"),
     price: z.coerce.number({error: "Price is required"}),
@@ -28,5 +58,6 @@ export const RecipeSchema = z.object({
     availableFromLevel: z.coerce.number({error: "AvailableFromLevel is required"}),
     xpOnCollect: z.coerce.number({error: "XpOnCollect is required"}),
     takeEnergyCollect: z.coerce.number({error: "TakeEnergyCollect is required"}),
+    ingredients: IngredientsSchema,
 });
 

@@ -19,6 +19,7 @@ export type RecipesFileType = {
     availableFromLevel: number;
     xpOnCollect: number;
     takeEnergyCollect: number;
+    ingredientsCount?: number;
 }
 
 export type IngredientTypes = {
