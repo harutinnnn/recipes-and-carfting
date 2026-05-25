@@ -281,7 +281,11 @@ export class MainController {
                     ));
 
 
-                    if (Number(req.user?.energy) && seed?.takeEnergyCollect && Number(seed?.takeEnergyCollect) > Number(req.user?.energy)) {
+                    if (
+                        req.user?.energy !== undefined &&
+                        seed?.takeEnergyCollect !== undefined &&
+                        Number(req.user.energy) < Number(seed.takeEnergyCollect)
+                    ) {
                         return res.status(200).json({error: "You dont have enough energy please. restore energy!"});
                     }
 
@@ -404,7 +408,11 @@ export class MainController {
                             }
 
 
-                            if (Number(req.user?.energy) && seed?.takeEnergyCollect && Number(req.user?.energy) < Number(seed?.takeEnergyCollect)) {
+                            if (
+                                req.user?.energy !== undefined &&
+                                seed?.takeEnergyCollect !== undefined &&
+                                Number(req.user.energy) < Number(seed.takeEnergyCollect)
+                            ) {
                                 return res.status(200).json({error: "You dont have enough energy please. restore energy!"});
                             }
 

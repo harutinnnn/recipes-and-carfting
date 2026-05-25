@@ -50,7 +50,7 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
         return (
             <div className={"field-item empty"} style={{height: `${height - 30}px`}}>
                 <div className={"field-seed-new"}>
-                    <button className={"btn green rounded"} onClick={() => handleGetSeeds()}>Seed</button>
+                    <button className={"btn green rounded sm"} onClick={() => handleGetSeeds()}>Seed</button>
                 </div>
 
                 <MyModal
@@ -108,10 +108,10 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
             </div>
             {isReady &&
                 <div className={"field-collect"}>
-                    <button className={"btn green rounded"} onClick={async () => {
+                    <button className={"btn green rounded sm"} onClick={async () => {
                         await collectFromField(field)
                         cb()
-                    }}> Click to collect
+                    }}> Collect
                     </button>
                 </div>
             }

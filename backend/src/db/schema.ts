@@ -67,7 +67,7 @@ export const users = pgTable("users", {
 
 export const seeds = pgTable("seeds", {
     id: serial("id").primaryKey(),
-    title: text("title").notNull().unique(),
+    title: text("title").notNull(),
     price: numeric("price", {
         precision: 10,
         scale: 2,

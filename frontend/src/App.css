@@ -250,7 +250,7 @@ input:-webkit-autofill:active {
 
 .fields-list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 30px;
 
     margin-top: 20px;
@@ -292,13 +292,14 @@ input:-webkit-autofill:active {
 .fields-list .field-seed-title {
     position: absolute;
     z-index: 5;
-    top: 30px;
-    left: 30px;
-    background-color: var(--blue-dark);
+    top: 20px;
+    left: 20px;
+    color: var(--green-lightest);
+    background-color: var(--gark-bg);
     padding: 5px 10px;
     border-radius: 15px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .fields-list .field-item .field-collect {
@@ -319,7 +320,7 @@ input:-webkit-autofill:active {
 
 .fields-list .field-item.empty {
     background-image: url("/public/images/field-ground.png");
-    background-size: calc(100% - 40px);
+    background-size: calc(100% - 20px);
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -340,8 +341,8 @@ input:-webkit-autofill:active {
 
 .fields-list .field-item .field-item-icon {
     position: absolute;
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -358,8 +359,8 @@ input:-webkit-autofill:active {
     overflow: hidden;
     z-index: 1;
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 10px;
+    left: 10px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     font-weight: bold;
@@ -367,23 +368,23 @@ input:-webkit-autofill:active {
     background-color: var(--dark-gray);
     color: var(--green-light);
     padding: 3px 10px;
-    width: calc(100% - 40px);
+    width: calc(100% - 20px);
     border: solid 1px var(--light-gray);
 }
 
 .fields-list .field-item .field-seed-status {
-    color: var(--white);
-    background-color: var(--green-dark);
+    color: var(--green-dark);
+    background-color: var(--green-light);
     position: absolute;
 
     z-index: 5;
-    top: 30px;
-    right: 30px;
+    top: 20px;
+    right: 20px;
 
     padding: 5px 10px;
     border-radius: 15px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .fields-list .field-item .field-item-info .field-seed-progress {
@@ -410,7 +411,7 @@ input:-webkit-autofill:active {
 }
 
 .user-seed {
-    width: 200px;
+    width: 150px;
     /*height: 170px;*/
     padding: 20px;
     align-items: center;
@@ -420,6 +421,7 @@ input:-webkit-autofill:active {
     border-radius: 10px;
     cursor: pointer;
     position: relative;
+    font-size: 14px;
 
     &:hover {
         box-shadow: 0px 0px 5px 0px rgba(71, 71, 71, 0.75);

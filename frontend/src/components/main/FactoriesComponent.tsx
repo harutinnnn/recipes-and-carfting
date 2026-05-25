@@ -57,11 +57,11 @@ export const FactoriesComponent = () => {
     return (
         <>
             <div className="fields-container" ref={elementRef}>
-                <h2 className={"container-title"}>Fields</h2>
+                <h2 className={"container-title"}>Factories</h2>
 
                 <div className={"fields-list"}>
 
-                    {factories.map(factory => <FactoryItem factory={factory} key={factory.userFactories.id} height={width / 3}
+                    {factories.map(factory => <FactoryItem factory={factory} key={factory.userFactories.id} height={width / 5}
                                                     cb={() => getUserFactories()}/>)}
 
                 </div>

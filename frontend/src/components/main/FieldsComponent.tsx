@@ -55,6 +55,8 @@ export const FieldsComponent = () => {
 
         if ("error" in data) {
             toast.error(data?.error + "")
+        }else{
+            setOpen(false);
         }
         setOpen(true)
         await getUserFields()
@@ -68,10 +70,10 @@ export const FieldsComponent = () => {
 
                 <div className={"fields-list"}>
 
-                    {fields.map(field => <FieldItem field={field} key={field.userFields.id} height={width / 3}
+                    {fields.map(field => <FieldItem field={field} key={field.userFields.id} height={width / 5}
                                                     cb={() => getUserFields()}/>)}
 
-                    <div className={"field-item buy-new-field"} style={{height: `${((width / 3) - 30)}px`}}
+                    <div className={"field-item buy-new-field"} style={{height: `${((width / 5) - 30)}px`}}
                          onClick={() => {
 
                              setOpen(true);

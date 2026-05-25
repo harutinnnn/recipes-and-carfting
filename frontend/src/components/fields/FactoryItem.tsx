@@ -8,7 +8,6 @@ import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {collectUserField, setUserSeed} from "@/api/user.api";
 import {useAuth} from "@/hooks/useAuth";
 import toast from "react-hot-toast";
-import {getFieldProgressImage} from "@/helpers/field.helper";
 import {FactoryItemTypeJoin} from "@/types/FactoryType";
 
 export const FactoryItem = ({factory, height, cb}: {
@@ -56,7 +55,7 @@ export const FactoryItem = ({factory, height, cb}: {
 
             <div className={"field-item"} style={{height: `${height - 30}px`}}>
                 <div className={"field-seed-new"}>
-                    <button className={"btn green rounded"} onClick={() => handleGetSeeds()}>Make</button>
+                    <button className={"btn green rounded sm"} onClick={() => handleGetSeeds()}>Make</button>
                 </div>
 
                 <img src={import.meta.env.VITE_API_URL + factory.factories.icon} alt="" className={"field-item-icon"}/>
@@ -117,10 +116,10 @@ export const FactoryItem = ({factory, height, cb}: {
             </div>
             {isReady &&
                 <div className={"field-collect"}>
-                    <button className={"btn green rounded"} onClick={async () => {
+                    <button className={"btn green rounded sm"} onClick={async () => {
                         // await collectFromField(field)
                         cb()
-                    }}> Click to collect
+                    }}> Collect
                     </button>
                 </div>
             }
