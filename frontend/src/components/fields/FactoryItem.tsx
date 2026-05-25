@@ -9,6 +9,9 @@ import {collectUserField, setUserSeed} from "@/api/user.api";
 import {useAuth} from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import {FactoryItemTypeJoin} from "@/types/FactoryType";
+import {RecipeItemResponseJoin} from "@/api/admin/admin.recipes.api";
+import {RecipesComponent} from "@/components/fields/RecipesComponent";
+import {setMakeRecipe} from "@/api/recipe.api";
 
 export const FactoryItem = ({factory, height, cb}: {
     factory: FactoryItemTypeJoin | null,
@@ -26,7 +29,7 @@ export const FactoryItem = ({factory, height, cb}: {
     }, [])
 
 
-    const handleGetSeeds = () => {
+    const handleGetRecipes = () => {
         setIsOpenModal(true);
     }
 
@@ -36,8 +39,8 @@ export const FactoryItem = ({factory, height, cb}: {
     }
 
 
-    const handleSetSeeds = async (fieldId: number, seedId: number) => {
-        const data = await setUserSeed({fieldId: fieldId, seedId: seedId})
+    const handleMakeRecipe = async (factoryId: number, recipeId: number) => {
+        const data = await setMakeRecipe({seedId: recipeId, factory: factoryId});
 
         if ("error" in data) {
             toast.error(data.error + '')
@@ -55,7 +58,7 @@ export const FactoryItem = ({factory, height, cb}: {
 
             <div className={"field-item"} style={{height: `${height - 30}px`}}>
                 <div className={"field-seed-new"}>
-                    <button className={"btn green rounded sm"} onClick={() => handleGetSeeds()}>Make</button>
+                    <button className={"btn green rounded sm"} onClick={() => handleGetRecipes()}>Make</button>
                 </div>
 
                 <img src={import.meta.env.VITE_API_URL + factory.factories.icon} alt="" className={"field-item-icon"}/>
@@ -66,8 +69,8 @@ export const FactoryItem = ({factory, height, cb}: {
                         handleCLoseModal();
                     }} openModal={isOpenModal}
                     closedModal={() => setIsOpenModal(false)}
-                    contend={<UserSeeds cb={async (userSeed: UserSeedTypeJoin) => {
-                        await handleSetSeeds(factory.userFactories.id, userSeed.seeds.id)
+                    contend={<RecipesComponent cb={async (recipe: RecipeItemResponseJoin) => {
+                        await handleMakeRecipe(factory.factories.id, recipe.recipe.id)
                     }}/>}
                 />
             </div>

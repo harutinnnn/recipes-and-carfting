@@ -1,11 +1,10 @@
 export  type SeedType = {
     id: number;
+    productId: number;
     title: string;
     price: number;
     minSellPrice: number;
     icon: string;
-    productImage: string;
-    readyProductImage: string;
     availableLevel: number;
     xpOnCollect: number;
     collectionTime: number;
@@ -19,12 +18,11 @@ export  type SeedProgressImageType = {
 }
 
 export type SeedFileType = {
+    productId: number;
     title: string,
     price: number;
     minSellPrice: number;
     icon: File | null,
-    productImage: File | null,
-    readyProductImage: File | null,
     availableLevel: number;
     xpOnCollect: number;
     collectionTime: number;

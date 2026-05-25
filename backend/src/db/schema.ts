@@ -67,6 +67,11 @@ export const users = pgTable("users", {
 
 export const seeds = pgTable("seeds", {
     id: serial("id").primaryKey(),
+    productId: integer("productId").notNull()
+        .references(() => products.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
     title: text("title").notNull(),
     price: numeric("price", {
         precision: 10,
@@ -77,8 +82,6 @@ export const seeds = pgTable("seeds", {
         scale: 2,
     }).notNull().default("0"),
     icon: text("icon"),
-    productImage: text("productImage"),
-    readyProductImage: text("readyProductImage"),
     availableLevel: integer("availableLevel").default(1),
     xpOnCollect: integer("xpOnCollect").default(0),
     takeEnergyCollect: integer("takeEnergyCollect").default(0),
@@ -219,7 +222,7 @@ export const recipesIngredientsRelation = relations(recipes,
     ))
 
 
-export const userProductTypes = pgEnum("userProductTypes", [IngredientTypesEnum.ANIMAL_PRODUCT, IngredientTypesEnum.MADE_IN_FACTORY, IngredientTypesEnum.VEGETABLE]);
+export const userProductTypes = pgEnum("userProductTypes", IngredientTypesEnum);
 
 export const userProducts = pgTable("userProducts", {
     id: serial("id").primaryKey(),
@@ -234,6 +237,14 @@ export const userProducts = pgTable("userProducts", {
             onUpdate: "cascade",
         }),
     count: integer("count").default(0),
+    userProductTypes: userProductTypes('userProductTypes').notNull()
+});
+
+
+export const products = pgTable("products", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    icon: text("icon").notNull(),
     userProductTypes: userProductTypes('userProductTypes').notNull()
 });
 

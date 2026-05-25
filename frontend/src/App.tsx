@@ -14,7 +14,8 @@ import {AdminSeeds} from "@/pages/admin/seeds/AdminSeeds";
 import {AdminFoods} from "@/pages/admin/foods/AdminFoods";
 import {AdminSettings} from "./pages/admin/settings/AdminSettings";
 import {AdminFactories} from "@/pages/admin/factories/AdminFactories";
-import { AdminRecipes } from "./pages/admin/recipes/AdminRecipes";
+import {AdminRecipes} from "./pages/admin/recipes/AdminRecipes";
+import {AdminProducts} from "@/pages/admin/products/AdminProducts";
 
 function App() {
 
@@ -69,6 +70,9 @@ function App() {
 
                     <Route path="/admin/recipes"
                            element={isAdminUser ? <AdminRecipes/> : <Navigate to="/" replace/>}/>
+
+                    <Route path="/admin/products"
+                           element={isAdminUser ? <AdminProducts/> : <Navigate to="/" replace/>}/>
 
 
                 </Route>

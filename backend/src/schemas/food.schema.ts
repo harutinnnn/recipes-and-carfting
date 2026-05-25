@@ -1,6 +1,13 @@
 import {z} from "zod";
 import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 
+export const ProductSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    userProductTypes: z.enum(IngredientTypesEnum, {
+        error: "IngredientType is required",
+    }),
+});
+
 export const FoodSchema = z.object({
     title: z.string().min(1, "Title is required"),
     price: z.coerce.number({error: "Price is required"}),

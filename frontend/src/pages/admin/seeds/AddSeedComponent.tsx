@@ -8,9 +8,14 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Alerts} from "@/components/Alerts";
 import {AlertEnums} from "@/enums/AlertEnums";
 import {FileUploadComponent} from "@/pages/admin/seeds/FileUploadComponent";
+import {ProductType} from "@/types/ProductType";
+import {getProducts} from "@/api/admin/admin.products.api";
+import {IngredientTypesEnum} from "@/enums/IngredientTypesEnum";
+import {capitalize} from "@/helpers/text.helper";
 
 export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
+    const [products, setProducts] = useState<ProductType[]>([]);
 
     const [seed, setSeed] = useState<SeedType | undefined>(undefined);
     const [progressImages, setProgressImages] = useState<SeedProgressImageType[]>([]);
@@ -27,6 +32,10 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         setLoading(true);
         const seeditem = await getSeed(id);
         setSeed(seeditem.item);
+
+        const productsList = await getProducts();
+        setProducts(productsList.items)
+
     };
 
     const handleGetSeedProgressImage = async (seedId: number) => {
@@ -50,6 +59,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
     const [disableBtn, setDisableBtn] = useState(false);
 
     const validateSchema = Yup.object({
+        productId: Yup.number().required("Product is required").min(0).required("Product is required"),
         title: Yup.string().required("Title is required"),
         price: Yup.number().required("Number is required"),
         minSellPrice: Yup.number().required("Number is required"),
@@ -66,6 +76,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         setDisableBtn(true);
 
 
+        const productId = values.productId;
         const title = values.title;
         const price = values.price;
         const minSellPrice = values.minSellPrice;
@@ -76,6 +87,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
         const formData = new FormData();
         formData.append('id', id.toString())
+        formData.append('productId', productId.toString())
         formData.append("title", title);
         formData.append("price", price.toString());
         formData.append("minSellPrice", minSellPrice.toString());
@@ -86,14 +98,6 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
         if (values.icon) {
             formData.append("icon", values.icon);
-        }
-
-        if (values.productImage) {
-            formData.append("productImage", values.productImage);
-        }
-
-        if (values.readyProductImage) {
-            formData.append("readyProductImage", values.readyProductImage);
         }
 
         try {
@@ -169,21 +173,34 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                     enableReinitialize
                     initialValues={{
                         title: seed?.title || "",
+                        productId: seed?.productId || products[0].id || 0,
                         price: seed?.price || 0,
                         minSellPrice: seed?.minSellPrice || 0,
                         availableLevel: seed?.availableLevel || 0,
                         xpOnCollect: seed?.xpOnCollect || 0,
                         collectionTime: seed?.collectionTime || 0,
                         takeEnergyCollect: seed?.takeEnergyCollect || 0,
-                        icon: null,
-                        productImage: null,
-                        readyProductImage: null
+                        icon: null
                     }}
                     validationSchema={validateSchema}
                     onSubmit={handleSubmit}
                 >
                     {({setFieldValue}) => (
                         <Form>
+
+
+                            <div className="input-row">
+                                <label htmlFor="email">Product</label>
+                                <Field as="select" name="productId" id="productId">
+                                    {products.map(products => (
+                                        <option value={products.id}
+                                                key={products.id}>{products.title}</option>
+                                    ))}
+
+                                </Field>
+                                <ErrorMessage name="productId" component="div" className="error-msg"/>
+                            </div>
+
 
                             <div className="input-row">
                                 <label htmlFor="title">Title</label>
@@ -199,7 +216,8 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
                             <div className="input-row">
                                 <label htmlFor="minSellPrice">Minimum selling price</label>
-                                <Field type="number" id="minSellPrice" name="minSellPrice" step={.1} placeholder="Minimum selling price"/>
+                                <Field type="number" id="minSellPrice" name="minSellPrice" step={.1}
+                                       placeholder="Minimum selling price"/>
                                 <ErrorMessage name="minSellPrice" component="div" className="error-msg"/>
                             </div>
 
@@ -250,54 +268,6 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                              style={{width: '200px'}}/>
                                     </div>
                                 }
-                            </div>
-
-
-                            <div className={"image-container"}>
-                                <div className="input-row">
-                                    <label htmlFor="productImage">Product image</label>
-                                    <input
-                                        type="file"
-                                        id="productImage"
-                                        name="productImage"
-                                        onChange={(e) => {
-                                            setFieldValue("productImage", e.currentTarget.files?.[0]);
-                                        }}
-                                    />
-                                    <ErrorMessage name="productImage" component="div" className="error-msg"/>
-                                </div>
-
-                                {seed?.productImage &&
-                                    <div className={'data-image thumbnail m-b-2'}>
-                                        <img src={import.meta.env.VITE_API_URL + seed?.productImage} alt=""
-                                             style={{width: '200px'}}/>
-                                    </div>
-                                }
-
-                            </div>
-
-
-                            <div className={"image-container"}>
-                                <div className="input-row">
-                                    <label htmlFor="readyProductImage">Product image</label>
-                                    <input
-                                        type="file"
-                                        id="readyProductImage"
-                                        name="readyProductImage"
-                                        onChange={(e) => {
-                                            setFieldValue("readyProductImage", e.currentTarget.files?.[0]);
-                                        }}
-                                    />
-                                    <ErrorMessage name="readyProductImage" component="div" className="error-msg"/>
-                                </div>
-
-                                {seed?.readyProductImage &&
-                                    <div className={'data-image thumbnail m-b-2'}>
-                                        <img src={import.meta.env.VITE_API_URL + seed?.readyProductImage} alt=""
-                                             style={{width: '200px'}}/>
-                                    </div>
-                                }
-
                             </div>
 
                             <div className={"image-container"}>

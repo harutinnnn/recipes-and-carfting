@@ -50,6 +50,7 @@ export class AdminSeedsController {
 
             const {
                 id,
+                productId,
                 title,
                 price,
                 minSellPrice,
@@ -58,6 +59,8 @@ export class AdminSeedsController {
                 collectionTime,
                 takeEnergyCollect
             } = req.body;
+
+            console.log('productId',productId)
 
             const tmpId = !isNaN(id) ? id : 0;
             const titleValue = String(title);
@@ -73,9 +76,6 @@ export class AdminSeedsController {
                 if (seed?.id) {
 
                     let iconUrl = seed.icon;
-                    let productImageUrl = seed.productImage;
-                    let readyProductImageUrl = seed.readyProductImage;
-
 
                     const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
                     const icon = files?.icon?.[0];
@@ -96,38 +96,8 @@ export class AdminSeedsController {
                         iconUrl = uploadedIcon;
                     }
 
-                    if (productImage) {
-
-                        const rootDir = process.cwd();
-
-                        if (productImageUrl) {
-                            await removeFile(path.join(rootDir, productImageUrl));
-                        }
-
-                        const uploadedProductImage = await uploadFile(productImage, 'seeds');
-                        if (uploadedProductImage instanceof Error) {
-                            throw uploadedProductImage;
-                        }
-                        productImageUrl = uploadedProductImage;
-                    }
-
-
-                    if (readyProductImage) {
-
-                        const rootDir = process.cwd();
-
-                        if (readyProductImageUrl) {
-                            await removeFile(path.join(rootDir, readyProductImageUrl));
-                        }
-
-                        const uploadedReadyProductImage = await uploadFile(readyProductImage, 'seeds');
-                        if (uploadedReadyProductImage instanceof Error) {
-                            throw uploadedReadyProductImage;
-                        }
-                        readyProductImageUrl = uploadedReadyProductImage;
-                    }
-
                     await trx.update(seeds).set({
+                        productId: productId,
                         title: titleValue,
                         price: priceValue,
                         minSellPrice: minSellPriceValue,
@@ -135,9 +105,7 @@ export class AdminSeedsController {
                         xpOnCollect: Number(xpOnCollect),
                         collectionTime: Number(collectionTime),
                         takeEnergyCollect: Number(takeEnergyCollect),
-                        icon: iconUrl,
-                        productImage: productImageUrl,
-                        readyProductImage: readyProductImageUrl
+                        icon: iconUrl
                     }).where(eq(seeds.id, seed.id));
 
 
@@ -148,10 +116,9 @@ export class AdminSeedsController {
                 } else {
 
                     const [tmpSeed] = await trx.insert(seeds).values({
+                        productId: productId,
                         title: titleValue,
                         icon: "",
-                        productImage: "",
-                        readyProductImage: "",
                         price: priceValue,
                         minSellPrice: minSellPriceValue,
                         availableLevel: Number(availableLevel),
@@ -180,39 +147,16 @@ export class AdminSeedsController {
                         iconUrl = uploadedIcon;
                     }
 
-                    if (productImage) {
-
-                        const uploadedProductImage = await uploadFile(productImage, 'seeds');
-                        if (uploadedProductImage instanceof Error) {
-                            throw uploadedProductImage;
-                        }
-                        productImageUrl = uploadedProductImage;
-                    }
-
-                    if (readyProductImage) {
-
-                        const uploadedReadyProductImage = await uploadFile(readyProductImage, 'seeds');
-                        if (uploadedReadyProductImage instanceof Error) {
-                            throw uploadedReadyProductImage;
-                        }
-                        readyProductImageUrl = uploadedReadyProductImage;
-                    }
-
                     if (iconUrl || productImageUrl || readyProductImageUrl) {
 
                         await trx.update(seeds).set({
                             icon: iconUrl,
-                            productImage: productImageUrl,
-                            readyProductImage: readyProductImageUrl,
                         }).where(eq(seeds.id, insertId));
                     }
-
 
                     return res.json({
                         seed: tmpSeed,
                     });
-
-
                 }
 
             }).catch((err: unknown) => {
