@@ -4,10 +4,10 @@ import {useEffect, useState} from "react";
 import {getUserFoods, getUserProducts, getUserSeeds} from "@/api/main.api";
 import {UserSeedTypeJoin} from "@/types/UserSeedsType";
 import {UserProductTypeJoin} from "@/types/UserProductType";
-import {sellUserProduct, sellUserProductAll, useFood} from "@/api/market.api";
+import {sellUserProduct, sellUserProductAll, _useFood} from "@/api/market.api";
 import toast from "react-hot-toast";
 import {useAuth} from "@/hooks/useAuth";
-import {FoodType, FoodTypeJoin} from "@/types/FoodType";
+import {FoodTypeJoin} from "@/types/FoodType";
 
 export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
     const {refreshUser} = useAuth();
@@ -15,12 +15,6 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
     const [userSeeds, setUserSeeds] = useState<UserSeedTypeJoin[]>([]);
     const [userProducts, setUserProducts] = useState<UserProductTypeJoin[]>([]);
     const [userFoods, sertUserFoods] = useState<FoodTypeJoin[]>([]);
-
-    useEffect(() => {
-        (async () => {
-            await getInventoryItems()
-        })()
-    }, [setUserSeeds, setUserProducts])
 
     const getInventoryItems = async () => {
         const data = await getUserSeeds()
@@ -33,10 +27,17 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
         sertUserFoods(foodsData.items)
     }
 
+    useEffect(() => {
+        (async () => {
+            await getInventoryItems()
+        })()
+    }, [setUserSeeds, setUserProducts])
+
 
     const sellProduct = async (productId: number, all: boolean = false) => {
 
         let data = null;
+
         if (all) {
             data = await sellUserProductAll(productId)
         } else {
@@ -54,7 +55,7 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
 
     const handleUseFood = async (foodId: number) => {
 
-        const data = await useFood(foodId)
+        const data = await _useFood(foodId)
 
         if ("error" in data) {
             toast.error(data?.error + "")
@@ -102,7 +103,7 @@ export const UserInventoryComponent = ({cb}: { cb: () => void }) => {
                             {userProducts && userProducts.map(product => {
                                 return (
                                     <div className={"inventory-item"} key={product.seeds.id}>
-                                        <img src={import.meta.env.VITE_API_URL + product.seeds.readyProductImage}
+                                        <img src={import.meta.env.VITE_API_URL + product?.products?.icon}
                                              style={{width: '100px'}}
                                              alt=""/>
 

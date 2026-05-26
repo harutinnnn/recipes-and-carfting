@@ -48,7 +48,7 @@ export async function buyFactoryRequest(id: number): Promise<FoodType> {
 }
 
 
-export async function useFood(id: number): Promise<BuyFactoryItemResponse> {
+export async function _useFood(id: number): Promise<BuyFactoryItemResponse> {
     const response = await api.get<BuyFactoryItemResponse>(`/market/use-food/${id}`);
     return response.data;
 }

@@ -3,7 +3,7 @@ import 'react-tabs/style/react-tabs.css';
 import {useEffect, useState} from "react";
 import {buyFactoryRequest, buyFoodRequest, buySeed as buySeedRequest, getMarketItems} from "@/api/market.api";
 import {MarketItemsType} from "@/types/market.types";
-import {SeedType} from "@/types/UserSeedsType";
+import {SeedType, SeedTypeProduct} from "@/types/UserSeedsType";
 import toast from "react-hot-toast";
 import {useAuth} from "@/hooks/useAuth";
 import {FoodType} from "@/types/FoodType";
@@ -87,18 +87,18 @@ export const MarketComponent = () => {
                     <TabPanel>
                         <h3>Seeds</h3>
                         <div className="user-inventory-seeds inventory-items">
-                            {marketItems?.seeds && marketItems.seeds.map((seed: SeedType) => {
+                            {marketItems?.seeds && marketItems.seeds.map((seed: SeedTypeProduct) => {
                                 return (
-                                    <div className={"inventory-item"} key={seed.id}
-                                         onClick={() => handleBuySeed(seed.id)}>
-                                        <img src={import.meta.env.VITE_API_URL + seed.icon}
+                                    <div className={"inventory-item"} key={seed.seeds.id}
+                                         onClick={() => handleBuySeed(seed.seeds.id)}>
+                                        <img src={import.meta.env.VITE_API_URL + seed.products.icon}
                                              style={{width: '100px'}}
                                              alt=""/>
                                         <div className={"flex flex-row gap-10 align-center"}>
-                                            <span>{seed.title}</span>
+                                            <span>{seed.seeds.title}</span>
                                             <span>|</span>
                                             <span className={'flex flex-row gap-5 align-center'}>
-                                                {seed.price}:
+                                                {seed.seeds.price}:
                                                 <img
                                                     src="/public/images/icons/game-money.png"
                                                     className={"game-money-icon"}

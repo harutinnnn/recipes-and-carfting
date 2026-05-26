@@ -1,5 +1,6 @@
 import {IngredientTypesEnum} from "@/enums/IngredientTypesEnum";
 import {SeedType} from "@/types/UserSeedsType";
+import {ProductType} from "@/types/ProductType";
 
 export  type UserProductType = {
     id: number;
@@ -12,5 +13,6 @@ export  type UserProductType = {
 export  type UserProductTypeJoin = {
     userProducts: UserProductType
     seeds: SeedType
+    products: ProductType
 }
 

@@ -1,7 +1,17 @@
 import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
 import {and, asc, eq} from "drizzle-orm";
-import {factories, foods, seeds, userFactories, userFoods, userProducts, users, userSeeds} from "../db/schema";
+import {
+    factories,
+    foods,
+    products,
+    seeds,
+    userFactories,
+    userFoods,
+    userProducts,
+    users,
+    userSeeds
+} from "../db/schema";
 import {DbTransaction} from "../types/db.types";
 
 
@@ -15,7 +25,10 @@ export class MarketController {
     index = async (_req: Request, res: Response) => {
         try {
 
-            const seedsData = await this.context.db.select().from(seeds).orderBy(asc(seeds.id));
+            const seedsData = await this.context.db.select().from(seeds)
+                .leftJoin(products, eq(products.id, seeds.productId))
+                .orderBy(asc(seeds.id));
+
             const foodsData = await this.context.db.select().from(foods).orderBy(asc(foods.id));
             const factoriesData = await this.context.db.select().from(factories).orderBy(asc(factories.id));
 

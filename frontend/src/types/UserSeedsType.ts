@@ -1,3 +1,5 @@
+import {ProductType} from "@/types/ProductType";
+
 export  type SeedType = {
     id: number;
     productId: number;
@@ -9,6 +11,11 @@ export  type SeedType = {
     xpOnCollect: number;
     collectionTime: number;
     takeEnergyCollect: number;
+}
+
+export  type SeedTypeProduct = {
+    seeds: SeedType;
+    products: ProductType;
 }
 export  type SeedProgressImageType = {
     id: number;
@@ -39,6 +46,7 @@ export type UserSeedsType = {
 
 export  type UserSeedTypeJoin = {
     userSeeds: UserSeedsType
-    seeds: SeedType
+    seeds: SeedType,
+    products: ProductType
 }
 

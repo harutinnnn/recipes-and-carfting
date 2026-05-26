@@ -2,7 +2,7 @@ import {AppContext} from "../types/app.context.type";
 import {Request, Response} from "express";
 import {
     factories,
-    foods, recipes,
+    foods, products, recipes,
     seeds,
     seedsProgressImages,
     settings, userFactories,
@@ -179,7 +179,8 @@ export class MainController {
                     await this.context.db.select()
                         .from(userSeeds)
                         .where(eq(userSeeds.userId, req.user?.id))
-                        .leftJoin(seeds, eq(seeds.id, userSeeds.seedId)).orderBy(asc(userSeeds.seedId));
+                        .leftJoin(seeds, eq(seeds.id, userSeeds.seedId))
+                        .leftJoin(products, eq(products.id, seeds.productId)).orderBy(asc(userSeeds.seedId));
 
                 res.json({
                     items: items,
@@ -227,6 +228,7 @@ export class MainController {
                         .from(userProducts)
                         .where(eq(userProducts.userId, req.user?.id))
                         .leftJoin(seeds, eq(seeds.id, userProducts.seedId))
+                        .leftJoin(products, eq(products.id, seeds.productId))
                         .orderBy(asc(userProducts.id));
 
                 res.json({

@@ -1,8 +1,8 @@
-import {SeedType} from "@/types/UserSeedsType";
+import {SeedType, SeedTypeProduct} from "@/types/UserSeedsType";
 
 
 export type MarketItemsType = {
-    seeds: SeedType[],
+    seeds: SeedTypeProduct[],
     products: [],
     factories: [],
     recipes: [],
