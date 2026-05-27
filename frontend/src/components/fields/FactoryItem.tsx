@@ -71,7 +71,7 @@ export const FactoryItem = ({factory, height, cb}: {
                     closedModal={() => setIsOpenModal(false)}
                     contend={<RecipesComponent cb={async (recipe: RecipeItemResponseJoin) => {
                         await handleMakeRecipe(factory.factories.id, recipe.recipe.id)
-                    }}/>}
+                    }} factoryId={factory.factories.id}/>}
                 />
             </div>
         );

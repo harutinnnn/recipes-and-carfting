@@ -9,6 +9,11 @@ export async function getRecipesJoin(): Promise<RecipeItemResponseJoin[]> {
 }
 
 
+export async function getRecipesJoinByFactory(factoryId: number): Promise<RecipeItemResponseJoin[]> {
+    const response = await api.get<RecipeItemResponseJoin[]>(`/recipes/by-factory/${factoryId}`);
+    return response.data;
+}
+
 export async function setMakeRecipe(data: any): Promise<SetUserSeedType> {
     const response = await api.post<SetUserSeedType>("/recipes/make", data);
     return response.data;

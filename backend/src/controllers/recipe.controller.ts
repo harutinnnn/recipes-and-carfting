@@ -57,6 +57,42 @@ export class RecipeController {
         }
     }
 
+    byFactory = async (_req: Request, res: Response) => {
+        try {
+
+            const {id} = _req.params
+
+            const recipesJoin = [];
+
+            const items = await this.context.db.select().from(recipes).where(eq(recipes.factoryId, Number(id))).orderBy(asc(recipes.id));
+
+            const recipesIngredientItems = await this.context.db.select().from(recipesIngredients)
+                .innerJoin(products, eq(products.id, recipesIngredients.productId))
+                .orderBy(asc(recipesIngredients.id));
+
+            type RecipeIngredientItem = (typeof recipesIngredientItems)[number];
+
+            for (const item of items) {
+                const recipeIngredients = recipesIngredientItems.filter((ingredientItem: RecipeIngredientItem) =>
+                    ingredientItem.recipesIngredients.recipeId === item.id
+                );
+
+                recipesJoin.push({
+                    recipe: item,
+                    recipesIngredients: recipeIngredients
+                });
+            }
+
+            res.json(
+                recipesJoin
+            );
+
+        } catch (_err) {
+            console.error(_err);
+            res.status(400).json({error: "Invalid token"});
+        }
+    }
+
     buySeed = async (req: Request, res: Response) => {
         try {
 

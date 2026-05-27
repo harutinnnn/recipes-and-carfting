@@ -17,6 +17,12 @@ export const recipeRouter = (context: AppContext) => {
     )
 
     router.get(
+        "/by-factory/:id",
+        validateParams(QueryParamId),
+        recipeController.byFactory
+    )
+
+    router.get(
         "/buy-seed/:id",
         authenticateJWT,
         validateParams(QueryParamId),

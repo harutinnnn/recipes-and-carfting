@@ -438,6 +438,44 @@ input:-webkit-autofill:active {
     width: 100%;
 }
 
+
+.recipe-item .user-seed-info {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--green-light);
+    color: var(--green-dark);
+    padding: 3px 7px;
+    border-radius: 8px;
+}
+
+.recipe-ingredient-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.recipe-ingredient-list .recipe-ingredient-item {
+    width: 60px;
+    background-color: var(--green-light);
+    color: var(--green-dark);
+    position: relative;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.recipe-ingredient-list .recipe-ingredient-item img {
+    width: 100%;
+    height: auto;
+}
+
+.recipe-ingredient-list .recipe-ingredient-item .recipe-ingredient-item-title {
+    color: var(--green-dark);
+    font-weight: bold;
+    text-align: center;
+    font-size: 12px;
+}
+
 .react-tabs__tab:focus:after {
     background: var(--dark-gray) !important;
     bottom: -5px !important;
@@ -528,10 +566,11 @@ input:-webkit-autofill:active {
     max-width: calc(100% - 10px);
 }
 
-.ReactModal__Overlay{
+.ReactModal__Overlay {
     z-index: 99999;
 }
-[data-rht-toaster]{
+
+[data-rht-toaster] {
     z-index: 999999 !important;
 }
 

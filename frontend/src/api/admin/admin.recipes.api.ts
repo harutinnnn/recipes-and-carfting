@@ -1,6 +1,7 @@
 import api from "@/api/axios";
-import {IngredientTypes, RecipesType} from "@/types/RecipesType";
+import {IngredientTypes, IngredientTypesJoin, RecipesType} from "@/types/RecipesType";
 import {SeedType} from "@/types/UserSeedsType";
+import {ProductType} from "@/types/ProductType";
 
 export type RecipeResponse = {
     items: RecipesType[]
@@ -11,13 +12,13 @@ export type RecipeItemResponse = {
 };
 
 export type RecipesIngredients = {
-    recipesIngredients: IngredientTypes
-    seeds: SeedType
+    recipesIngredients: IngredientTypesJoin
+    product: ProductType
 }
 
 export type RecipeItemResponseJoin = {
     recipe: RecipesType,
-    recipesIngredients: RecipesIngredients[]
+    recipesIngredients: IngredientTypesJoin[]
 };
 
 
