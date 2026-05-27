@@ -1,8 +1,9 @@
 import api from "@/api/axios";
-import {SeedProgressImageType, SeedType} from "@/types/UserSeedsType";
+import {SeedProgressImageType, SeedType, SeedTypeProduct} from "@/types/UserSeedsType";
 
 export type SeedsResponse = {
-    items: SeedType[]
+
+    items: SeedTypeProduct[]
 };
 
 export type SeedItemResponse = {

@@ -179,6 +179,11 @@ export const userFactories = pgTable("userFactories", {
 
 export const recipes = pgTable("recipes", {
     id: serial("id").primaryKey(),
+    productId: integer("productId").notNull()
+        .references(() => products.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
     title: text("title").notNull(),
     price: integer("price").default(0),
     factoryId: serial("factoryId").notNull()
@@ -202,14 +207,18 @@ export const recipesIngredients = pgTable("recipesIngredients", {
                 onDelete: "cascade",
                 onUpdate: "cascade",
             }),
-        ingredientId: integer("ingredientId").notNull(),
+        productId: integer("productId").notNull()
+            .references(() => products.id, {
+                onDelete: "cascade",
+                onUpdate: "cascade",
+            }),
         ingredientType: ingredientType('ingredientType').notNull(),
         ingredientNeedsCount: integer("ingredientNeedsCount").notNull()
     },
     (table) => [
-        unique("skills_name_company_unique").on(
+        unique("recip_product_unique").on(
             table.recipeId,
-            table.ingredientId
+            table.productId
         ),
     ]);
 

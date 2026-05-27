@@ -30,6 +30,31 @@ export class AdminProductsController {
         }
     }
 
+    byType = async (req: Request, res: Response) => {
+
+
+        try {
+
+
+            const {type} = req.params;
+            console.log('type',type);
+
+            const items = await this.context.db.select().from(products)
+                .where(eq(products.userProductTypes, type.toString()))
+                .orderBy(
+                    asc(products.id)
+                );
+
+            res.json({
+                items: items,
+            });
+
+        } catch (err) {
+            console.log(err);
+            res.status(400).json({message: "Invalid token"});
+        }
+    }
+
     getFood = async (req: Request, res: Response) => {
         try {
 

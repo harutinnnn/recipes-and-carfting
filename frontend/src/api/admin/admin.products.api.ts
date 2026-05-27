@@ -19,6 +19,11 @@ export async function getProducts(): Promise<ProductsResponse> {
     return response.data;
 }
 
+export async function getProductsByType(type: string): Promise<ProductsResponse> {
+    const response = await api.get<ProductsResponse>("/admin/products/by-type/" + type);
+    return response.data;
+}
+
 
 export async function getProduct(id: number): Promise<ProductItemResponse> {
     const response = await api.get<ProductItemResponse>(`/admin/products/${id}`);

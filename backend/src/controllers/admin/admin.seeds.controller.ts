@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {AppContext} from "../../types/app.context.type";
-import {seeds, seedsProgressImages, userFields} from "../../db/schema";
+import {products, seeds, seedsProgressImages, userFields} from "../../db/schema";
 import {and, asc, eq} from "drizzle-orm";
 import path from "node:path";
 import {removeFile, uploadFile} from "../../helpers/file.helper";
@@ -16,9 +16,9 @@ export class AdminSeedsController {
     index = async (req: Request, res: Response) => {
         try {
 
-            const items = await this.context.db.select().from(seeds).orderBy(
-                asc(seeds.id)
-            );
+            const items = await this.context.db.select().from(seeds)
+                .leftJoin(products, eq(products.id, seeds.productId))
+                .orderBy(asc(seeds.id));
 
             res.json({
                 items: items,
@@ -60,7 +60,7 @@ export class AdminSeedsController {
                 takeEnergyCollect
             } = req.body;
 
-            console.log('productId',productId)
+            console.log('productId', productId)
 
             const tmpId = !isNaN(id) ? id : 0;
             const titleValue = String(title);

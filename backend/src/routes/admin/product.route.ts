@@ -4,11 +4,11 @@ import {AppContext} from "../../types/app.context.type";
 import {authenticateJWT} from "../../middlewares/auth";
 import multer from "multer";
 import {storage} from "../../config/storage";
-import {validate} from "../../middlewares/validate";
+import {validate, validateParams} from "../../middlewares/validate";
 import {SeedsSchema, UploadSeedProgressFile} from "../../schemas/user.seeds";
 import {checkIsAdmin} from "../../utils/admin/admin.utilities";
 import {AdminFoodsController} from "../../controllers/admin/admin.foods.controller";
-import {FoodSchema, ProductSchema} from "../../schemas/food.schema";
+import {FoodSchema, IngredientTypeSchema, ProductSchema} from "../../schemas/food.schema";
 import {AdminProductsController} from "../../controllers/admin/admin.products.controller";
 
 const MAX_FILE_SIZE_MB = 2;
@@ -65,6 +65,13 @@ export const productRouter = (context: AppContext) => {
         "/",
         authenticateJWT,
         adminProductsController.index
+    );
+
+    router.get(
+        "/by-type/:type",
+        authenticateJWT,
+        validateParams(IngredientTypeSchema),
+        adminProductsController.byType
     );
 
 

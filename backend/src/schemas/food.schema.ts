@@ -33,11 +33,17 @@ export const IngredientSchema = z.object({
     ingredientType: z.enum(IngredientTypesEnum, {
         error: "IngredientType is required",
     }),
-    ingredientId: z.coerce.number({
-        error: "IngredientId is required",
+    productId: z.coerce.number({
+        error: "Product is required",
     }),
     ingredientNeedsCount: z.coerce.number({
         error: "IngredientNeedsCount is required",
+    }),
+});
+
+export const IngredientTypeSchema = z.object({
+    type: z.enum(IngredientTypesEnum, {
+        error: "IngredientType is required",
     }),
 });
 
@@ -60,6 +66,7 @@ const IngredientsSchema = z.preprocess((value) => {
 
 export const RecipeSchema = z.object({
     title: z.string().min(1, "Title is required"),
+    productId: z.coerce.number({error: "Product is required"}),
     price: z.coerce.number({error: "Price is required"}),
     factoryId: z.coerce.number({error: "FactoryId is required"}),
     availableFromLevel: z.coerce.number({error: "AvailableFromLevel is required"}),

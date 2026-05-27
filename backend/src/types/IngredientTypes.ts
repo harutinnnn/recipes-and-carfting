@@ -4,6 +4,6 @@ export type IngredientTypes = {
     id?: number
     recipeId?: number;
     ingredientType: IngredientTypesEnum;
-    ingredientId: number;
+    productId: number;
     ingredientNeedsCount: number;
 }

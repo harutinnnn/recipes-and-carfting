@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {and, asc, eq} from "drizzle-orm";
 import {
     factories,
-    foods,
+    foods, products,
     recipes,
     recipesIngredients,
     seeds,
@@ -31,7 +31,7 @@ export class RecipeController {
             const items = await this.context.db.select().from(recipes).orderBy(asc(recipes.id));
 
             const recipesIngredientItems = await this.context.db.select().from(recipesIngredients)
-                .innerJoin(seeds, eq(seeds.id, recipesIngredients.ingredientId))
+                .innerJoin(products, eq(products.id, recipesIngredients.productId))
                 .orderBy(asc(recipesIngredients.id));
 
             type RecipeIngredientItem = (typeof recipesIngredientItems)[number];

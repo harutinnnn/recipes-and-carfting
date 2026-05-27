@@ -2,6 +2,7 @@ import {IngredientTypesEnum} from "@/enums/IngredientTypesEnum";
 
 export  type RecipesType = {
     id: number;
+    productId: number;
     title: string;
     price: number;
     factoryId: number;
@@ -12,6 +13,7 @@ export  type RecipesType = {
 }
 
 export type RecipesFileType = {
+    productId: number;
     title: string;
     price: number;
     factoryId: number;
@@ -26,6 +28,6 @@ export type IngredientTypes = {
     id?: number
     recipeId?: number;
     ingredientType: IngredientTypesEnum;
-    ingredientId: number;
+    productId: number;
     ingredientNeedsCount: number;
 }

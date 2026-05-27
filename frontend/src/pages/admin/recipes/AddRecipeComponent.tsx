@@ -12,6 +12,8 @@ import {getFactories} from "@/api/admin/admin.factories.api";
 import {capitalize} from "@/helpers/text.helper";
 import {RecipeIngredientComponent} from "@/pages/admin/recipes/RecipeIngredientComponent";
 import {IngredientTypesEnum} from "@/enums/IngredientTypesEnum";
+import {getProducts} from "@/api/admin/admin.products.api";
+import {ProductType} from "@/types/ProductType";
 
 type IngredientFormItem = IngredientTypes & {
     clientId: number;
@@ -21,7 +23,7 @@ const createIngredientFormItem = (clientId: number): IngredientFormItem => ({
     clientId,
     id: 0,
     ingredientType: IngredientTypesEnum.VEGETABLE,
-    ingredientId: 0,
+    productId: 0,
     ingredientNeedsCount: 0,
 });
 
@@ -30,7 +32,7 @@ const recipeIngredientToFormItem = (ingredient: IngredientTypes, fallbackClientI
     id: ingredient.id ?? 0,
     recipeId: ingredient.recipeId,
     ingredientType: ingredient.ingredientType,
-    ingredientId: ingredient.ingredientId,
+    productId: ingredient.productId,
     ingredientNeedsCount: ingredient.ingredientNeedsCount,
 });
 
@@ -41,6 +43,8 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
     const [factories, setFactories] = useState<FactoryType[]>([]);
 
     const [recipe, setRecipe] = useState<RecipeItemResponseJoin | undefined>(undefined);
+
+    const [products, setProducts] = useState<ProductType[]>([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -65,6 +69,10 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
         const factoryData = await getFactories();
         setFactories(factoryData.items);
 
+        const productsList = await getProducts();
+        setProducts(productsList.items)
+
+
     };
 
     useEffect(() => {
@@ -81,6 +89,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
     const [disableBtn, setDisableBtn] = useState(false);
 
     const validateSchema = Yup.object({
+        productId: Yup.number().required("Product is required").moreThan(0, 'Price is required'),
         title: Yup.string().required("Title is required"),
         price: Yup.number().required("Number is required").moreThan(0, 'Price is required'),
         factoryId: Yup.number().required("Factory is required").moreThan(0, 'Factory is required'),
@@ -97,6 +106,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
         setDisableBtn(true);
 
 
+        const productId = values.productId;
         const title = values.title;
         const price = values.price;
         const factoryId = values.factoryId;
@@ -107,6 +117,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
         const formData = new FormData();
         formData.append('id', id.toString())
         formData.append("title", title);
+        formData.append("productId", productId.toString());
         formData.append("price", price.toString());
         formData.append("factoryId", factoryId.toString());
         formData.append("availableFromLevel", availableFromLevel.toString());
@@ -127,6 +138,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                 setError(data.error as string);
             } else {
 
+                values.productId = 0
                 values.title = ""
                 values.price = 0
                 values.xpOnCollect = 1
@@ -194,13 +206,14 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                 <Formik
                     enableReinitialize
                     initialValues={{
-                        title: recipe?.recipe.title || "",
-                        price: recipe?.recipe.price || 1,
-                        factoryId: recipe?.recipe.factoryId || 0,
-                        availableFromLevel: recipe?.recipe.availableFromLevel || 1,
+                        title: recipe?.recipe?.title || "",
+                        productId: recipe?.recipe?.productId || 0,
+                        price: recipe?.recipe?.price || 1,
+                        factoryId: recipe?.recipe?.factoryId || 0,
+                        availableFromLevel: recipe?.recipe?.availableFromLevel || 1,
                         icon: null,
-                        xpOnCollect: recipe?.recipe.xpOnCollect || 1,
-                        takeEnergyCollect: recipe?.recipe.takeEnergyCollect || 1,
+                        xpOnCollect: recipe?.recipe?.xpOnCollect || 1,
+                        takeEnergyCollect: recipe?.recipe?.takeEnergyCollect || 1,
                         ingredientsCount: ingredients.length,
                     }}
                     validationSchema={validateSchema}
@@ -208,6 +221,20 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                 >
                     {({setFieldValue}) => (
                         <Form>
+
+                            <div className="input-row">
+                                <label htmlFor="email">Product</label>
+                                <Field as="select" name="productId" id="productId">
+                                    {products.map(products => (
+                                        <option value={products.id}
+                                                key={products.id}>{products.title}</option>
+                                    ))}
+
+                                </Field>
+                                <ErrorMessage name="productId" component="div" className="error-msg"/>
+                            </div>
+
+
 
                             <div className="input-row">
                                 <label htmlFor="title">Title</label>
@@ -273,9 +300,9 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                                     <ErrorMessage name="icon" component="div" className="error-msg"/>
                                 </div>
 
-                                {recipe?.recipe.icon &&
+                                {recipe?.recipe?.icon &&
                                     <div className={'data-image thumbnail m-b-2'}>
-                                        <img src={import.meta.env.VITE_API_URL + recipe?.recipe.icon} alt=""
+                                        <img src={import.meta.env.VITE_API_URL + recipe?.recipe?.icon} alt=""
                                              style={{width: '200px'}}/>
                                     </div>
                                 }

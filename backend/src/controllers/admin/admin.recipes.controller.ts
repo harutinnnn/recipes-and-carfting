@@ -1,12 +1,23 @@
 import {Request, Response} from "express";
 import {AppContext} from "../../types/app.context.type";
-import {recipes, recipesIngredients, seeds} from "../../db/schema";
+import {products, recipes, recipesIngredients, seeds} from "../../db/schema";
 import {asc, eq} from "drizzle-orm";
 import {DbTransaction} from "../../types/db.types";
 import {removeFile, uploadFile} from "../../helpers/file.helper";
 import path from "node:path";
 import {IngredientTypes} from "../../types/IngredientTypes";
 import {IngredientTypesEnum} from "../../enums/IngredientTypesEnum";
+
+const recipeIngredientTypes = [
+    IngredientTypesEnum.VEGETABLE,
+    IngredientTypesEnum.ANIMAL_PRODUCT,
+    IngredientTypesEnum.MADE_IN_FACTORY,
+] as const;
+
+type RecipeIngredientType = (typeof recipeIngredientTypes)[number];
+
+const isRecipeIngredientType = (value: IngredientTypesEnum): value is RecipeIngredientType =>
+    recipeIngredientTypes.includes(value as RecipeIngredientType);
 
 export class AdminRecipesController {
 
@@ -42,7 +53,7 @@ export class AdminRecipesController {
                 eq(
                     recipesIngredients.recipeId, Number(id)
                 )
-            ).innerJoin(seeds, eq(seeds.id, recipesIngredients.ingredientId))
+            ).innerJoin(products, eq(products.id, recipesIngredients.productId))
                 .orderBy(asc(recipesIngredients.id));
 
             res.json({
@@ -51,7 +62,6 @@ export class AdminRecipesController {
             });
 
         } catch (err) {
-            console.log(err)
             res.status(400).json({message: "Invalid token"});
         }
     }
@@ -64,6 +74,7 @@ export class AdminRecipesController {
             const {
                 id,
                 title,
+                productId,
                 price,
                 factoryId,
                 availableFromLevel,
@@ -103,6 +114,7 @@ export class AdminRecipesController {
 
                     await trx.update(recipes).set({
                         title: title,
+                        productId: Number(productId),
                         price: Number(price),
                         factoryId: Number(factoryId),
                         availableFromLevel: Number(availableFromLevel),
@@ -124,6 +136,7 @@ export class AdminRecipesController {
 
                     const [tmpRecipe] = await trx.insert(recipes).values({
                         title: title,
+                        productId: Number(productId),
                         price: Number(price),
                         factoryId: Number(factoryId),
                         availableFromLevel: Number(availableFromLevel),
@@ -171,36 +184,39 @@ export class AdminRecipesController {
 
 
         } catch (err) {
+
             res.status(400).json({message: "Invalid token"});
         }
     }
 
     private saveIngredients = async (recipeId: number, ingredients: IngredientTypes[], trx: DbTransaction) => {
-        const ingredientRows = ingredients.map((ingredient) => {
-            const ingredientId = Number(ingredient.ingredientId);
-            const ingredientNeedsCount = Number(ingredient.ingredientNeedsCount);
 
-            if (
-                !Object.values(IngredientTypesEnum).includes(ingredient.ingredientType) ||
-                ingredientId <= 0 ||
-                ingredientNeedsCount <= 0
-            ) {
-                throw new Error('Wrong ingredient values');
-            }
+        try {
+            const ingredientRows = ingredients.map((ingredient) => {
+                const productId = Number(ingredient.productId);
+                const ingredientNeedsCount = Number(ingredient.ingredientNeedsCount);
 
-            return {
-                recipeId,
-                ingredientId,
-                ingredientType: ingredient.ingredientType,
-                ingredientNeedsCount,
-            };
-        });
+                if (!isRecipeIngredientType(ingredient.ingredientType) || productId <= 0 || ingredientNeedsCount <= 0) {
+                    throw new Error('Wrong ingredient values');
+                }
 
-        await trx.delete(recipesIngredients).where(
-            eq(recipesIngredients.recipeId, recipeId)
-        );
+                return {
+                    recipeId,
+                    productId: productId,
+                    ingredientType: ingredient.ingredientType,
+                    ingredientNeedsCount,
+                };
+            });
 
-        await trx.insert(recipesIngredients).values(ingredientRows);
+            await trx.delete(recipesIngredients).where(
+                eq(recipesIngredients.recipeId, recipeId)
+            );
+
+            await trx.insert(recipesIngredients).values(ingredientRows);
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 
 }
