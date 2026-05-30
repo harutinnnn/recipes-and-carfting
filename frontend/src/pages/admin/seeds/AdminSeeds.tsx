@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {getSeeds} from "@/api/admin/admin.seeds.api";
-import {SeedType} from "@/types/UserSeedsType";
+import {SeedType, SeedTypeProduct} from "@/types/UserSeedsType";
 import {PencilLine, Trash2} from "lucide-react";
 import {MyModal} from "@/components/admin/MyModal";
 import {AddSeedComponent} from "@/pages/admin/seeds/AddSeedComponent";
@@ -10,7 +10,7 @@ export const AdminSeeds = () => {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [itemId, setItemId] = useState<number>(0);
 
-    const [seeds, setSeeds] = useState<SeedType[]>([]);
+    const [seeds, setSeeds] = useState<SeedTypeProduct[]>([]);
 
     const handleGetSeeds = async () => {
         const seeds = await getSeeds()
@@ -56,21 +56,21 @@ export const AdminSeeds = () => {
                     <tbody>
                     {seeds && seeds.map(seed => {
                         return (
-                            <tr key={seed.id}>
-                                <td>{seed.title}</td>
+                            <tr key={seed.seeds.id}>
+                                <td>{seed.seeds.title}</td>
                                 <td>
-                                    <img src={import.meta.env.VITE_API_URL + seed.icon} alt=""
+                                    <img src={import.meta.env.VITE_API_URL + seed.seeds.icon} alt=""
                                          className={"img-list-thumbnail"}/>
                                 </td>
-                                <td>{seed.price}</td>
-                                <td>{seed.collectionTime} Seconds</td>
-                                <td>{seed.availableLevel}</td>
+                                <td>{seed.seeds.price}</td>
+                                <td>{seed.seeds.collectionTime} Seconds</td>
+                                <td>{seed.seeds.availableLevel}</td>
                                 <td>
                                     <div className="quick-actions">
                                         <Trash2 size={22} className="delete"/>
                                         <PencilLine size={22} className="edit" onClick={() => {
                                             setIsOpenModal(!isOpenModal)
-                                            setItemId(seed.id);
+                                            setItemId(seed.seeds.id);
                                         }}/>
                                     </div>
                                 </td>

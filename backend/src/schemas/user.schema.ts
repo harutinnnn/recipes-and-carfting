@@ -1,12 +1,27 @@
 import {z} from "zod";
 import {Gender} from "../enums/Gender";
 
+
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+const optionalFileSchema = z
+    .instanceof(File)
+    .optional()
+    .refine((file) => !file || file.size <= MAX_FILE_SIZE, {
+        message: "Max file size is 2MB",
+    })
+    .refine((file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type), {
+        message: "Only images allowed",
+    });
+
+
 export const UserSchema = z.object({
     name: z.string().min(1, "Name is required"),
-    nickname: z.string().min(1, "Nickname is required"),
     email: z.email("Invalid email address"),
     gender: z.enum(Gender),
     password: z.string().min(6, "Password must be at least 6 characters"),
+    avatar: optionalFileSchema,
 });
 
 export const LoginSchema = z.object({

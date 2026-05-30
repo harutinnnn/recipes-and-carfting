@@ -44,7 +44,6 @@ export const users = pgTable("users", {
     id: serial("id").primaryKey(),
     email: text("email").notNull().unique(),
     name: text("name").notNull(),
-    nickname: text("nickname").notNull(),
     gameMoney: numeric("gameMoney", {
         precision: 10,
         scale: 2,

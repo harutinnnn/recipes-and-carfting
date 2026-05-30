@@ -12,6 +12,7 @@ import {db} from "../db";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 import {DbTransaction} from "../types/db.types";
 import {UserService} from "./user.service";
+import {uploadFile} from "../helpers/file.helper";
 
 type DB = typeof db;
 
@@ -37,13 +38,25 @@ export class AuthService {
 
             await this.db.transaction(async (trx: DbTransaction) => {
 
+
+                let avatarUrl = "";
+                const avatar = req.file || undefined;
+
+                if (avatar) {
+
+                    const uploadedIcon = await uploadFile(avatar, 'users');
+                    if (uploadedIcon instanceof Error) {
+                        throw uploadedIcon;
+                    }
+                    avatarUrl = uploadedIcon;
+                }
+
                 const hashedPassword = await bcrypt.hash(validatedData.password, 10);
                 const activationHash = randomUUID();
 
 
                 await trx.insert(users).values({
                     name: validatedData.name,
-                    nickname: validatedData.nickname,
                     email: validatedData.email,
                     password: hashedPassword,
                     status: Statuses.NOT_ACTIVATED,
@@ -53,7 +66,8 @@ export class AuthService {
                     level: 1,
                     xp: 0,
                     nextLevelXP: userService.userUpToNextLvlByPercent(1),
-                    energy: 100
+                    energy: 100,
+                    avatarUrl: avatarUrl
                 });
 
                 const [newUser] = await trx.select().from(users).where(eq(users.email, validatedData.email));
@@ -103,6 +117,7 @@ export class AuthService {
             })
 
         } catch (error) {
+            console.log(error)
             return new Error("Failed to register user")
         }
 
