@@ -63,6 +63,34 @@ export const users = pgTable("users", {
     createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
+export const userProductTypes = pgEnum("userProductTypes", IngredientTypesEnum);
+
+export const products = pgTable("products", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    icon: text("icon").notNull(),
+    userProductTypes: userProductTypes('userProductTypes').notNull()
+});
+
+export const fieldStatus = pgEnum("fieldStatus", FieldStatusEnum);
+
+export const userFields = pgTable("userFields", {
+    id: serial("id").primaryKey(),
+    userId: serial("userId").notNull()
+        .references(() => users.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    seedId: integer("seedId")
+        .references(() => seeds.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
+    status: fieldStatus('fieldStatus').notNull().default(FieldStatusEnum.pending),
+    startedAt: timestamp("started_at"),
+    finishedAt: timestamp("finished_at"),
+});
+
 
 export const seeds = pgTable("seeds", {
     id: serial("id").primaryKey(),
@@ -111,37 +139,6 @@ export const userSeeds = pgTable("userSeeds", {
             onUpdate: "cascade",
         }),
     count: integer("count").default(0),
-});
-
-export const userSeedsRelation = relations(users,
-    ({many}) => (
-        {
-            seeds: many(seeds)
-        }
-    ))
-
-
-export const fieldStatus = pgEnum("fieldStatus", [
-    FieldStatusEnum.pending,
-    FieldStatusEnum.in_progress,
-    FieldStatusEnum.ready,
-]);
-
-export const userFields = pgTable("userFields", {
-    id: serial("id").primaryKey(),
-    userId: serial("userId").notNull()
-        .references(() => users.id, {
-            onDelete: "cascade",
-            onUpdate: "cascade",
-        }),
-    seedId: integer("seedId")
-        .references(() => seeds.id, {
-            onDelete: "cascade",
-            onUpdate: "cascade",
-        }),
-    status: fieldStatus('fieldStatus').notNull().default(FieldStatusEnum.pending),
-    startedAt: timestamp("started_at"),
-    finishedAt: timestamp("finished_at"),
 });
 
 
@@ -229,9 +226,6 @@ export const recipesIngredientsRelation = relations(recipes,
         }
     ))
 
-
-export const userProductTypes = pgEnum("userProductTypes", IngredientTypesEnum);
-
 export const userProducts = pgTable("userProducts", {
     id: serial("id").primaryKey(),
     userId: serial("userId").notNull()
@@ -245,14 +239,6 @@ export const userProducts = pgTable("userProducts", {
             onUpdate: "cascade",
         }),
     count: integer("count").default(0),
-    userProductTypes: userProductTypes('userProductTypes').notNull()
-});
-
-
-export const products = pgTable("products", {
-    id: serial("id").primaryKey(),
-    title: text("title").notNull(),
-    icon: text("icon").notNull(),
     userProductTypes: userProductTypes('userProductTypes').notNull()
 });
 

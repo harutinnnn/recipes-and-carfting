@@ -46,7 +46,6 @@ export class MainController {
         }
     }
 
-
     fieldPrice = async (_req: Request, res: Response) => {
         try {
 
@@ -116,7 +115,6 @@ export class MainController {
         }
     }
 
-
     seeds = async (req: Request, res: Response) => {
         try {
 
@@ -140,7 +138,8 @@ export class MainController {
                     await this.context.db.select()
                         .from(userFields)
                         .where(eq(userFields.userId, req.user?.id))
-                        .leftJoin(seeds, eq(seeds.id, userFields.seedId)).orderBy(
+                        .leftJoin(seeds, eq(seeds.id, userFields.seedId))
+                        .leftJoin(products, eq(products.id, seeds.productId)).orderBy(
                             asc(userFields.id)
                         );
 
