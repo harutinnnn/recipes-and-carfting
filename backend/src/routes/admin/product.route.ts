@@ -22,6 +22,7 @@ const iconUploader = multer({
 
 const uploadSeedImages = iconUploader.fields([
     {name: 'icon', maxCount: 1},
+    {name: 'finalProduct', maxCount: 1},
 ]);
 
 const handleSeedImageUpload = (req: Request, res: Response, next: NextFunction) => {

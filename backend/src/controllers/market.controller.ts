@@ -179,6 +179,7 @@ export class MarketController {
 
             const {id} = req.params;
             if (req.user?.id) {
+                console.log(req.user?.id)
 
                 await this.context.db.transaction(async (trx: DbTransaction) => {
 

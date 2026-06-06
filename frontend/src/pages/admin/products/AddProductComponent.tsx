@@ -66,6 +66,10 @@ export const AddProductComponent = ({id, cb}: { id: number, cb: () => void }) =>
             formData.append("icon", values.icon);
         }
 
+        if (values.finalProduct) {
+            formData.append("finalProduct", values.finalProduct);
+        }
+
 
         try {
 
@@ -121,6 +125,7 @@ export const AddProductComponent = ({id, cb}: { id: number, cb: () => void }) =>
                         title: product?.title || "",
                         userProductTypes: product?.userProductTypes || IngredientTypesEnum.SEEDS,
                         icon: null,
+                        finalProduct: null,
                     }}
                     validationSchema={validateSchema}
                     onSubmit={handleSubmit}
@@ -165,6 +170,27 @@ export const AddProductComponent = ({id, cb}: { id: number, cb: () => void }) =>
                                 {product?.icon &&
                                     <div className={'data-image thumbnail m-b-2'}>
                                         <img src={import.meta.env.VITE_API_URL + product?.icon} alt=""
+                                             style={{width: '200px'}}/>
+                                    </div>
+                                }
+                            </div>
+                            <div className={"image-container"}>
+                                <div className="input-row">
+                                    <label htmlFor="finalProduct">Final product</label>
+                                    <input
+                                        type="file"
+                                        id="finalProduct"
+                                        name="finalProduct"
+                                        onChange={(e) => {
+                                            setFieldValue("finalProduct", e.currentTarget.files?.[0]);
+                                        }}
+                                    />
+                                    <ErrorMessage name="finalProduct" component="div" className="error-msg"/>
+                                </div>
+
+                                {product?.finalProduct &&
+                                    <div className={'data-image thumbnail m-b-2'}>
+                                        <img src={import.meta.env.VITE_API_URL + product?.finalProduct} alt=""
                                              style={{width: '200px'}}/>
                                     </div>
                                 }

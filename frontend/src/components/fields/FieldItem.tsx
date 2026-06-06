@@ -98,7 +98,7 @@ export const FieldItem = ({field, height, cb}: { field: FieldItemTypeJoin | null
             {isReady &&
                 <span className={"field-seed-status"}>Ready</span>
             }
-            <img src={getFieldProgressImage(field,progress,import.meta.env.VITE_API_URL)} alt="" className={"field-item-icon"}/>
+                <img src={getFieldProgressImage(field,progress,import.meta.env.VITE_API_URL)} alt="" className={"field-item-icon"}/>
 
             <div className={"field-item-info"}>
 

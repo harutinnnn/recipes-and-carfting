@@ -69,6 +69,7 @@ export const products = pgTable("products", {
     id: serial("id").primaryKey(),
     title: text("title").notNull(),
     icon: text("icon").notNull(),
+    finalProduct: text("finalProduct").notNull(),
     userProductTypes: userProductTypes('userProductTypes').notNull()
 });
 

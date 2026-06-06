@@ -91,9 +91,11 @@ export class AdminProductsController {
                 if (product?.id) {
 
                     let iconUrl = product.icon;
+                    let finalProductUrl = product.finalProduct;
 
                     const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
                     const icon = files?.icon?.[0];
+                    const finalProduct = files?.finalProduct?.[0];
 
                     if (icon) {
 
@@ -109,11 +111,26 @@ export class AdminProductsController {
                         iconUrl = uploadedIcon;
                     }
 
+                    if (finalProduct) {
+
+                        const rootDir = process.cwd();
+                        if (finalProductUrl) {
+                            await removeFile(path.join(rootDir, finalProductUrl));
+                        }
+
+                        const uploadedFinalProduct  = await uploadFile(finalProduct, 'products');
+                        if (uploadedFinalProduct instanceof Error) {
+                            throw uploadedFinalProduct;
+                        }
+                        finalProductUrl = uploadedFinalProduct;
+                    }
+
 
                     await trx.update(products).set({
                         title: title,
                         userProductTypes: userProductTypes,
                         icon: iconUrl,
+                        finalProduct: finalProductUrl,
 
                     }).where(eq(products.id, product?.id));
 
@@ -127,6 +144,7 @@ export class AdminProductsController {
                     const [tmpProduct] = await trx.insert(products).values({
                         title: title,
                         icon: "",
+                        finalProduct: "",
                         userProductTypes: userProductTypes,
 
                     }).returning({id: products.id});
@@ -134,8 +152,12 @@ export class AdminProductsController {
 
 
                     const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
+
                     const icon = files?.icon?.[0];
+                    const finalProduct = files?.finalProduct?.[0];
+
                     let iconUrl = "";
+                    let finalProductUrl = "";
 
                     if (icon) {
 
@@ -145,12 +167,27 @@ export class AdminProductsController {
                         }
                         iconUrl = uploadedIcon;
                     }
+                    if (finalProduct) {
+
+                        const uploadedFinalProduct = await uploadFile(finalProduct, 'products');
+                        if (uploadedFinalProduct instanceof Error) {
+                            throw uploadedFinalProduct;
+                        }
+                        finalProductUrl = uploadedFinalProduct;
+                    }
 
 
                     if (iconUrl) {
 
                         await trx.update(products).set({
                             icon: iconUrl,
+                        }).where(eq(products.id, insertId));
+                    }
+
+                    if (finalProductUrl) {
+
+                        await trx.update(products).set({
+                            finalProduct: finalProductUrl,
                         }).where(eq(products.id, insertId));
                     }
 

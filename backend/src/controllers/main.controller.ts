@@ -12,12 +12,11 @@ import {
     users,
     userSeeds
 } from "../db/schema";
-import {and, asc, eq} from "drizzle-orm";
+import {and, asc, eq, gt} from "drizzle-orm";
 import {FieldStatusEnum} from "../enums/FieldStatusEnum";
 import {IngredientTypesEnum} from "../enums/IngredientTypesEnum";
 import {DbTransaction} from "../types/db.types";
 import {UserService} from "../services/user.service";
-import * as wasi from "node:wasi";
 import {SettingEnums} from "../enums/SettingEnums";
 
 type UserFieldWithSeed = {
@@ -179,7 +178,12 @@ export class MainController {
                 const items =
                     await this.context.db.select()
                         .from(userSeeds)
-                        .where(eq(userSeeds.userId, req.user?.id))
+                        .where(
+                            and(
+                                eq(userSeeds.userId, req.user?.id),
+                                gt(userSeeds.count, 0)
+                            )
+                        )
                         .leftJoin(seeds, eq(seeds.id, userSeeds.seedId))
                         .leftJoin(products, eq(products.id, seeds.productId)).orderBy(asc(userSeeds.seedId));
 
@@ -227,9 +231,14 @@ export class MainController {
                 const items =
                     await this.context.db.select()
                         .from(userProducts)
-                        .where(eq(userProducts.userId, req.user?.id))
                         .leftJoin(seeds, eq(seeds.id, userProducts.seedId))
                         .leftJoin(products, eq(products.id, seeds.productId))
+                        .where(
+                            and(
+                                eq(userProducts.userId, req.user?.id),
+                                gt(userProducts.count, 0)
+                            )
+                        )
                         .orderBy(asc(userProducts.id));
 
                 res.json({
@@ -240,6 +249,7 @@ export class MainController {
             }
 
         } catch (err) {
+            console.log(err);
             res.status(400).json({error: "Invalid token"});
         }
     }
