@@ -118,7 +118,9 @@ export class MainController {
     seeds = async (req: Request, res: Response) => {
         try {
 
-            const items = await this.context.db.select().from(seeds).orderBy(asc(seeds.id));
+            const items = await this.context.db.select().from(seeds)
+                .leftJoin(products, eq(products.id, seeds.productId))
+                .orderBy(asc(seeds.id));
 
             res.json({
                 items: items,
