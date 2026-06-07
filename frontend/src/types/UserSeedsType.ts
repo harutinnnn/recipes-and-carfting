@@ -3,6 +3,7 @@ import {ProductType} from "@/types/ProductType";
 export  type SeedType = {
     id: number;
     productId: number;
+    finalProductId?: number;
     title: string;
     price: number;
     minSellPrice: number;
@@ -26,6 +27,7 @@ export  type SeedProgressImageType = {
 
 export type SeedFileType = {
     productId: number;
+    finalProductId?: number;
     title: string,
     price: number;
     minSellPrice: number;

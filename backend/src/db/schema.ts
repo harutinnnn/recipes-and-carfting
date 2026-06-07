@@ -100,6 +100,11 @@ export const seeds = pgTable("seeds", {
             onDelete: "cascade",
             onUpdate: "cascade",
         }),
+    finalProductId: integer("finalProductId")
+        .references(() => products.id, {
+            onDelete: "cascade",
+            onUpdate: "cascade",
+        }),
     title: text("title").notNull(),
     price: numeric("price", {
         precision: 10,
@@ -218,14 +223,6 @@ export const recipesIngredients = pgTable("recipesIngredients", {
             table.productId
         ),
     ]);
-
-
-export const recipesIngredientsRelation = relations(recipes,
-    ({many}) => (
-        {
-            ingredients: many(recipesIngredients)
-        }
-    ))
 
 export const userProducts = pgTable("userProducts", {
     id: serial("id").primaryKey(),

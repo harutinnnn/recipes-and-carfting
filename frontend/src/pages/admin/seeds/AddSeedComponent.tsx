@@ -77,6 +77,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
 
 
         const productId = values.productId;
+        const finalProductId = values.finalProductId;
         const title = values.title;
         const price = values.price;
         const minSellPrice = values.minSellPrice;
@@ -88,6 +89,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
         const formData = new FormData();
         formData.append('id', id.toString())
         formData.append('productId', productId.toString())
+        formData.append('finalProductId', finalProductId ? finalProductId.toString() : "0")
         formData.append("title", title);
         formData.append("price", price.toString());
         formData.append("minSellPrice", minSellPrice.toString());
@@ -174,6 +176,7 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                     initialValues={{
                         title: seed?.title || "",
                         productId: seed?.productId || products[0].id || 0,
+                        finalProductId: seed?.finalProductId || products[0].id || 0,
                         price: seed?.price || 0,
                         minSellPrice: seed?.minSellPrice || 0,
                         availableLevel: seed?.availableLevel || 0,
@@ -194,11 +197,24 @@ export const AddSeedComponent = ({id, cb}: { id: number, cb: () => void }) => {
                                 <Field as="select" name="productId" id="productId">
                                     {products.map(products => (
                                         <option value={products.id}
-                                                key={products.id}>{products.title}</option>
+                                                key={products.id}>{products.title} - {products.userProductTypes}</option>
                                     ))}
 
                                 </Field>
                                 <ErrorMessage name="productId" component="div" className="error-msg"/>
+                            </div>
+
+                            <div className="input-row">
+                                <label htmlFor="email">Final Product(optional)</label>
+                                <Field as="select" name="finalProductId" id="finalProductId">
+                                    <option value={0}>Final product type optional</option>
+                                    {products.filter(product => product.userProductTypes === IngredientTypesEnum.VEGETABLE).map(products => (
+                                        <option value={products.id}
+                                                key={products.id}>{products.title} - {products.userProductTypes}</option>
+                                    ))}
+
+                                </Field>
+                                <ErrorMessage name="finalProductId" component="div" className="error-msg"/>
                             </div>
 
 

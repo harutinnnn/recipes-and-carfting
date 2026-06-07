@@ -2,6 +2,7 @@ import {z} from "zod";
 
 export const SeedsSchema = z.object({
     productId: z.coerce.number({error: "Product is required"}),
+    finalProductId: z.coerce.number({error: "Product is required"}).optional(),
     title: z.string().min(1, "Title is required"),
     price: z.coerce.number({error: "Price is required"}),
     minSellPrice: z.coerce.number({error: "Min cell price is required"}),

@@ -89,7 +89,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
     const [disableBtn, setDisableBtn] = useState(false);
 
     const validateSchema = Yup.object({
-        productId: Yup.number().required("Product is required").moreThan(0, 'Price is required'),
+        productId: Yup.number().required("Product is required").moreThan(0, 'Product is required'),
         title: Yup.string().required("Title is required"),
         price: Yup.number().required("Number is required").moreThan(0, 'Price is required'),
         factoryId: Yup.number().required("Factory is required").moreThan(0, 'Factory is required'),
@@ -227,7 +227,7 @@ export const AddRecipeComponent = ({id, cb}: { id: number, cb: () => void }) => 
                                 <Field as="select" name="productId" id="productId">
                                     {products.map(products => (
                                         <option value={products.id}
-                                                key={products.id}>{products.title}</option>
+                                                key={products.id}>{products.title} - {products.userProductTypes}</option>
                                     ))}
 
                                 </Field>

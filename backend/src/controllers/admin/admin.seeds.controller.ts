@@ -51,6 +51,7 @@ export class AdminSeedsController {
             const {
                 id,
                 productId,
+                finalProductId,
                 title,
                 price,
                 minSellPrice,
@@ -59,8 +60,6 @@ export class AdminSeedsController {
                 collectionTime,
                 takeEnergyCollect
             } = req.body;
-
-            console.log('productId', productId)
 
             const tmpId = !isNaN(id) ? id : 0;
             const titleValue = String(title);
@@ -98,6 +97,7 @@ export class AdminSeedsController {
 
                     await trx.update(seeds).set({
                         productId: productId,
+                        finalProductId:Number(finalProductId),
                         title: titleValue,
                         price: priceValue,
                         minSellPrice: minSellPriceValue,
@@ -117,6 +117,7 @@ export class AdminSeedsController {
 
                     const [tmpSeed] = await trx.insert(seeds).values({
                         productId: productId,
+                        finalProductId:Number(finalProductId),
                         title: titleValue,
                         icon: "",
                         price: priceValue,
