@@ -14,6 +14,7 @@ import {factoriesRouter} from "./admin/factories.route";
 import {recipesRouter} from "./admin/recipes.route";
 import {recipeRouter} from "./recipe.route";
 import {productRouter} from "./admin/product.route";
+import {factoryRouter} from "./factory.route";
 
 export const createApp = (context: AppContext) => {
 
@@ -33,6 +34,7 @@ export const createApp = (context: AppContext) => {
     app.use('/api/auth', authRouter(context));
     app.use('/api/market', marketRouter(context));
     app.use('/api/recipes', recipeRouter(context));
+    app.use('/api/factory', factoryRouter(context));
 
 
     // Admin
