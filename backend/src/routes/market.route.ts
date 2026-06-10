@@ -51,13 +51,6 @@ export const marketRouter = (context: AppContext) => {
         marketController.useFood
     )
 
-    router.get(
-        "/buy-factory/:id",
-        authenticateJWT,
-        validateParams(QueryParamId),
-        marketController.buyFactory
-    )
-
     return router
 }
 

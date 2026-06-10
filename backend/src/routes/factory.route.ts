@@ -18,10 +18,15 @@ export const factoryRouter = (context: AppContext) => {
 
 
     router.get(
-        "/buy-seed/:id",
+        "/buy-factory/:id",
         authenticateJWT,
         validateParams(QueryParamId),
         factoryController.buyFactory
+    )
+    router.get(
+        "/user-factories",
+        authenticateJWT,
+        factoryController.userFactories
     )
 
     return router
