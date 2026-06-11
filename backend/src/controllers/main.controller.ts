@@ -262,8 +262,34 @@ export class MainController {
                 const items =
                     await this.context.db.select()
                         .from(userFoods)
-                        .where(eq(userFoods.userId, req.user?.id))
                         .leftJoin(foods, eq(foods.id, userFoods.foodId))
+                        .where(and(
+                            eq(userFoods.userId, req.user?.id),
+                            gt(userFoods.count, 0)
+                        ))
+                        .orderBy(asc(foods.id));
+
+                res.json({
+                    items: items,
+                });
+            } else {
+                res.status(500).json({error: "Failed fetch user"});
+            }
+
+        } catch (err) {
+            res.status(400).json({error: "Invalid token"});
+        }
+    }
+
+
+    foods = async (req: Request, res: Response) => {
+        try {
+
+            if (req.user?.id) {
+
+                const items =
+                    await this.context.db.select()
+                        .from(foods)
                         .orderBy(asc(foods.id));
 
                 res.json({

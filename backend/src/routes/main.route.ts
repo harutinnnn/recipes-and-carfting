@@ -66,6 +66,13 @@ export const mainRouter = (context: AppContext) => {
     );
 
 
+    router.get(
+        "/foods",
+        authenticateJWT,
+        mainController.foods
+    );
+
+
     router.post(
         "/set-user-seed",
         authenticateJWT,
